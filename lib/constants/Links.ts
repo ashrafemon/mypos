@@ -147,7 +147,7 @@ export const StoreLinks = [
     {
         name: "HR Management",
         link: "#",
-        icon: "ri:file-damage-fill",
+        icon: "hugeicons:permanent-job",
         links: [
             { name: "Add Employee", link: "/stores/create" },
             { name: "List Employee", link: "/stores/list" },
@@ -159,7 +159,7 @@ export const StoreLinks = [
     {
         name: "Report",
         link: "#",
-        icon: "ri:file-damage-fill",
+        icon: "fluent-mdl2:report-document",
         links: [
             { name: "Register Report", link: "/stores/create" },
             { name: "Z Report", link: "/stores/list" },
@@ -200,7 +200,7 @@ export const StoreLinks = [
     {
         name: "System",
         link: "#",
-        icon: "ri:file-damage-fill",
+        icon: "hugeicons:solar-system",
         links: [
             { name: "Add Counter", link: "/stores/create" },
             { name: "List Counter", link: "/stores/list" },
