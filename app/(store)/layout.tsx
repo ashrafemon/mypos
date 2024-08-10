@@ -1,4 +1,6 @@
-import NavItem from "@/components/UI/NavItem";
+import CollapseLink from "@/components/UI/CollapseLink";
+import Scrollbar from "@/components/UI/Scrollbar";
+import { StoreLinks } from "@/lib/constants/Links";
 import Image from "next/image";
 import React from "react";
 
@@ -15,25 +17,22 @@ const layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                     />
                 </div>
 
-                <div className="h-[calc(100%-70px)] overflow-y-auto px-5 py-8">
+                <Scrollbar className="h-[calc(100%-70px)] px-5 py-8">
                     <div className="flex flex-col gap-2">
-                        {Array(30)
-                            .fill(1)
-                            .map((_, i) => (
-                                <NavItem
-                                    key={i}
-                                    collapsed
-                                    hasChild
-                                    links={[
-                                        { name: "List Outlet" },
-                                        { name: "Add Outlet" },
-                                    ]}
-                                />
-                            ))}
+                        {StoreLinks.map((item, i) => (
+                            <CollapseLink
+                                key={i}
+                                name={item.name}
+                                icon={item.icon}
+                                link={item.link}
+                                links={item.links}
+                                // collapsed
+                            />
+                        ))}
                     </div>
-                </div>
+                </Scrollbar>
             </div>
-            <div className="w-[calc(100%-250px)] h-full ml-auto p-2">
+            <div className="w-[calc(100%-250px)] h-full ml-auto p-2 bg-[#FEFEFE]">
                 {children}
             </div>
         </div>
