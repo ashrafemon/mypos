@@ -5,26 +5,12 @@ import { Icon } from "@iconify/react";
 import Link from "next/link";
 import React, { useState } from "react";
 
-type IProps = {
-    name?: string;
-    icon?: string;
-    collapsed?: boolean;
-    link?: string;
-    links?: { name: string; link: string }[];
-};
-
-const Comp = ({
+const Comp: React.FC<CollapseLinkComponentType> = ({
     children,
     hasChild = false,
     className,
     link = "",
     collapseHandler = () => {},
-}: {
-    children: React.ReactNode;
-    hasChild?: boolean;
-    className?: string;
-    link?: string;
-    collapseHandler?: () => void;
 }) => {
     if (hasChild) {
         return (
@@ -41,7 +27,7 @@ const Comp = ({
     );
 };
 
-const CollapseLink: React.FC<IProps> = ({
+const CollapseLink: React.FC<CollapseLinkType> = ({
     name,
     icon = "",
     collapsed = false,

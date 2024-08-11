@@ -1,9 +1,8 @@
 import { cn } from "@/lib/utils/helper";
 import React from "react";
 
-type IProps = {
+type IProps = LayoutType & {
     className?: string;
-    children: React.ReactNode;
 };
 
 const Scrollbar: React.FC<IProps> = ({ className, children }) => {

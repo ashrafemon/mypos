@@ -6,7 +6,7 @@ import { Avatar, Button } from "@nextui-org/react";
 import Image from "next/image";
 import React from "react";
 
-const layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const layout: React.FC<LayoutType> = ({ children }) => {
     return (
         <div className="w-full h-screen">
             <div className="w-[250px] h-full bg-secondary fixed top-0 left-0">

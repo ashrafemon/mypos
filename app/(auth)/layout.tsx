@@ -2,7 +2,7 @@ import Images from "@/lib/constants/Images";
 import Image from "next/image";
 import React from "react";
 
-const layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const layout: React.FC<LayoutType> = ({ children }) => {
     return (
         <div className="bg-[#F5F5F5] w-full h-screen flex flex-col justify-center items-center">
             <div className="grid grid-cols-1 lg:grid-cols-2 rounded-md overflow-hidden">
