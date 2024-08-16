@@ -1,4 +1,5 @@
 import Images from "@/lib/constants/Images";
+import { LayoutType } from "@/lib/types/types";
 import Image from "next/image";
 import React from "react";
 
