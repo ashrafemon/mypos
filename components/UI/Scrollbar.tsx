@@ -1,3 +1,4 @@
+import { LayoutType } from "@/lib/types/types";
 import { cn } from "@/lib/utils/helper";
 import React from "react";
 
