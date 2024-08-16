@@ -1,5 +1,6 @@
 "use client";
 
+import { CollapseLinkComponentType, CollapseLinkType } from "@/lib/types/types";
 import { cn } from "@/lib/utils/helper";
 import { Icon } from "@iconify/react";
 import Link from "next/link";

@@ -32,10 +32,10 @@ export const StoreLinks = [
         link: "#",
         icon: "carbon:customer",
         links: [
-            { name: "Add Customer", link: "/stores/create" },
-            { name: "List Customer", link: "/stores/list" },
-            { name: "Add Customer Group", link: "/stores/create" },
-            { name: "List Customer Group", link: "/stores/list" },
+            { name: "Add Customer", link: "/customers/create" },
+            { name: "List Customer", link: "/customers" },
+            { name: "Add Customer Group", link: "/customers/groups/create" },
+            { name: "List Customer Group", link: "/customers/groups" },
         ],
     },
     {

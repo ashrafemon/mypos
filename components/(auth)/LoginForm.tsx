@@ -3,8 +3,8 @@
 import React from "react";
 import TextField from "../UI/TextField";
 import Link from "next/link";
-import { Button } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
+import { Button } from "@mantine/core";
 
 const LoginForm = () => {
     const router = useRouter();
@@ -21,9 +21,8 @@ const LoginForm = () => {
             </div>
 
             <Button
-                radius="sm"
-                fullWidth
-                className="font-semibold"
+                variant="primary"
+                className="font-bold"
                 onClick={() => router.push("/dashboard")}
             >
                 Login

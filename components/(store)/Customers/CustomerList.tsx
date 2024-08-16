@@ -5,12 +5,13 @@ import AppTable, {
     AppTableCell,
     AppTableRow,
 } from "@/components/UI/Table/AppTable";
+import TextField from "@/components/UI/TextField";
 import { IValueType } from "@/lib/types/types";
 import { Icon } from "@iconify/react";
 import { ActionIcon, Button, Checkbox, Flex, Title } from "@mantine/core";
 import { useState } from "react";
 
-const DashboardTable = () => {
+const CustomerList = () => {
     const [queries, setQueries] = useState({
         page: 1,
         offset: 10,
@@ -25,10 +26,30 @@ const DashboardTable = () => {
             isFound={Array(10).fill(5).length > 0}
             isLoading={false}
             topContent={
-                <Flex justify="space-between">
+                <Flex justify="space-between" gap="xs">
                     <Title component="h5" order={3}>
-                        Master Dashboard
+                        Customer List
                     </Title>
+
+                    <TextField
+                        placeholder="Search Customer"
+                        leftSection={<Icon icon="mingcute:search-line" />}
+                    />
+
+                    <Flex gap="xs" align="center">
+                        <Button
+                            variant="light"
+                            leftSection={<Icon icon="fluent:add-12-filled" />}
+                        >
+                            Add Customer
+                        </Button>
+                        <Button
+                            variant="light"
+                            leftSection={<Icon icon="bx:export" />}
+                        >
+                            Export
+                        </Button>
+                    </Flex>
                 </Flex>
             }
             bottomContent={
@@ -61,13 +82,30 @@ const DashboardTable = () => {
                         <AppTableCell>
                             <Flex gap="xs">
                                 <ActionIcon size="lg" variant="light">
-                                    <Icon icon="mdi:point-of-sale" width={18} />
+                                    <Icon
+                                        icon="carbon:view-filled"
+                                        width={18}
+                                    />
                                 </ActionIcon>
-                                <ActionIcon size="lg" variant="light">
-                                    <Icon icon="mdi:point-of-sale" width={18} />
+                                <ActionIcon
+                                    size="lg"
+                                    variant="light"
+                                    color="orange"
+                                >
+                                    <Icon
+                                        icon="weui:pencil-filled"
+                                        width={18}
+                                    />
                                 </ActionIcon>
-                                <ActionIcon size="lg" variant="light">
-                                    <Icon icon="mdi:point-of-sale" width={18} />
+                                <ActionIcon
+                                    size="lg"
+                                    variant="light"
+                                    color="red"
+                                >
+                                    <Icon
+                                        icon="icon-park-outline:delete"
+                                        width={18}
+                                    />
                                 </ActionIcon>
                             </Flex>
                         </AppTableCell>
@@ -77,4 +115,4 @@ const DashboardTable = () => {
     );
 };
 
-export default DashboardTable;
+export default CustomerList;

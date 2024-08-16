@@ -1,11 +1,15 @@
-import { NextUIProvider } from "@nextui-org/react";
 import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
 import "../styles/globals.css";
+import { colorsTuple, createTheme, MantineProvider } from "@mantine/core";
 
 const outfit = Outfit({
     subsets: ["latin"],
     weight: ["400", "500", "600", "700"],
+});
+
+const theme = createTheme({
+    fontFamily: outfit.style.fontFamily,
 });
 
 export const metadata: Metadata = {
@@ -21,7 +25,9 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={outfit.className}>
-                <NextUIProvider>{children}</NextUIProvider>
+                <MantineProvider theme={theme} withCssVariables>
+                    {children}
+                </MantineProvider>
             </body>
         </html>
     );

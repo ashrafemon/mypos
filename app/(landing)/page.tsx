@@ -1,4 +1,4 @@
-import { Button } from "@nextui-org/react";
+import { Button } from "@mantine/core";
 import Link from "next/link";
 
 const page = () => {
@@ -9,9 +9,7 @@ const page = () => {
             </h3>
             <p className="text-lg">Please wait until development complete...</p>
             <Link href="/login">
-                <Button color="primary" size="lg">
-                    Login to Store
-                </Button>
+                <Button variant="primary">Login to Store</Button>
             </Link>
         </div>
     );
