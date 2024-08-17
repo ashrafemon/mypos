@@ -6,15 +6,33 @@ import AppTable, {
     AppTableRow,
 } from "@/components/UI/Table/AppTable";
 import TextField from "@/components/UI/TextField";
-import { IValueType } from "@/lib/types/types";
+import { AppTableHeaderOptionsType, IValueType } from "@/lib/types/types";
 import { Icon } from "@iconify/react";
-import { ActionIcon, Button, Checkbox, Flex, Title } from "@mantine/core";
-import { useState } from "react";
+import {
+    ActionIcon,
+    Badge,
+    Button,
+    Checkbox,
+    Flex,
+    Title,
+} from "@mantine/core";
+import { useMemo, useState } from "react";
 
 const BrandList = () => {
+    const headers: AppTableHeaderOptionsType[] = useMemo(
+        () => [
+            { key: "checkbox", label: "Checkbox", align: "center" },
+            { key: "name", label: "Name" },
+            { key: "status", label: "Status" },
+            { key: "action", label: "Action", align: "center" },
+        ],
+        []
+    );
+
     const [queries, setQueries] = useState({
         page: 1,
         offset: 10,
+        search: "",
     });
 
     const handleQueryChange = (field: string, value: IValueType) => {
@@ -34,6 +52,10 @@ const BrandList = () => {
                     <TextField
                         placeholder="Search Brand"
                         leftSection={<Icon icon="mingcute:search-line" />}
+                        value={queries.search}
+                        onChange={(e) =>
+                            handleQueryChange("search", e.target.value)
+                        }
                     />
 
                     <Flex gap="xs" align="center">
@@ -62,13 +84,7 @@ const BrandList = () => {
                     }
                 />
             }
-            headers={[
-                { key: "checkbox", label: "Checkbox", align: "center" },
-                { key: "name", label: "Name" },
-                { key: "email", label: "Email" },
-                { key: "phone", label: "Phone" },
-                { key: "action", label: "Action", align: "center" },
-            ]}
+            headers={headers}
             data={Array(10)
                 .fill(1)
                 .map((_, i) => (
@@ -76,9 +92,10 @@ const BrandList = () => {
                         <AppTableCell>
                             <Checkbox />
                         </AppTableCell>
-                        <AppTableCell>Ashraf</AppTableCell>
-                        <AppTableCell>ashraf.emon143@gmail.com</AppTableCell>
-                        <AppTableCell>01982411208</AppTableCell>
+                        <AppTableCell>ACI</AppTableCell>
+                        <AppTableCell>
+                            <Badge color="green">Active</Badge>
+                        </AppTableCell>
                         <AppTableCell>
                             <Flex gap="xs">
                                 <ActionIcon size="lg" variant="light">

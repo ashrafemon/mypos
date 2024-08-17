@@ -6,15 +6,32 @@ import AppTable, {
     AppTableRow,
 } from "@/components/UI/Table/AppTable";
 import TextField from "@/components/UI/TextField";
-import { IValueType } from "@/lib/types/types";
+import { AppTableHeaderOptionsType, IValueType } from "@/lib/types/types";
 import { Icon } from "@iconify/react";
 import { ActionIcon, Button, Checkbox, Flex, Title } from "@mantine/core";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 
 const DamageList = () => {
+    const router = useRouter();
+
+    const headers: AppTableHeaderOptionsType[] = useMemo(
+        () => [
+            { key: "checkbox", label: "Checkbox", align: "center" },
+            { key: "ref_no", label: "Ref. No" },
+            { key: "date", label: "Date" },
+            { key: "loss", label: "Total Loss" },
+            { key: "total_products", label: "Total Product" },
+            { key: "responsible_user", label: "Responsible Person" },
+            { key: "action", label: "Action", align: "center" },
+        ],
+        []
+    );
+
     const [queries, setQueries] = useState({
         page: 1,
         offset: 10,
+        search: "",
     });
 
     const handleQueryChange = (field: string, value: IValueType) => {
@@ -34,12 +51,17 @@ const DamageList = () => {
                     <TextField
                         placeholder="Search Damage"
                         leftSection={<Icon icon="mingcute:search-line" />}
+                        value={queries.search}
+                        onChange={(e) =>
+                            handleQueryChange("search", e.target.value)
+                        }
                     />
 
                     <Flex gap="xs" align="center">
                         <Button
                             variant="light"
                             leftSection={<Icon icon="fluent:add-12-filled" />}
+                            onClick={() => router.push("/damages/create")}
                         >
                             Add Damage
                         </Button>
@@ -62,13 +84,7 @@ const DamageList = () => {
                     }
                 />
             }
-            headers={[
-                { key: "checkbox", label: "Checkbox", align: "center" },
-                { key: "name", label: "Name" },
-                { key: "email", label: "Email" },
-                { key: "phone", label: "Phone" },
-                { key: "action", label: "Action", align: "center" },
-            ]}
+            headers={headers}
             data={Array(10)
                 .fill(1)
                 .map((_, i) => (
@@ -76,9 +92,11 @@ const DamageList = () => {
                         <AppTableCell>
                             <Checkbox />
                         </AppTableCell>
-                        <AppTableCell>Ashraf</AppTableCell>
-                        <AppTableCell>ashraf.emon143@gmail.com</AppTableCell>
-                        <AppTableCell>01982411208</AppTableCell>
+                        <AppTableCell>EX_11254</AppTableCell>
+                        <AppTableCell>20/10/2024</AppTableCell>
+                        <AppTableCell>10000</AppTableCell>
+                        <AppTableCell>10</AppTableCell>
+                        <AppTableCell>Rahim</AppTableCell>
                         <AppTableCell>
                             <Flex gap="xs">
                                 <ActionIcon size="lg" variant="light">
