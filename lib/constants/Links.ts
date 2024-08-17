@@ -14,7 +14,7 @@ export const StoreLinks = [
         icon: "bx:store",
         links: [
             { name: "Add Store", link: "/stores/create" },
-            { name: "List Store", link: "/stores/list" },
+            { name: "List Store", link: "/stores" },
         ],
     },
     {
@@ -23,8 +23,8 @@ export const StoreLinks = [
         icon: "mdi:point-of-sale",
         links: [
             { name: "POS Screen", link: "/stores/create" },
-            { name: "List Sale", link: "/stores/list" },
-            { name: "Return Sale", link: "/stores/list" },
+            { name: "List Sale", link: "/sales" },
+            { name: "Return Sale", link: "/sales/returns" },
         ],
     },
     {
@@ -34,7 +34,6 @@ export const StoreLinks = [
         links: [
             { name: "Add Customer", link: "/customers/create" },
             { name: "List Customer", link: "/customers" },
-            { name: "Add Customer Group", link: "/customers/groups/create" },
             { name: "List Customer Group", link: "/customers/groups" },
         ],
     },
@@ -43,8 +42,8 @@ export const StoreLinks = [
         link: "#",
         icon: "carbon:scis-transparent-supply",
         links: [
-            { name: "Add Supplier", link: "/stores/create" },
-            { name: "List Supplier", link: "/stores/list" },
+            { name: "Add Supplier", link: "/suppliers/create" },
+            { name: "List Supplier", link: "/suppliers" },
         ],
     },
     {
@@ -52,17 +51,14 @@ export const StoreLinks = [
         link: "#",
         icon: "fluent-mdl2:product-variant",
         links: [
-            { name: "Add Item", link: "/stores/create" },
-            { name: "List Item", link: "/stores/list" },
-            { name: "Add Category", link: "/stores/create" },
-            { name: "List Category", link: "/stores/list" },
-            { name: "Add Unit", link: "/stores/create" },
-            { name: "List Unit", link: "/stores/list" },
-            { name: "Add Brand", link: "/stores/create" },
-            { name: "List Brand", link: "/stores/list" },
-            { name: "Add Variant", link: "/stores/create" },
-            { name: "List Variant", link: "/stores/list" },
-            { name: "Print Barcode", link: "/stores/list" },
+            { name: "Add Item", link: "/products/create" },
+            { name: "List Item", link: "/products" },
+            { name: "List Category", link: "/products/categories" },
+            { name: "List Unit", link: "/products/units" },
+            { name: "List Brand", link: "/products/brands" },
+            { name: "Add Variant", link: "/products/variants/create" },
+            { name: "List Variant", link: "/products/variants" },
+            { name: "Print Barcode", link: "/products/barcodes" },
         ],
     },
     {
@@ -76,9 +72,9 @@ export const StoreLinks = [
         link: "#",
         icon: "icon-park-outline:buy",
         links: [
-            { name: "Add Purchase", link: "/stores/create" },
-            { name: "List Purchase", link: "/stores/list" },
-            { name: "Return Purchase", link: "/stores/list" },
+            { name: "Add Purchase", link: "/purchases/create" },
+            { name: "List Purchase", link: "/purchases" },
+            { name: "Return Purchase", link: "/purchases/returns" },
         ],
     },
     {
@@ -86,10 +82,9 @@ export const StoreLinks = [
         link: "#",
         icon: "arcticons:day-to-day-expenses",
         links: [
-            { name: "Add Expense", link: "/stores/create" },
-            { name: "List Expense", link: "/stores/list" },
-            { name: "Add Expense Category", link: "/stores/create" },
-            { name: "List Expense Category", link: "/stores/list" },
+            { name: "Add Expense", link: "/expenses/create" },
+            { name: "List Expense", link: "/expenses" },
+            { name: "List Expense Category", link: "/expenses/categories" },
         ],
     },
     {
@@ -97,13 +92,18 @@ export const StoreLinks = [
         link: "#",
         icon: "material-symbols:account-balance-outline-rounded",
         links: [
-            { name: "Add Account", link: "/stores/create" },
-            { name: "List Account", link: "/stores/list" },
-            { name: "Add Deposit/Withdraw", link: "/stores/create" },
-            { name: "List Deposit/Withdraw", link: "/stores/list" },
-            { name: "Balance Statement", link: "/stores/list" },
-            { name: "Trial Balance", link: "/stores/list" },
-            { name: "Balance Sheet", link: "/stores/list" },
+            { name: "List Account", link: "/accounting/accounts" },
+            {
+                name: "Add Deposit/Withdraw",
+                link: "/accounting/transactions/create",
+            },
+            { name: "List Deposit/Withdraw", link: "/accounting/transactions" },
+            {
+                name: "Balance Statement",
+                link: "/accounting/balance-statements",
+            },
+            { name: "Trial Balance", link: "/accounting/trial-balances" },
+            { name: "Balance Sheet", link: "/accounting/balance-sheets" },
         ],
     },
     {
@@ -111,10 +111,9 @@ export const StoreLinks = [
         link: "#",
         icon: "tdesign:money",
         links: [
-            { name: "Add Income", link: "/stores/create" },
-            { name: "List Income", link: "/stores/list" },
-            { name: "Add Income Category", link: "/stores/create" },
-            { name: "List Income Category", link: "/stores/list" },
+            { name: "Add Income", link: "/incomes/create" },
+            { name: "List Income", link: "/incomes" },
+            { name: "List Income Category", link: "/incomes/categories" },
         ],
     },
     {
@@ -122,8 +121,8 @@ export const StoreLinks = [
         link: "#",
         icon: "hugeicons:estimate-01",
         links: [
-            { name: "Add Quotation", link: "/stores/create" },
-            { name: "List Quotation", link: "/stores/list" },
+            { name: "Add Quotation", link: "/quotations/create" },
+            { name: "List Quotation", link: "/quotations" },
         ],
     },
     {
@@ -131,8 +130,8 @@ export const StoreLinks = [
         link: "#",
         icon: "mingcute:transfer-fill",
         links: [
-            { name: "Add Transfer", link: "/stores/create" },
-            { name: "List Transfer", link: "/stores/list" },
+            { name: "Add Transfer", link: "/transfers/create" },
+            { name: "List Transfer", link: "/transfers" },
         ],
     },
     {
@@ -140,8 +139,8 @@ export const StoreLinks = [
         link: "#",
         icon: "ri:file-damage-fill",
         links: [
-            { name: "Add Damage", link: "/stores/create" },
-            { name: "List Damage", link: "/stores/list" },
+            { name: "Add Damage", link: "/damages/create" },
+            { name: "List Damage", link: "/damages" },
         ],
     },
     {
@@ -149,11 +148,10 @@ export const StoreLinks = [
         link: "#",
         icon: "hugeicons:permanent-job",
         links: [
-            { name: "Add Employee", link: "/stores/create" },
-            { name: "List Employee", link: "/stores/list" },
-            { name: "List Payroll", link: "/stores/list" },
-            { name: "Add Attendance", link: "/stores/list" },
-            { name: "List Attendance", link: "/stores/list" },
+            { name: "Add Employee", link: "/hrm/employees/create" },
+            { name: "List Employee", link: "/hrm/employees" },
+            { name: "List Payroll", link: "/hrm/payrolls" },
+            { name: "List Attendance", link: "/hrm/attendances" },
         ],
     },
     {
@@ -202,14 +200,10 @@ export const StoreLinks = [
         link: "#",
         icon: "hugeicons:solar-system",
         links: [
-            { name: "Add Counter", link: "/stores/create" },
-            { name: "List Counter", link: "/stores/list" },
-            { name: "Add Tax/Vat", link: "/stores/list" },
-            { name: "List Tax/Vat", link: "/stores/list" },
-            { name: "Add Currency", link: "/stores/list" },
-            { name: "List Currency", link: "/stores/list" },
-            { name: "Add Payment Gateway", link: "/stores/list" },
-            { name: "List Payment Gateway", link: "/stores/list" },
+            { name: "List Counter", link: "/system/counters" },
+            { name: "List Tax/Vat", link: "/system/taxes" },
+            { name: "List Currency", link: "/system/currencies" },
+            { name: "List Payment Gateway", link: "/system/payment-gateways" },
         ],
     },
 ];

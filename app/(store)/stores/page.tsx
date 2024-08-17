@@ -1,7 +1,7 @@
-import React from "react";
+import StoreList from "@/components/(store)/Stores/StoreList";
 
 const page = () => {
-    return <div>Stores</div>;
+    return <StoreList />;
 };
 
 export default page;
