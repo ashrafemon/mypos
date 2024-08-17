@@ -14,26 +14,39 @@ const StoreForm = () => {
         <form>
             <Grid>
                 <Grid.Col span={{ base: 12, md: 6 }}>
-                    <TextField label="Code" withAsterisk />
+                    <TextField label="Code" placeholder="000000" withAsterisk />
                 </Grid.Col>
                 <Grid.Col span={{ base: 12, md: 6 }}>
-                    <TextField label="Name" withAsterisk />
+                    <TextField
+                        label="Name"
+                        placeholder="Ex. My Store"
+                        withAsterisk
+                    />
                 </Grid.Col>
                 <Grid.Col span={{ base: 12, md: 6 }}>
-                    <TextField label="Phone" withAsterisk />
+                    <TextField
+                        label="Phone"
+                        placeholder="Ex. 010000000"
+                        withAsterisk
+                    />
                 </Grid.Col>
                 <Grid.Col span={{ base: 12, md: 6 }}>
-                    <TextField label="Email" />
+                    <TextField label="Email" placeholder="Ex. john@doe.com" />
                 </Grid.Col>
                 <Grid.Col span={{ base: 12, md: 6 }}>
                     <SelectBox
                         label="Status"
+                        placeholder="Ex. Active"
                         data={ActivityStatusOptions}
                         withAsterisk
                     />
                 </Grid.Col>
                 <Grid.Col span={{ base: 12, md: 12 }}>
-                    <TextEditor label="Address" minRows={2} />
+                    <TextEditor
+                        label="Address"
+                        placeholder="Ex. Landmark"
+                        minRows={2}
+                    />
                 </Grid.Col>
 
                 <Grid.Col span={{ base: 12, md: 12 }}>

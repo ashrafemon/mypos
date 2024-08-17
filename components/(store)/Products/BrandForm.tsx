@@ -6,14 +6,14 @@ import TextField from "@/components/UI/TextField";
 import { ActivityStatusOptions } from "@/lib/constants/Options";
 import { Button, Grid, Group } from "@mantine/core";
 
-const UnitForm = () => {
+const BrandForm = () => {
     return (
         <form>
             <Grid>
                 <Grid.Col span={{ base: 12, md: 6 }}>
                     <TextField
                         label="Name"
-                        placeholder="Ex. Piece"
+                        placeholder="Ex. John"
                         withAsterisk
                     />
                 </Grid.Col>
@@ -28,7 +28,7 @@ const UnitForm = () => {
                 <Grid.Col span={{ base: 12, md: 12 }}>
                     <TextEditor
                         label="Description"
-                        placeholder="Ex. Something about unit"
+                        placeholder="Ex. Something about category"
                         minRows={2}
                     />
                 </Grid.Col>
@@ -43,4 +43,4 @@ const UnitForm = () => {
     );
 };
 
-export default UnitForm;
+export default BrandForm;

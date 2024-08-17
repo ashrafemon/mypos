@@ -130,7 +130,9 @@ const StoreLayout: React.FC<LayoutType> = ({ children }) => {
                     </Flex>
                 </Flex>
 
-                <Box p="md">{children}</Box>
+                <Box p="md" pb="xl" mb="xl">
+                    {children}
+                </Box>
             </AppShell.Main>
             <AppShell.Footer className="py-2">
                 <Center>

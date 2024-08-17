@@ -15,11 +15,16 @@ const VariantForm = () => {
         <form>
             <Grid>
                 <Grid.Col span={12}>
-                    <TextField label="Name" withAsterisk />
+                    <TextField
+                        label="Name"
+                        placeholder="Ex. Liter"
+                        withAsterisk
+                    />
                 </Grid.Col>
                 <Grid.Col span={12}>
                     <TextField
                         label="Property"
+                        placeholder="Ex. 2, 5"
                         withAsterisk
                         rightSection={
                             <ActionIcon onClick={() => console.log("Hello")}>
@@ -32,6 +37,7 @@ const VariantForm = () => {
                 <Grid.Col span={12}>
                     <SelectBox
                         label="Status"
+                        placeholder="Ex. Active"
                         data={ActivityStatusOptions}
                         withAsterisk
                     />

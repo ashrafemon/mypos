@@ -14,9 +14,12 @@ import {
     Button,
     Checkbox,
     Flex,
+    Modal,
     Title,
 } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { useMemo, useState } from "react";
+import UnitForm from "./UnitForm";
 
 const UnitList = () => {
     const headers: AppTableHeaderOptionsType[] = useMemo(
@@ -39,96 +42,116 @@ const UnitList = () => {
         setQueries((prevState) => ({ ...prevState, [field]: value }));
     };
 
-    return (
-        <AppTable
-            isFound={Array(10).fill(5).length > 0}
-            isLoading={false}
-            topContent={
-                <Flex justify="space-between" gap="xs">
-                    <Title component="h5" order={3}>
-                        Unit List
-                    </Title>
+    const [opened, { open, close }] = useDisclosure(false);
 
-                    <TextField
-                        placeholder="Search Unit"
-                        leftSection={<Icon icon="mingcute:search-line" />}
-                        value={queries.search}
-                        onChange={(e) =>
-                            handleQueryChange("search", e.target.value)
+    return (
+        <>
+            <Modal
+                opened={opened}
+                onClose={close}
+                title={
+                    <Title component="h5" order={4}>
+                        Add Unit
+                    </Title>
+                }
+                centered
+            >
+                <UnitForm />
+            </Modal>
+
+            <AppTable
+                isFound={Array(10).fill(5).length > 0}
+                isLoading={false}
+                topContent={
+                    <Flex justify="space-between" gap="xs">
+                        <Title component="h5" order={3}>
+                            Unit List
+                        </Title>
+
+                        <TextField
+                            placeholder="Search Unit"
+                            leftSection={<Icon icon="mingcute:search-line" />}
+                            value={queries.search}
+                            onChange={(e) =>
+                                handleQueryChange("search", e.target.value)
+                            }
+                        />
+
+                        <Flex gap="xs" align="center">
+                            <Button
+                                variant="light"
+                                leftSection={
+                                    <Icon icon="fluent:add-12-filled" />
+                                }
+                                onClick={open}
+                            >
+                                Add Unit
+                            </Button>
+                            <Button
+                                variant="light"
+                                leftSection={<Icon icon="bx:export" />}
+                            >
+                                Export
+                            </Button>
+                        </Flex>
+                    </Flex>
+                }
+                bottomContent={
+                    <AppPaginator
+                        page={queries.page}
+                        offset={queries.offset}
+                        total={10}
+                        actionHandler={(field, value) =>
+                            handleQueryChange(field, value)
                         }
                     />
-
-                    <Flex gap="xs" align="center">
-                        <Button
-                            variant="light"
-                            leftSection={<Icon icon="fluent:add-12-filled" />}
-                        >
-                            Add Unit
-                        </Button>
-                        <Button
-                            variant="light"
-                            leftSection={<Icon icon="bx:export" />}
-                        >
-                            Export
-                        </Button>
-                    </Flex>
-                </Flex>
-            }
-            bottomContent={
-                <AppPaginator
-                    page={queries.page}
-                    offset={queries.offset}
-                    total={10}
-                    actionHandler={(field, value) =>
-                        handleQueryChange(field, value)
-                    }
-                />
-            }
-            headers={headers}
-            data={Array(10)
-                .fill(1)
-                .map((_, i) => (
-                    <AppTableRow key={i}>
-                        <AppTableCell>
-                            <Checkbox />
-                        </AppTableCell>
-                        <AppTableCell>Piece</AppTableCell>
-                        <AppTableCell>
-                            <Badge color="green">Active</Badge>
-                        </AppTableCell>
-                        <AppTableCell>
-                            <Flex gap="xs">
-                                <ActionIcon size="lg" variant="light">
-                                    <Icon
-                                        icon="carbon:view-filled"
-                                        width={18}
-                                    />
-                                </ActionIcon>
-                                <ActionIcon
-                                    size="lg"
-                                    variant="light"
-                                    color="orange"
-                                >
-                                    <Icon
-                                        icon="weui:pencil-filled"
-                                        width={18}
-                                    />
-                                </ActionIcon>
-                                <ActionIcon
-                                    size="lg"
-                                    variant="light"
-                                    color="red"
-                                >
-                                    <Icon
-                                        icon="icon-park-outline:delete"
-                                        width={18}
-                                    />
-                                </ActionIcon>
-                            </Flex>
-                        </AppTableCell>
-                    </AppTableRow>
-                ))}
-        />
+                }
+                headers={headers}
+                data={Array(10)
+                    .fill(1)
+                    .map((_, i) => (
+                        <AppTableRow key={i}>
+                            <AppTableCell>
+                                <Checkbox />
+                            </AppTableCell>
+                            <AppTableCell>Piece</AppTableCell>
+                            <AppTableCell>
+                                <Badge color="green">Active</Badge>
+                            </AppTableCell>
+                            <AppTableCell>
+                                <Flex gap="xs">
+                                    <ActionIcon size="lg" variant="light">
+                                        <Icon
+                                            icon="carbon:view-filled"
+                                            width={18}
+                                        />
+                                    </ActionIcon>
+                                    <ActionIcon
+                                        size="lg"
+                                        variant="light"
+                                        color="orange"
+                                    >
+                                        <Icon
+                                            icon="weui:pencil-filled"
+                                            width={18}
+                                        />
+                                    </ActionIcon>
+                                    <ActionIcon
+                                        size="lg"
+                                        variant="light"
+                                        color="red"
+                                    >
+                                        <Icon
+                                            icon="icon-park-outline:delete"
+                                            width={18}
+                                        />
+                                    </ActionIcon>
+                                </Flex>
+                            </AppTableCell>
+                        </AppTableRow>
+                    ))}
+            />
+        </>
     );
 };
 

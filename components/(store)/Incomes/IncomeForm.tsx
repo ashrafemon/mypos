@@ -15,14 +15,23 @@ const IncomeForm = () => {
         <form>
             <Grid>
                 <Grid.Col span={{ base: 12, md: 6 }}>
-                    <DateField label="Date" withAsterisk />
+                    <DateField
+                        label="Date"
+                        placeholder="Ex. 25/01/1999"
+                        withAsterisk
+                    />
                 </Grid.Col>
                 <Grid.Col span={{ base: 12, md: 6 }}>
-                    <TextField label="Title" withAsterisk />
+                    <TextField
+                        label="Title"
+                        placeholder="Ex. Loan from Bank"
+                        withAsterisk
+                    />
                 </Grid.Col>
                 <Grid.Col span={{ base: 12, md: 6 }}>
                     <SelectBox
                         label="Category"
+                        placeholder="Ex. Loan"
                         data={[]}
                         withAsterisk
                         leftSection={
@@ -33,16 +42,33 @@ const IncomeForm = () => {
                     />
                 </Grid.Col>
                 <Grid.Col span={{ base: 12, md: 6 }}>
-                    <TextField label="Amount" />
+                    <TextField
+                        label="Amount"
+                        placeholder="Ex. 1000"
+                        withAsterisk
+                    />
                 </Grid.Col>
                 <Grid.Col span={{ base: 12, md: 6 }}>
-                    <TextField label="Responsible Person" withAsterisk />
+                    <TextField
+                        label="Responsible Person"
+                        placeholder="Ex. John"
+                        withAsterisk
+                    />
                 </Grid.Col>
                 <Grid.Col span={{ base: 12, md: 6 }}>
-                    <SelectBox label="Account" data={[]} withAsterisk />
+                    <SelectBox
+                        label="Account"
+                        placeholder="Ex. Bank"
+                        data={[]}
+                        withAsterisk
+                    />
                 </Grid.Col>
                 <Grid.Col span={{ base: 12, md: 12 }}>
-                    <TextEditor label="Description" minRows={2} />
+                    <TextEditor
+                        label="Description"
+                        placeholder="Ex. Something about income"
+                        minRows={2}
+                    />
                 </Grid.Col>
                 <Grid.Col span={{ base: 12, md: 12 }}>
                     <Group gap="xs">

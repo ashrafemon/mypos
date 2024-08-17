@@ -19,20 +19,32 @@ const CustomerForm = () => {
         <form>
             <Grid>
                 <Grid.Col span={{ base: 12, md: 6 }}>
-                    <TextField label="Name" withAsterisk />
+                    <TextField
+                        label="Name"
+                        placeholder="Ex. John"
+                        withAsterisk
+                    />
                 </Grid.Col>
                 <Grid.Col span={{ base: 12, md: 6 }}>
-                    <TextField label="Phone" withAsterisk />
+                    <TextField
+                        label="Phone"
+                        placeholder="Ex. 010000000"
+                        withAsterisk
+                    />
                 </Grid.Col>
                 <Grid.Col span={{ base: 12, md: 6 }}>
-                    <TextField label="Email" />
+                    <TextField label="Email" placeholder="Ex. john@doe.com" />
                 </Grid.Col>
                 <Grid.Col span={{ base: 12, md: 6 }}>
-                    <DateField label="Date of Birth" />
+                    <DateField
+                        label="Date of Birth"
+                        placeholder="Ex. 25/01/1999"
+                    />
                 </Grid.Col>
                 <Grid.Col span={{ base: 12, md: 6 }}>
                     <SelectBox
                         label="Type"
+                        placeholder="Ex. Retail"
                         data={CustomerTypeOptions}
                         withAsterisk
                     />
@@ -40,6 +52,7 @@ const CustomerForm = () => {
                 <Grid.Col span={{ base: 12, md: 6 }}>
                     <SelectBox
                         label="Group"
+                        placeholder="Ex. Uncategory"
                         data={[]}
                         withAsterisk
                         leftSection={
@@ -50,17 +63,26 @@ const CustomerForm = () => {
                     />
                 </Grid.Col>
                 <Grid.Col span={{ base: 12, md: 6 }}>
-                    <TextField label="Default Discount" />
+                    <TextField
+                        label="Default Discount"
+                        placeholder="Ex. 10"
+                        rightSection="%"
+                    />
                 </Grid.Col>
                 <Grid.Col span={{ base: 12, md: 6 }}>
                     <SelectBox
                         label="Status"
+                        placeholder="Ex. Active"
                         data={ActivityStatusOptions}
                         withAsterisk
                     />
                 </Grid.Col>
                 <Grid.Col span={{ base: 12, md: 12 }}>
-                    <TextEditor label="Address" minRows={2} />
+                    <TextEditor
+                        label="Address"
+                        placeholder="Ex. Landmark"
+                        minRows={2}
+                    />
                 </Grid.Col>
 
                 <Grid.Col span={{ base: 12, md: 12 }}>

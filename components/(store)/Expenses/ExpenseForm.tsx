@@ -15,14 +15,23 @@ const ExpenseForm = () => {
         <form>
             <Grid>
                 <Grid.Col span={{ base: 12, md: 6 }}>
-                    <DateField label="Date" withAsterisk />
+                    <DateField
+                        label="Date"
+                        placeholder="Ex. 25/01/1999"
+                        withAsterisk
+                    />
                 </Grid.Col>
                 <Grid.Col span={{ base: 12, md: 6 }}>
-                    <TextField label="Title" withAsterisk />
+                    <TextField
+                        label="Title"
+                        placeholder="Ex. Electricity Bill"
+                        withAsterisk
+                    />
                 </Grid.Col>
                 <Grid.Col span={{ base: 12, md: 6 }}>
                     <SelectBox
                         label="Category"
+                        placeholder="Ex. Maintenance"
                         data={[]}
                         withAsterisk
                         leftSection={
@@ -33,10 +42,18 @@ const ExpenseForm = () => {
                     />
                 </Grid.Col>
                 <Grid.Col span={{ base: 12, md: 6 }}>
-                    <TextField label="Amount" />
+                    <TextField
+                        label="Amount"
+                        placeholder="Ex. 100"
+                        withAsterisk
+                    />
                 </Grid.Col>
                 <Grid.Col span={{ base: 12, md: 12 }}>
-                    <TextEditor label="Description" minRows={2} />
+                    <TextEditor
+                        label="Description"
+                        placeholder="Ex. Something about expense"
+                        minRows={2}
+                    />
                 </Grid.Col>
                 <Grid.Col span={{ base: 12, md: 12 }}>
                     <Group gap="xs">

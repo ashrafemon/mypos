@@ -14,9 +14,12 @@ import {
     Button,
     Checkbox,
     Flex,
+    Modal,
     Title,
 } from "@mantine/core";
 import { useState } from "react";
+import CategoryForm from "./CategoryForm";
+import { useDisclosure } from "@mantine/hooks";
 
 const CategoryList = () => {
     const [queries, setQueries] = useState({
@@ -28,97 +31,117 @@ const CategoryList = () => {
         setQueries((prevState) => ({ ...prevState, [field]: value }));
     };
 
+    const [opened, { open, close }] = useDisclosure(false);
+
     return (
-        <AppTable
-            isFound={Array(10).fill(5).length > 0}
-            isLoading={false}
-            topContent={
-                <Flex justify="space-between" gap="xs">
-                    <Title component="h5" order={3}>
-                        Expense Category List
+        <>
+            <Modal
+                opened={opened}
+                onClose={close}
+                title={
+                    <Title component="h5" order={4}>
+                        Add Category
                     </Title>
+                }
+                centered
+            >
+                <CategoryForm />
+            </Modal>
 
-                    <TextField
-                        placeholder="Search Expense Category"
-                        leftSection={<Icon icon="mingcute:search-line" />}
-                    />
+            <AppTable
+                isFound={Array(10).fill(5).length > 0}
+                isLoading={false}
+                topContent={
+                    <Flex justify="space-between" gap="xs">
+                        <Title component="h5" order={3}>
+                            Expense Category List
+                        </Title>
 
-                    <Flex gap="xs" align="center">
-                        <Button
-                            variant="light"
-                            leftSection={<Icon icon="fluent:add-12-filled" />}
-                        >
-                            Add Expense Category
-                        </Button>
-                        <Button
-                            variant="light"
-                            leftSection={<Icon icon="bx:export" />}
-                        >
-                            Export
-                        </Button>
+                        <TextField
+                            placeholder="Search Expense Category"
+                            leftSection={<Icon icon="mingcute:search-line" />}
+                        />
+
+                        <Flex gap="xs" align="center">
+                            <Button
+                                variant="light"
+                                leftSection={
+                                    <Icon icon="fluent:add-12-filled" />
+                                }
+                                onClick={open}
+                            >
+                                Add Expense Category
+                            </Button>
+                            <Button
+                                variant="light"
+                                leftSection={<Icon icon="bx:export" />}
+                            >
+                                Export
+                            </Button>
+                        </Flex>
                     </Flex>
-                </Flex>
-            }
-            bottomContent={
-                <AppPaginator
-                    page={queries.page}
-                    offset={queries.offset}
-                    total={10}
-                    actionHandler={(field, value) =>
-                        handleQueryChange(field, value)
-                    }
-                />
-            }
-            headers={[
-                { key: "checkbox", label: "Checkbox", align: "center" },
-                { key: "name", label: "Name" },
-                { key: "status", label: "Status" },
-                { key: "action", label: "Action", align: "center" },
-            ]}
-            data={Array(10)
-                .fill(1)
-                .map((_, i) => (
-                    <AppTableRow key={i}>
-                        <AppTableCell>
-                            <Checkbox />
-                        </AppTableCell>
-                        <AppTableCell>VIP</AppTableCell>
-                        <AppTableCell>
-                            <Badge color="green">Active</Badge>
-                        </AppTableCell>
-                        <AppTableCell>
-                            <Flex gap="xs">
-                                <ActionIcon size="lg" variant="light">
-                                    <Icon
-                                        icon="carbon:view-filled"
-                                        width={18}
-                                    />
-                                </ActionIcon>
-                                <ActionIcon
-                                    size="lg"
-                                    variant="light"
-                                    color="orange"
-                                >
-                                    <Icon
-                                        icon="weui:pencil-filled"
-                                        width={18}
-                                    />
-                                </ActionIcon>
-                                <ActionIcon
-                                    size="lg"
-                                    variant="light"
-                                    color="red"
-                                >
-                                    <Icon
-                                        icon="icon-park-outline:delete"
-                                        width={18}
-                                    />
-                                </ActionIcon>
-                            </Flex>
-                        </AppTableCell>
-                    </AppTableRow>
-                ))}
-        />
+                }
+                bottomContent={
+                    <AppPaginator
+                        page={queries.page}
+                        offset={queries.offset}
+                        total={10}
+                        actionHandler={(field, value) =>
+                            handleQueryChange(field, value)
+                        }
+                    />
+                }
+                headers={[
+                    { key: "checkbox", label: "Checkbox", align: "center" },
+                    { key: "name", label: "Name" },
+                    { key: "status", label: "Status" },
+                    { key: "action", label: "Action", align: "center" },
+                ]}
+                data={Array(10)
+                    .fill(1)
+                    .map((_, i) => (
+                        <AppTableRow key={i}>
+                            <AppTableCell>
+                                <Checkbox />
+                            </AppTableCell>
+                            <AppTableCell>VIP</AppTableCell>
+                            <AppTableCell>
+                                <Badge color="green">Active</Badge>
+                            </AppTableCell>
+                            <AppTableCell>
+                                <Flex gap="xs">
+                                    <ActionIcon size="lg" variant="light">
+                                        <Icon
+                                            icon="carbon:view-filled"
+                                            width={18}
+                                        />
+                                    </ActionIcon>
+                                    <ActionIcon
+                                        size="lg"
+                                        variant="light"
+                                        color="orange"
+                                    >
+                                        <Icon
+                                            icon="weui:pencil-filled"
+                                            width={18}
+                                        />
+                                    </ActionIcon>
+                                    <ActionIcon
+                                        size="lg"
+                                        variant="light"
+                                        color="red"
+                                    >
+                                        <Icon
+                                            icon="icon-park-outline:delete"
+                                            width={18}
+                                        />
+                                    </ActionIcon>
+                                </Flex>
+                            </AppTableCell>
+                        </AppTableRow>
+                    ))}
+            />
+        </>
     );
 };
 

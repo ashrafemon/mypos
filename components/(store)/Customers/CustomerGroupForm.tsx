@@ -11,23 +11,31 @@ const CustomerGroupForm = () => {
         <form>
             <Grid>
                 <Grid.Col span={{ base: 12, md: 6 }}>
-                    <TextField label="Name" withAsterisk />
+                    <TextField
+                        label="Name"
+                        placeholder="Ex. John"
+                        withAsterisk
+                    />
                 </Grid.Col>
                 <Grid.Col span={{ base: 12, md: 6 }}>
                     <SelectBox
                         label="Status"
+                        placeholder="Ex. Active"
                         data={ActivityStatusOptions}
                         withAsterisk
                     />
                 </Grid.Col>
                 <Grid.Col span={{ base: 12, md: 12 }}>
-                    <TextEditor label="Description" minRows={2} />
+                    <TextEditor
+                        label="Description"
+                        placeholder="Ex. Something about group"
+                        minRows={2}
+                    />
                 </Grid.Col>
                 <Grid.Col span={{ base: 12, md: 12 }}>
                     <Group gap="xs">
                         <Button>Save</Button>
                         <Button>Save & Add More</Button>
-                        <Button color="red">Close</Button>
                     </Group>
                 </Grid.Col>
             </Grid>
