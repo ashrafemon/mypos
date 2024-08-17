@@ -12,6 +12,7 @@ export type CollapseLinkType = {
     collapsed?: boolean;
     link?: string;
     links?: { name: string; link: string }[];
+    clickFunc?: () => void;
 };
 
 export type CollapseLinkComponentType = {

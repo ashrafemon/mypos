@@ -1,31 +1,15 @@
 "use client";
 
-import { CollapseLinkComponentType, CollapseLinkType } from "@/lib/types/types";
+import { CollapseLinkType } from "@/lib/types/types";
 import { cn } from "@/lib/utils/helper";
 import { Icon } from "@iconify/react";
+import { NavLink } from "@mantine/core";
 import Link from "next/link";
 import React, { useState } from "react";
 
-const Comp: React.FC<CollapseLinkComponentType> = ({
-    children,
-    hasChild = false,
-    className,
-    link = "",
-    collapseHandler = () => {},
-}) => {
-    if (hasChild) {
-        return (
-            <div className={className} onClick={collapseHandler}>
-                {children}
-            </div>
-        );
-    }
-
-    return (
-        <Link href={link} className={className}>
-            {children}
-        </Link>
-    );
+const classes = {
+    before: "before:absolute before:content-[''] before:w-3 before:h-1 before:bg-[#4F5875] before:top-3 before:left-6 before:-z-10",
+    after: "after:absolute after:content-[''] after:w-3 after:h-1 after:bg-[#4F5875] after:top-3 after:right-6 after:-z-10",
 };
 
 const CollapseLink: React.FC<CollapseLinkType> = ({
@@ -34,75 +18,73 @@ const CollapseLink: React.FC<CollapseLinkType> = ({
     collapsed = false,
     link = "",
     links = [],
+    clickFunc = () => {},
 }) => {
     const [isCollapse, setIsCollapse] = useState(collapsed);
 
-    return (
-        <div className="relative">
-            <Comp
-                hasChild={links.length > 0}
-                className={cn(
-                    "flex gap-2 items-center relative cursor-pointer",
-                    {
-                        "before:absolute before:content-[''] before:w-3 before:h-1 before:bg-[#4F5875] before:top-3 before:left-6 before:-z-10":
-                            isCollapse,
-                    }
-                )}
-                link={link}
-                collapseHandler={() => setIsCollapse(!isCollapse)}
-            >
-                <div
-                    className={cn("p-[5px] rounded-full", {
+    if (links.length > 0) {
+        return (
+            <NavLink
+                href={link}
+                label={name}
+                leftSection={<Icon icon={icon} />}
+                childrenOffset={20}
+                defaultOpened={isCollapse}
+                onChange={(value) => setIsCollapse(value)}
+                classNames={{
+                    root: cn(
+                        "text-white font-medium hover:bg-transparent p-0 relative",
+                        { [classes.before]: isCollapse },
+                        { [classes.after]: isCollapse }
+                    ),
+                    body: cn("px-2 leading-relaxed rounded-full", {
                         "bg-[#4F5875]": isCollapse,
-                    })}
-                >
-                    <Icon icon={icon} width={17} className="text-white" />
-                </div>
+                    }),
+                    section: cn("rounded-full p-1", {
+                        "bg-[#4F5875]": isCollapse,
+                    }),
+                }}
+            >
+                {links.map((item, i) => (
+                    <NavLink
+                        key={i}
+                        href={item.link}
+                        label={item.name}
+                        component={Link}
+                        classNames={{
+                            root: "text-white font-medium p-0 hover:bg-transparent data-[active='true']:bg-[#4F5875]",
+                            body: "leading-relaxed px-2 rounded-full hover:bg-[#4F5875]",
+                        }}
+                        leftSection={<Icon icon="bi:arrow-bar-right" />}
+                        onClick={clickFunc}
+                    />
+                ))}
+            </NavLink>
+        );
+    }
 
-                <div
-                    className={cn(
-                        "px-3 py-[5px] rounded-full w-full relative",
-                        {
-                            "bg-[#4F5875]": isCollapse,
-                        }
-                    )}
-                >
-                    <p className="text-sm text-white font-semibold">{name}</p>
-
-                    {links.length > 0 && (
-                        <div className="absolute top-1/2 -translate-y-1/2 right-2">
-                            <Icon
-                                icon={
-                                    isCollapse
-                                        ? "bx:chevron-down"
-                                        : "bx:chevron-right"
-                                }
-                                width={20}
-                                className="text-white"
-                            />
-                        </div>
-                    )}
-                </div>
-            </Comp>
-
-            {isCollapse && links.length > 0 && (
-                <div className="flex flex-col gap-3 pl-12 my-3">
-                    {links.map((item, i) => (
-                        <div
-                            key={i}
-                            className="relative before:content-[''] before:w-[5px] before:h-[2px] before:bg-white before:top-2 before:-left-4 before:absolute"
-                        >
-                            <Link
-                                href={item.link}
-                                className="text-white text-sm block"
-                            >
-                                {item.name}
-                            </Link>
-                        </div>
-                    ))}
-                </div>
-            )}
-        </div>
+    return (
+        <NavLink
+            href={link}
+            label={name}
+            leftSection={<Icon icon={icon} />}
+            component={Link}
+            defaultOpened={isCollapse}
+            onChange={(value) => setIsCollapse(value)}
+            classNames={{
+                root: cn(
+                    "text-white font-medium hover:bg-transparent p-0 relative",
+                    { [classes.before]: isCollapse }
+                ),
+                body: cn("px-2 leading-relaxed rounded-full", {
+                    "bg-[#4F5875]": isCollapse,
+                }),
+                section: cn("rounded-full p-1", {
+                    "bg-[#4F5875]": isCollapse,
+                }),
+            }}
+            onClick={clickFunc}
+        />
     );
 };
 
