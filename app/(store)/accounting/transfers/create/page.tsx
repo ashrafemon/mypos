@@ -1,16 +1,16 @@
-import BarcodeForm from "@/components/(store)/Products/BarcodeForm";
+import TransferForm from "@/components/(store)/Accounting/TransferForm";
 import { Card, CardSection, Title } from "@mantine/core";
 
 const page = () => {
     return (
-        <Card shadow="lg" withBorder radius="md" maw={900} mx="auto">
+        <Card shadow="lg" withBorder radius="md" maw={800} mx="auto">
             <CardSection p="md">
                 <Title component="h5" order={3}>
-                    Print Barcode
+                    Add Transfer
                 </Title>
             </CardSection>
 
-            <BarcodeForm />
+            <TransferForm />
         </Card>
     );
 };

@@ -40,4 +40,6 @@ export type AppTableType = TableProps & {
 
     isFound?: boolean;
     isLoading?: boolean;
+
+    contentHeight?: number | string;
 };

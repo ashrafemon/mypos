@@ -8,27 +8,19 @@ import AppTable, {
 import TextField from "@/components/UI/TextField";
 import { AppTableHeaderOptionsType, IValueType } from "@/lib/types/types";
 import { Icon } from "@iconify/react";
-import {
-    ActionIcon,
-    Badge,
-    Button,
-    Checkbox,
-    Flex,
-    Title,
-} from "@mantine/core";
-import { useRouter } from "next/navigation";
+import { ActionIcon, Button, Checkbox, Flex, Title } from "@mantine/core";
 import { useMemo, useState } from "react";
 
-const ProductList = () => {
-    const router = useRouter();
+const StockList = () => {
     const headers: AppTableHeaderOptionsType[] = useMemo(
         () => [
             { key: "checkbox", label: "Checkbox", align: "center" },
             { key: "name", label: "Name (Code)" },
-            { key: "type", label: "Type" },
-            { key: "category", label: "Category" },
-            { key: "price", label: "Price" },
-            { key: "status", label: "Status" },
+            { key: "current_stock", label: "Current Stock" },
+            { key: "bought_quantity", label: "Bought Quantity" },
+            { key: "sold_quantity", label: "Sold Quantity" },
+            { key: "damaged_quantity", label: "Damaged Quantity" },
+            { key: "returned_quantity", label: "Returned Quantity" },
             { key: "action", label: "Action", align: "center" },
         ],
         []
@@ -50,7 +42,7 @@ const ProductList = () => {
             topContent={
                 <Flex justify="space-between" gap="xs">
                     <Title component="h5" order={3}>
-                        Product List
+                        Stock List
                     </Title>
 
                     <TextField
@@ -63,13 +55,6 @@ const ProductList = () => {
                     />
 
                     <Flex gap="xs" align="center">
-                        <Button
-                            variant="light"
-                            leftSection={<Icon icon="fluent:add-12-filled" />}
-                            onClick={() => router.push("/products/create")}
-                        >
-                            Add Product
-                        </Button>
                         <Button
                             variant="light"
                             leftSection={<Icon icon="bx:export" />}
@@ -98,37 +83,16 @@ const ProductList = () => {
                             <Checkbox />
                         </AppTableCell>
                         <AppTableCell>Break Oil Change (484)</AppTableCell>
-                        <AppTableCell>Serial Product</AppTableCell>
-                        <AppTableCell>Computer</AppTableCell>
-                        <AppTableCell>100000</AppTableCell>
-                        <AppTableCell>
-                            <Badge color="green">Active</Badge>
-                        </AppTableCell>
+                        <AppTableCell>10</AppTableCell>
+                        <AppTableCell>20</AppTableCell>
+                        <AppTableCell>10</AppTableCell>
+                        <AppTableCell>00</AppTableCell>
+                        <AppTableCell>00</AppTableCell>
                         <AppTableCell>
                             <Flex gap="xs">
                                 <ActionIcon size="lg" variant="light">
                                     <Icon
                                         icon="carbon:view-filled"
-                                        width={18}
-                                    />
-                                </ActionIcon>
-                                <ActionIcon
-                                    size="lg"
-                                    variant="light"
-                                    color="orange"
-                                >
-                                    <Icon
-                                        icon="weui:pencil-filled"
-                                        width={18}
-                                    />
-                                </ActionIcon>
-                                <ActionIcon
-                                    size="lg"
-                                    variant="light"
-                                    color="red"
-                                >
-                                    <Icon
-                                        icon="icon-park-outline:delete"
                                         width={18}
                                     />
                                 </ActionIcon>
@@ -140,4 +104,4 @@ const ProductList = () => {
     );
 };
 
-export default ProductList;
+export default StockList;

@@ -1,7 +1,7 @@
-import DashboardTable from "@/components/(store)/Dashboard/DashboardTable";
+import MasterDashboard from "@/components/(store)/Dashboard/MasterDashboard";
 
 const page = () => {
-    return <DashboardTable />;
+    return <MasterDashboard />;
 };
 
 export default page;

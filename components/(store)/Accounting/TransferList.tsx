@@ -19,20 +19,19 @@ import {
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
-const ProductList = () => {
+const TransferList = () => {
     const router = useRouter();
     const headers: AppTableHeaderOptionsType[] = useMemo(
         () => [
             { key: "checkbox", label: "Checkbox", align: "center" },
-            { key: "name", label: "Name (Code)" },
-            { key: "type", label: "Type" },
-            { key: "category", label: "Category" },
-            { key: "price", label: "Price" },
-            { key: "status", label: "Status" },
+            { key: "ref_no", label: "Ref. No" },
+            { key: "date", label: "Date" },
+            { key: "amount", label: "Amount" },
             { key: "action", label: "Action", align: "center" },
         ],
         []
     );
+
     const [queries, setQueries] = useState({
         page: 1,
         offset: 10,
@@ -50,11 +49,11 @@ const ProductList = () => {
             topContent={
                 <Flex justify="space-between" gap="xs">
                     <Title component="h5" order={3}>
-                        Product List
+                        Transfer List
                     </Title>
 
                     <TextField
-                        placeholder="Search Product"
+                        placeholder="Search Transfer"
                         leftSection={<Icon icon="mingcute:search-line" />}
                         value={queries.search}
                         onChange={(e) =>
@@ -66,9 +65,11 @@ const ProductList = () => {
                         <Button
                             variant="light"
                             leftSection={<Icon icon="fluent:add-12-filled" />}
-                            onClick={() => router.push("/products/create")}
+                            onClick={() =>
+                                router.push("/accounting/transfers/create")
+                            }
                         >
-                            Add Product
+                            Add Transfer
                         </Button>
                         <Button
                             variant="light"
@@ -97,13 +98,9 @@ const ProductList = () => {
                         <AppTableCell>
                             <Checkbox />
                         </AppTableCell>
-                        <AppTableCell>Break Oil Change (484)</AppTableCell>
-                        <AppTableCell>Serial Product</AppTableCell>
-                        <AppTableCell>Computer</AppTableCell>
-                        <AppTableCell>100000</AppTableCell>
-                        <AppTableCell>
-                            <Badge color="green">Active</Badge>
-                        </AppTableCell>
+                        <AppTableCell>E545412445</AppTableCell>
+                        <AppTableCell>20/05/1996</AppTableCell>
+                        <AppTableCell>2000</AppTableCell>
                         <AppTableCell>
                             <Flex gap="xs">
                                 <ActionIcon size="lg" variant="light">
@@ -140,4 +137,4 @@ const ProductList = () => {
     );
 };
 
-export default ProductList;
+export default TransferList;

@@ -1,7 +1,7 @@
 import { AppTableType } from "@/lib/types/types";
 import { Card, Checkbox, ScrollArea, Table } from "@mantine/core";
 import React from "react";
-import Loading from "../Loading";
+import AppLoading from "../AppLoading";
 import NoData from "../NoData";
 
 const AppTable: React.FC<AppTableType> = ({
@@ -18,13 +18,14 @@ const AppTable: React.FC<AppTableType> = ({
     stickyHeaderOffset = 0,
     topContent,
     bottomContent,
+    contentHeight = 540,
     ...props
 }) => {
     return (
         <Card shadow="lg" withBorder radius="md">
             {topContent && <Card.Section p="md">{topContent}</Card.Section>}
 
-            <ScrollArea offsetScrollbars h={540}>
+            <ScrollArea offsetScrollbars h={contentHeight}>
                 <Table
                     striped={striped}
                     highlightOnHover={highlightOnHover}
@@ -59,7 +60,7 @@ const AppTable: React.FC<AppTableType> = ({
                         {isLoading || !isFound ? (
                             <Table.Tr>
                                 <Table.Td colSpan={headers.length ?? 1}>
-                                    {isLoading ? <Loading /> : <NoData />}
+                                    {isLoading ? <AppLoading /> : <NoData />}
                                 </Table.Td>
                             </Table.Tr>
                         ) : (

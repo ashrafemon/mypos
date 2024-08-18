@@ -1,7 +1,7 @@
 import { Box, Loader, LoaderProps } from "@mantine/core";
 import React from "react";
 
-const Loading: React.FC<LoaderProps> = ({ size = 100, ...props }) => {
+const AppLoading: React.FC<LoaderProps> = ({ size = 100, ...props }) => {
     return (
         <Box ta="center" p="xl">
             <Loader size={size} {...props} />
@@ -9,4 +9,4 @@ const Loading: React.FC<LoaderProps> = ({ size = 100, ...props }) => {
     );
 };
 
-export default Loading;
+export default AppLoading;

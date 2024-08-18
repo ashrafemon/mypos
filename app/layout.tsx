@@ -1,7 +1,8 @@
+import { createTheme, MantineProvider } from "@mantine/core";
 import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
+import NextTopLoader from "nextjs-toploader";
 import "../styles/globals.css";
-import { colorsTuple, createTheme, MantineProvider } from "@mantine/core";
 
 const outfit = Outfit({
     subsets: ["latin"],
@@ -25,6 +26,7 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={outfit.className}>
+                <NextTopLoader />
                 <MantineProvider theme={theme} withCssVariables>
                     {children}
                 </MantineProvider>

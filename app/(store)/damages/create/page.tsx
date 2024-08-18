@@ -1,16 +1,17 @@
-import BarcodeForm from "@/components/(store)/Products/BarcodeForm";
+import DamageForm from "@/components/(store)/Damages/DamageForm";
+import ProductForm from "@/components/(store)/Products/ProductForm";
 import { Card, CardSection, Title } from "@mantine/core";
 
 const page = () => {
     return (
-        <Card shadow="lg" withBorder radius="md" maw={900} mx="auto">
+        <Card shadow="lg" withBorder radius="md" mx="auto">
             <CardSection p="md">
                 <Title component="h5" order={3}>
-                    Print Barcode
+                    Add Damage
                 </Title>
             </CardSection>
 
-            <BarcodeForm />
+            <DamageForm />
         </Card>
     );
 };
