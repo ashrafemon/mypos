@@ -1,4 +1,4 @@
-import DamageForm from "@/components/(store)/Damages/DamageForm";
+import QuotationForm from "@/components/(store)/Quotations/QuotationForm";
 import { Card, CardSection, Title } from "@mantine/core";
 
 const page = () => {
@@ -6,11 +6,11 @@ const page = () => {
         <Card shadow="lg" withBorder radius="md" mx="auto">
             <CardSection p="md">
                 <Title component="h5" order={3}>
-                    Add Damage
+                    Add Quotation
                 </Title>
             </CardSection>
 
-            <DamageForm />
+            <QuotationForm />
         </Card>
     );
 };

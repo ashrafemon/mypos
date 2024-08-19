@@ -12,20 +12,22 @@ const AppTable: React.FC<AppTableType> = ({
     striped = true,
     highlightOnHover = true,
     withTableBorder = true,
-    withColumnBorders = true,
-    withRowBorders = true,
+    withColumnBorders = false,
+    withRowBorders = false,
     stickyHeader = true,
-    stickyHeaderOffset = 0,
+    stickyHeaderOffset = -1,
     topContent,
     bottomContent,
     contentHeight = 540,
+    contentWidth = 900,
+    footer,
     ...props
 }) => {
     return (
         <Card shadow="lg" withBorder radius="md">
             {topContent && <Card.Section p="md">{topContent}</Card.Section>}
 
-            <ScrollArea offsetScrollbars h={contentHeight}>
+            <Table.ScrollContainer minWidth={contentWidth} h={contentHeight}>
                 <Table
                     striped={striped}
                     highlightOnHover={highlightOnHover}
@@ -37,13 +39,19 @@ const AppTable: React.FC<AppTableType> = ({
                     {...props}
                 >
                     {headers.length > 0 && (
-                        <Table.Thead>
+                        <Table.Thead classNames={{ thead: "z-10" }}>
                             <Table.Tr>
                                 {headers.map((item) => (
                                     <Table.Th
                                         key={item.key}
                                         align={item.align ?? "left"}
-                                        miw={item.key === "checkbox" ? 10 : 150}
+                                        maw={
+                                            item.key === "checkbox"
+                                                ? item.w
+                                                    ? item.w
+                                                    : 10
+                                                : 150
+                                        }
                                     >
                                         {item.key === "checkbox" ? (
                                             <Checkbox />
@@ -67,8 +75,9 @@ const AppTable: React.FC<AppTableType> = ({
                             data
                         )}
                     </Table.Tbody>
+                    {footer}
                 </Table>
-            </ScrollArea>
+            </Table.ScrollContainer>
 
             {bottomContent && (
                 <Card.Section p="md">{bottomContent}</Card.Section>
@@ -78,6 +87,8 @@ const AppTable: React.FC<AppTableType> = ({
 };
 
 export const AppTableRow = Table.Tr;
+export const AppTableHeadCell = Table.Th;
 export const AppTableCell = Table.Td;
+export const AppTableFooter = Table.Tfoot;
 
 export default AppTable;

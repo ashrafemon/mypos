@@ -37,9 +37,11 @@ export type AppTableType = TableProps & {
 
     headers?: AppTableHeaderOptionsType[];
     data: React.ReactNode;
+    footer?: React.ReactNode;
 
     isFound?: boolean;
     isLoading?: boolean;
 
     contentHeight?: number | string;
+    contentWidth?: number | string;
 };

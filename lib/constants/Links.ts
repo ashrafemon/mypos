@@ -67,16 +67,16 @@ export const StoreLinks = [
         icon: "fxemoji:stockchart",
         links: [],
     },
-    // {
-    //     name: "Purchases",
-    //     link: "#",
-    //     icon: "icon-park-outline:buy",
-    //     links: [
-    //         { name: "Add Purchase", link: "/purchases/create" },
-    //         { name: "List Purchase", link: "/purchases" },
-    //         { name: "Return Purchase", link: "/purchases/returns" },
-    //     ],
-    // },
+    {
+        name: "Purchases",
+        link: "#",
+        icon: "icon-park-outline:buy",
+        links: [
+            { name: "Add Purchase", link: "/purchases/create" },
+            { name: "List Purchase", link: "/purchases" },
+            { name: "Return Purchase", link: "/purchases/returns" },
+        ],
+    },
     {
         name: "Expenses",
         link: "#",
@@ -118,15 +118,15 @@ export const StoreLinks = [
             { name: "List Income Category", link: "/incomes/categories" },
         ],
     },
-    // {
-    //     name: "Quotations",
-    //     link: "#",
-    //     icon: "hugeicons:estimate-01",
-    //     links: [
-    //         { name: "Add Quotation", link: "/quotations/create" },
-    //         { name: "List Quotation", link: "/quotations" },
-    //     ],
-    // },
+    {
+        name: "Quotations",
+        link: "#",
+        icon: "hugeicons:estimate-01",
+        links: [
+            { name: "Add Quotation", link: "/quotations/create" },
+            { name: "List Quotation", link: "/quotations" },
+        ],
+    },
     // {
     //     name: "Transfers",
     //     link: "#",
