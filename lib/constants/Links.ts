@@ -145,17 +145,17 @@ export const StoreLinks = [
             { name: "List Damage", link: "/damages" },
         ],
     },
-    // {
-    //     name: "HR Management",
-    //     link: "#",
-    //     icon: "hugeicons:permanent-job",
-    //     links: [
-    //         { name: "Add Employee", link: "/hrm/employees/create" },
-    //         { name: "List Employee", link: "/hrm/employees" },
-    //         { name: "List Payroll", link: "/hrm/payrolls" },
-    //         { name: "List Attendance", link: "/hrm/attendances" },
-    //     ],
-    // },
+    {
+        name: "HR Management",
+        link: "#",
+        icon: "hugeicons:permanent-job",
+        links: [
+            { name: "Add Employee", link: "/hrm/employees/create" },
+            { name: "List Employee", link: "/hrm/employees" },
+            { name: "List Payroll", link: "/hrm/payrolls" },
+            { name: "List Attendance", link: "/hrm/attendances" },
+        ],
+    },
     // {
     //     name: "Report",
     //     link: "#",

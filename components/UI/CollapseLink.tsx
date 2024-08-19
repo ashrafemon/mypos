@@ -3,7 +3,7 @@
 import { CollapseLinkType } from "@/lib/types/types";
 import { cn } from "@/lib/utils/helper";
 import { Icon } from "@iconify/react";
-import { NavLink } from "@mantine/core";
+import { NavLink, Stack } from "@mantine/core";
 import Link from "next/link";
 import React, { useState } from "react";
 
@@ -45,20 +45,22 @@ const CollapseLink: React.FC<CollapseLinkType> = ({
                     }),
                 }}
             >
-                {links.map((item, i) => (
-                    <NavLink
-                        key={i}
-                        href={item.link}
-                        label={item.name}
-                        component={Link}
-                        classNames={{
-                            root: "text-white font-medium p-0 hover:bg-transparent data-[active='true']:bg-[#4F5875]",
-                            body: "leading-relaxed px-2 rounded-full hover:bg-[#4F5875]",
-                        }}
-                        leftSection={<Icon icon="bi:arrow-bar-right" />}
-                        onClick={clickFunc}
-                    />
-                ))}
+                <Stack gap="xs">
+                    {links.map((item, i) => (
+                        <NavLink
+                            key={i}
+                            href={item.link}
+                            label={item.name}
+                            component={Link}
+                            classNames={{
+                                root: "text-white font-medium p-0 hover:bg-transparent data-[active='true']:bg-[#4F5875]",
+                                body: "leading-relaxed px-2 rounded-full hover:bg-[#4F5875]",
+                            }}
+                            leftSection={<Icon icon="bi:arrow-bar-right" />}
+                            onClick={clickFunc}
+                        />
+                    ))}
+                </Stack>
             </NavLink>
         );
     }

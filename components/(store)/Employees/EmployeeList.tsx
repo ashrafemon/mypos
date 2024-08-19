@@ -6,15 +6,36 @@ import AppTable, {
     AppTableRow,
 } from "@/components/UI/Table/AppTable";
 import TextField from "@/components/UI/TextField";
-import { IValueType } from "@/lib/types/types";
+import { AppTableHeaderOptionsType, IValueType } from "@/lib/types/types";
 import { Icon } from "@iconify/react";
-import { ActionIcon, Button, Checkbox, Flex, Title } from "@mantine/core";
-import { useState } from "react";
+import {
+    ActionIcon,
+    Badge,
+    Button,
+    Checkbox,
+    Flex,
+    Title,
+} from "@mantine/core";
+import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 
 const EmployeeList = () => {
+    const router = useRouter();
+    const headers: AppTableHeaderOptionsType[] = useMemo(
+        () => [
+            { key: "checkbox", label: "Checkbox", align: "center" },
+            { key: "name", label: "Name" },
+            { key: "email", label: "Name" },
+            { key: "phone", label: "Name" },
+            { key: "status", label: "Status" },
+            { key: "action", label: "Action", align: "center" },
+        ],
+        []
+    );
     const [queries, setQueries] = useState({
         page: 1,
         offset: 10,
+        search: "",
     });
 
     const handleQueryChange = (field: string, value: IValueType) => {
@@ -34,12 +55,17 @@ const EmployeeList = () => {
                     <TextField
                         placeholder="Search Employee"
                         leftSection={<Icon icon="mingcute:search-line" />}
+                        value={queries.search}
+                        onChange={(e) =>
+                            handleQueryChange("search", e.target.value)
+                        }
                     />
 
                     <Flex gap="xs" align="center">
                         <Button
                             variant="light"
                             leftSection={<Icon icon="fluent:add-12-filled" />}
+                            onClick={() => router.push("/hrm/employees/create")}
                         >
                             Add Employee
                         </Button>
@@ -62,13 +88,7 @@ const EmployeeList = () => {
                     }
                 />
             }
-            headers={[
-                { key: "checkbox", label: "Checkbox", align: "center" },
-                { key: "name", label: "Name" },
-                { key: "email", label: "Email" },
-                { key: "phone", label: "Phone" },
-                { key: "action", label: "Action", align: "center" },
-            ]}
+            headers={headers}
             data={Array(10)
                 .fill(1)
                 .map((_, i) => (
@@ -79,6 +99,9 @@ const EmployeeList = () => {
                         <AppTableCell>Ashraf</AppTableCell>
                         <AppTableCell>ashraf.emon143@gmail.com</AppTableCell>
                         <AppTableCell>01982411208</AppTableCell>
+                        <AppTableCell>
+                            <Badge color="green">Active</Badge>
+                        </AppTableCell>
                         <AppTableCell>
                             <Flex gap="xs">
                                 <ActionIcon size="lg" variant="light">

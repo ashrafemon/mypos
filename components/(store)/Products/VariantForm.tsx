@@ -1,7 +1,6 @@
 "use client";
 
 import SelectBox from "@/components/UI/SelectBox";
-import TextEditor from "@/components/UI/TextEditor";
 import TextField from "@/components/UI/TextField";
 import { ActivityStatusOptions } from "@/lib/constants/Options";
 import { Icon } from "@iconify/react";
