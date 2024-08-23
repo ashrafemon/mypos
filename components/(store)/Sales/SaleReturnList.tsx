@@ -19,17 +19,16 @@ import {
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
-const SaleList = () => {
+const SaleReturnList = () => {
     const router = useRouter();
     const headers: AppTableHeaderOptionsType[] = useMemo(
         () => [
             { key: "checkbox", label: "Checkbox", align: "center" },
-            { key: "ref_no", label: "Ref. No" },
-            { key: "date", label: "Date" },
+            { key: "invoice_no", label: "Invoice No" },
             { key: "customer", label: "Customer" },
-            { key: "total", label: "Total" },
-            { key: "paid", label: "Paid" },
             { key: "status", label: "Status" },
+            { key: "date", label: "Date" },
+            { key: "amount", label: "Amount" },
             { key: "action", label: "Action", align: "center" },
         ],
         []
@@ -51,7 +50,7 @@ const SaleList = () => {
             topContent={
                 <Flex justify="space-between" gap="xs">
                     <Title component="h5" order={3}>
-                        Sale List
+                        Sale Return List
                     </Title>
 
                     <TextField
@@ -67,9 +66,9 @@ const SaleList = () => {
                         <Button
                             variant="light"
                             leftSection={<Icon icon="fluent:add-12-filled" />}
-                            onClick={() => router.push("/sales/create")}
+                            onClick={() => router.push("/sales/returns/create")}
                         >
-                            Add Sale
+                            Add Sale Return
                         </Button>
                         <Button
                             variant="light"
@@ -98,14 +97,13 @@ const SaleList = () => {
                         <AppTableCell>
                             <Checkbox />
                         </AppTableCell>
-                        <AppTableCell>INV000162</AppTableCell>
-                        <AppTableCell>25/03/1990</AppTableCell>
-                        <AppTableCell>Walking Customer</AppTableCell>
-                        <AppTableCell>15000</AppTableCell>
-                        <AppTableCell>15000</AppTableCell>
+                        <AppTableCell>SL_5452226</AppTableCell>
+                        <AppTableCell>ACI Ltd.</AppTableCell>
                         <AppTableCell>
-                            <Badge color="green">Paid</Badge>
+                            <Badge color="green">Returned</Badge>
                         </AppTableCell>
+                        <AppTableCell>25/01/2024</AppTableCell>
+                        <AppTableCell>100000</AppTableCell>
                         <AppTableCell>
                             <Flex gap="xs">
                                 <ActionIcon size="lg" variant="light">
@@ -142,4 +140,4 @@ const SaleList = () => {
     );
 };
 
-export default SaleList;
+export default SaleReturnList;

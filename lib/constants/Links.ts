@@ -17,16 +17,16 @@ export const StoreLinks = [
             { name: "List Store", link: "/stores" },
         ],
     },
-    // {
-    //     name: "Sale",
-    //     link: "#",
-    //     icon: "mdi:point-of-sale",
-    //     links: [
-    //         { name: "POS Screen", link: "/stores/create" },
-    //         { name: "List Sale", link: "/sales" },
-    //         { name: "Return Sale", link: "/sales/returns" },
-    //     ],
-    // },
+    {
+        name: "Sale",
+        link: "#",
+        icon: "mdi:point-of-sale",
+        links: [
+            { name: "POS Screen", link: "/stores/create" },
+            { name: "List Sale", link: "/sales" },
+            { name: "Return Sale", link: "/sales/returns" },
+        ],
+    },
     {
         name: "Customers",
         link: "#",
