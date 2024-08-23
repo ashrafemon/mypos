@@ -1,7 +1,8 @@
+import CounterDashboard from "@/components/(store)/Dashboard/CounterDashboard";
 import React from "react";
 
 const page = () => {
-    return <div>Counter Dashboard</div>;
+    return <CounterDashboard />;
 };
 
 export default page;
