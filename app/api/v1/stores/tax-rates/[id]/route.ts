@@ -14,7 +14,7 @@ export async function GET(
         const queries = helper.getQueryStrings(request.url);
         const controller = new TaxRateController();
         return await controller.show(id, queries);
-    } catch (err) {
+    } catch (err: { message: string } | any) {
         return helper.errorResponse({
             statusCode: 500,
             message: err?.message,
@@ -33,8 +33,7 @@ export async function PATCH(
         const body = await request.json();
         const controller = new TaxRateController();
         return await controller.update(id, body);
-    } catch (err) {
-        console.log(err);
+    } catch (err: { message: string } | any) {
         return helper.errorResponse({
             statusCode: 500,
             message: err?.message,
@@ -52,8 +51,7 @@ export async function DELETE(
         const { id } = context.params;
         const controller = new TaxRateController();
         return await controller.destroy(id);
-    } catch (err) {
-        console.log(err);
+    } catch (err: { message: string } | any) {
         return helper.errorResponse({
             statusCode: 500,
             message: err?.message,

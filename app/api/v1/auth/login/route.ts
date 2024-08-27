@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
         const body: LoginType = await request.json();
         const controller = new LoginController();
         return await controller.login(body);
-    } catch (err) {
+    } catch (err: { message: string } | any) {
         return helper.errorResponse({
             statusCode: 500,
             message: err?.message,

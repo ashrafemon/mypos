@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
         const queries = helper.getQueryStrings(request.url);
         const controller = new CounterController();
         return await controller.index(queries);
-    } catch (err) {
+    } catch (err: { message: string } | any) {
         return helper.errorResponse({
             statusCode: 500,
             message: err?.message,
@@ -24,8 +24,7 @@ export async function POST(request: NextRequest) {
         const body = await request.json();
         const controller = new CounterController();
         return await controller.store(body);
-    } catch (err) {
-        console.log(err);
+    } catch (err: { message: string } | any) {
         return helper.errorResponse({
             statusCode: 500,
             message: err?.message,
