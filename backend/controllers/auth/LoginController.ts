@@ -1,23 +1,11 @@
 import LoginRepository from "@/backend/repositories/auth/LoginRepository";
 import { LoginType } from "@/backend/types/authTypes";
-import { prisma } from "@/lib/prisma";
 
-class LoginController {
-    constructor(private readonly db = prisma) {}
+export default class LoginController {
+    constructor(private readonly repository = new LoginRepository()) {}
 
     async login(body: LoginType) {
-        const user = await this.db.user.findFirst({
-            where: { email: body.email },
-        });
-        if (!user) {
-            return {
-                status: "error",
-                statusCode: 404,
-                message: "Sorry, User not found...",
-            };
-        }
-
-        return { message: "okkkkk" };
+        return await this.repository.login(body);
     }
 
     storeLogin() {}
@@ -26,5 +14,3 @@ class LoginController {
 
     logout() {}
 }
-
-export default LoginController;

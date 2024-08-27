@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-    provider = "mysql"
+    provider = "postgresql"
     url      = env("DATABASE_URL")
 }
 
@@ -63,8 +63,8 @@ model Attendance {
     id          String    @id @default(uuid())
     userId      String?
     date        DateTime?
-    inTime      DateTime?
-    outTime     DateTime?
+    in          DateTime?
+    out         DateTime?
     description String?
 
     createdAt DateTime  @default(now())
@@ -92,30 +92,30 @@ model Store {
     updatedAt DateTime  @updatedAt
     deletedAt DateTime?
 
-    counters          Counter[]
-    taxRates          TaxRate[]
-    currencies        Currency[]
-    paymentMethods    PaymentMethod[]
-    customerGroups    CustomerGroup[]
-    customers         Customer[]
-    suppliers         Supplier[]
-    productCategories ProductCategory[]
-    boxes             Box[]
-    units             Unit[]
-    brands            Brand[]
-    variants          Variant[]
-    variantProperties VariantProperty[]
-    products          Product[]
-    expenseCategories ExpenseCategory[]
-    expenses          Expense[]
-    accounts          Account[]
-    transactions      Transaction[]
-    incomeCategories  IncomeCategory[]
-    accountTransfers  AccountTransfer[]
-    damages           Damage[]
-    damageProducts    DamageProduct[]
-    quotations        Quotation[]
-    quotationProducts QuotationProduct[]
+    // counters          Counter[]
+    // taxRates          TaxRate[]
+    // currencies        Currency[]
+    // paymentMethods    PaymentMethod[]
+    // customerGroups    CustomerGroup[]
+    // customers         Customer[]
+    // suppliers         Supplier[]
+    // productCategories ProductCategory[]
+    // boxes             Box[]
+    // units             Unit[]
+    // brands            Brand[]
+    // variants          Variant[]
+    // variantProperties VariantProperty[]
+    // products          Product[]
+    // expenseCategories ExpenseCategory[]
+    // expenses          Expense[]
+    // accounts          Account[]
+    // transactions      Transaction[]
+    // incomeCategories  IncomeCategory[]
+    // accountTransfers  AccountTransfer[]
+    // damages           Damage[]
+    // damageProducts    DamageProduct[]
+    // quotations        Quotation[]
+    // quotationProducts QuotationProduct[]
 
     @@map("stores")
 }
@@ -157,7 +157,7 @@ model Counter {
     updatedAt DateTime  @updatedAt
     deletedAt DateTime?
 
-    store Store? @relation(fields: [storeId], references: [id])
+    // store Store? @relation(fields: [storeId], references: [id])
 
     @@map("counters")
 }
@@ -175,7 +175,7 @@ model TaxRate {
     updatedAt DateTime  @updatedAt
     deletedAt DateTime?
 
-    store   Store?    @relation(fields: [storeId], references: [id])
+    // store   Store?    @relation(fields: [storeId], references: [id])
     Product Product[]
 
     @@map("tax_rates")
@@ -198,7 +198,7 @@ model Currency {
     updatedAt DateTime  @updatedAt
     deletedAt DateTime?
 
-    store Store? @relation(fields: [storeId], references: [id])
+    // store Store? @relation(fields: [storeId], references: [id])
 
     @@map("currencies")
 }
@@ -218,7 +218,7 @@ model PaymentMethod {
     updatedAt DateTime  @updatedAt
     deletedAt DateTime?
 
-    store Store? @relation(fields: [storeId], references: [id])
+    // store Store? @relation(fields: [storeId], references: [id])
 
     @@map("payment_methods")
 }
@@ -235,7 +235,7 @@ model CustomerGroup {
     updatedAt DateTime  @updatedAt
     deletedAt DateTime?
 
-    store     Store?     @relation(fields: [storeId], references: [id])
+    // store     Store?     @relation(fields: [storeId], references: [id])
     customers Customer[]
 
     @@map("customer_groups")
@@ -260,7 +260,7 @@ model Customer {
     updatedAt DateTime  @updatedAt
     deletedAt DateTime?
 
-    store Store?         @relation(fields: [storeId], references: [id])
+    // store Store? @relation(fields: [storeId], references: [id])
     group CustomerGroup? @relation(fields: [groupId], references: [id])
 
     @@map("customers")
@@ -283,7 +283,7 @@ model Supplier {
     updatedAt DateTime  @updatedAt
     deletedAt DateTime?
 
-    store   Store?    @relation(fields: [storeId], references: [id])
+    // store   Store?    @relation(fields: [storeId], references: [id])
     Product Product[]
 
     @@map("suppliers")
@@ -302,7 +302,7 @@ model ProductCategory {
     updatedAt DateTime  @updatedAt
     deletedAt DateTime?
 
-    store   Store?    @relation(fields: [storeId], references: [id])
+    // store   Store?    @relation(fields: [storeId], references: [id])
     Product Product[]
 
     @@map("product_categories")
@@ -320,7 +320,7 @@ model Box {
     updatedAt DateTime  @updatedAt
     deletedAt DateTime?
 
-    store   Store?    @relation(fields: [storeId], references: [id])
+    // store   Store?    @relation(fields: [storeId], references: [id])
     Product Product[]
 
     @@map("boxes")
@@ -338,7 +338,7 @@ model Unit {
     updatedAt DateTime  @updatedAt
     deletedAt DateTime?
 
-    store   Store?    @relation(fields: [storeId], references: [id])
+    // store   Store?    @relation(fields: [storeId], references: [id])
     Product Product[]
 
     @@map("units")
@@ -357,7 +357,7 @@ model Brand {
     updatedAt DateTime  @updatedAt
     deletedAt DateTime?
 
-    store   Store?    @relation(fields: [storeId], references: [id])
+    // store   Store?    @relation(fields: [storeId], references: [id])
     Product Product[]
 
     @@map("brands")
@@ -375,7 +375,7 @@ model Variant {
     updatedAt DateTime  @updatedAt
     deletedAt DateTime?
 
-    store             Store?            @relation(fields: [storeId], references: [id])
+    // store             Store?            @relation(fields: [storeId], references: [id])
     variantProperties VariantProperty[]
 
     @@map("variants")
@@ -394,7 +394,7 @@ model VariantProperty {
     updatedAt DateTime  @updatedAt
     deletedAt DateTime?
 
-    store   Store?   @relation(fields: [storeId], references: [id])
+    // store   Store?   @relation(fields: [storeId], references: [id])
     variant Variant? @relation(fields: [variantId], references: [id])
 
     @@map("variant_properties")
@@ -430,7 +430,7 @@ model Product {
     updatedAt DateTime  @updatedAt
     deletedAt DateTime?
 
-    store             Store?             @relation(fields: [storeId], references: [id])
+    // store             Store?             @relation(fields: [storeId], references: [id])
     supplier          Supplier?          @relation(fields: [supplierId], references: [id])
     category          ProductCategory?   @relation(fields: [categoryId], references: [id])
     brand             Brand?             @relation(fields: [brandId], references: [id])
@@ -456,7 +456,7 @@ model ExpenseCategory {
     updatedAt DateTime  @updatedAt
     deletedAt DateTime?
 
-    store        Store?        @relation(fields: [storeId], references: [id])
+    // store        Store?        @relation(fields: [storeId], references: [id])
     expenses     Expense[]
     transactions Transaction[]
 
@@ -478,7 +478,7 @@ model Expense {
     updatedAt DateTime  @updatedAt
     deletedAt DateTime?
 
-    store    Store?           @relation(fields: [storeId], references: [id])
+    // store    Store?           @relation(fields: [storeId], references: [id])
     category ExpenseCategory? @relation(fields: [categoryId], references: [id])
 
     @@map("expenses")
@@ -497,7 +497,7 @@ model IncomeCategory {
     updatedAt DateTime  @updatedAt
     deletedAt DateTime?
 
-    store        Store?        @relation(fields: [storeId], references: [id])
+    // store        Store?        @relation(fields: [storeId], references: [id])
     transactions Transaction[]
 
     @@map("income_categories")
@@ -519,7 +519,7 @@ model Account {
     updatedAt DateTime  @updatedAt
     deletedAt DateTime?
 
-    store         Store?            @relation(fields: [storeId], references: [id])
+    // store         Store?            @relation(fields: [storeId], references: [id])
     fromTransfers AccountTransfer[] @relation("from")
     toTransfers   AccountTransfer[] @relation("to")
 
@@ -542,7 +542,7 @@ model Transaction {
     updatedAt DateTime  @updatedAt
     deletedAt DateTime?
 
-    store           Store?           @relation(fields: [storeId], references: [id])
+    // store           Store?           @relation(fields: [storeId], references: [id])
     expenseCategory ExpenseCategory? @relation(fields: [expenseCategoryId], references: [id])
     incomeCategory  IncomeCategory?  @relation(fields: [incomeCategoryId], references: [id])
 
@@ -564,9 +564,9 @@ model AccountTransfer {
     updatedAt DateTime  @updatedAt
     deletedAt DateTime?
 
-    store Store?   @relation(fields: [storeId], references: [id])
-    from  Account? @relation(name: "from", fields: [fromAccountId], references: [id])
-    to    Account? @relation(name: "to", fields: [toAccountId], references: [id])
+    // store Store?   @relation(fields: [storeId], references: [id])
+    from Account? @relation(name: "from", fields: [fromAccountId], references: [id])
+    to   Account? @relation(name: "to", fields: [toAccountId], references: [id])
 
     @@map("account_transfers")
 }
@@ -585,7 +585,7 @@ model Damage {
     updatedAt DateTime  @updatedAt
     deletedAt DateTime?
 
-    store          Store?          @relation(fields: [storeId], references: [id])
+    // store          Store?          @relation(fields: [storeId], references: [id])
     damageProducts DamageProduct[]
 
     @@map("damages")
@@ -604,7 +604,7 @@ model DamageProduct {
     updatedAt DateTime  @updatedAt
     deletedAt DateTime?
 
-    store   Store?   @relation(fields: [storeId], references: [id])
+    // store   Store?   @relation(fields: [storeId], references: [id])
     damage  Damage?  @relation(fields: [damageId], references: [id])
     product Product? @relation(fields: [productId], references: [id])
 
@@ -629,7 +629,7 @@ model Quotation {
     updatedAt DateTime  @updatedAt
     deletedAt DateTime?
 
-    store             Store?             @relation(fields: [storeId], references: [id])
+    // store             Store?             @relation(fields: [storeId], references: [id])
     quotationProducts QuotationProduct[]
 
     @@map("quotations")
@@ -648,7 +648,7 @@ model QuotationProduct {
     updatedAt DateTime  @updatedAt
     deletedAt DateTime?
 
-    store     Store?     @relation(fields: [storeId], references: [id])
+    // store     Store?     @relation(fields: [storeId], references: [id])
     quotation Quotation? @relation(fields: [quotationId], references: [id])
     product   Product?   @relation(fields: [productId], references: [id])
 
