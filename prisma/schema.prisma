@@ -499,6 +499,7 @@ model IncomeCategory {
 
     // store        Store?        @relation(fields: [storeId], references: [id])
     transactions Transaction[]
+    incomes      Income[]
 
     @@map("income_categories")
 }
@@ -522,8 +523,33 @@ model Account {
     // store         Store?            @relation(fields: [storeId], references: [id])
     fromTransfers AccountTransfer[] @relation("from")
     toTransfers   AccountTransfer[] @relation("to")
+    incomes       Income[]
 
     @@map("accounts")
+}
+
+model Income {
+    id            String   @id @default(uuid())
+    storeId       String?
+    categoryId    String?
+    accountId     String?
+    date          DateTime
+    title         String
+    description   String?
+    contactPerson Json?
+    amount        Float?   @default(0)
+    photo         String?
+    status        String   @default("pending")
+
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    deletedAt DateTime?
+
+    // store    Store?           @relation(fields: [storeId], references: [id])
+    category IncomeCategory? @relation(fields: [categoryId], references: [id])
+    account  Account?        @relation(fields: [accountId], references: [id])
+
+    @@map("icomes")
 }
 
 model Transaction {
