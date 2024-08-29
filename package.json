@@ -18,6 +18,7 @@
         "@mantine/notifications": "^7.12.1",
         "@mantine/nprogress": "^7.12.1",
         "@mantine/tiptap": "^7.12.1",
+        "@reduxjs/toolkit": "^2.2.7",
         "@tabler/icons-react": "^3.12.0",
         "@tiptap/extension-link": "^2.6.4",
         "@tiptap/react": "^2.6.4",
@@ -29,7 +30,10 @@
         "next": "14.2.5",
         "nextjs-toploader": "^1.6.12",
         "react": "^18",
-        "react-dom": "^18"
+        "react-dom": "^18",
+        "react-redux": "^9.1.2",
+        "react-toastify": "^10.0.5",
+        "Validator": "^1.1.4"
     },
     "devDependencies": {
         "@iconify/react": "^5.0.2",

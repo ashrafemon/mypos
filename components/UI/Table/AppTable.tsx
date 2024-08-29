@@ -1,5 +1,5 @@
 import { AppTableType } from "@/lib/types/types";
-import { Card, Checkbox, ScrollArea, Table } from "@mantine/core";
+import { Card, Checkbox, ScrollArea, Table, Text, Title } from "@mantine/core";
 import React from "react";
 import AppLoading from "../AppLoading";
 import NoData from "../NoData";
@@ -9,6 +9,8 @@ const AppTable: React.FC<AppTableType> = ({
     data,
     isFound = false,
     isLoading = false,
+    isError = false,
+    error,
     striped = true,
     highlightOnHover = true,
     withTableBorder = true,
@@ -42,9 +44,10 @@ const AppTable: React.FC<AppTableType> = ({
                         <Table.Thead classNames={{ thead: "z-10" }}>
                             <Table.Tr>
                                 {headers.map((item) => (
-                                    <Table.Th
+                                    <Table.Td
                                         key={item.key}
                                         align={item.align ?? "left"}
+                                        fw={600}
                                         maw={
                                             item.key === "checkbox"
                                                 ? item.w
@@ -58,14 +61,33 @@ const AppTable: React.FC<AppTableType> = ({
                                         ) : (
                                             item.label
                                         )}
-                                    </Table.Th>
+                                    </Table.Td>
                                 ))}
                             </Table.Tr>
                         </Table.Thead>
                     )}
 
                     <Table.Tbody>
-                        {isLoading || !isFound ? (
+                        {isError ? (
+                            <Table.Tr>
+                                <Table.Td
+                                    colSpan={headers.length ?? 1}
+                                    ta="center"
+                                    c="red"
+                                    p="lg"
+                                >
+                                    <Title component="h5" order={3}>
+                                        {error.status}
+                                    </Title>
+                                    <Title component="h5" order={1}>
+                                        {error.originalStatus}
+                                    </Title>
+                                    <Title component="h5" order={4}>
+                                        {error.error}
+                                    </Title>
+                                </Table.Td>
+                            </Table.Tr>
+                        ) : isLoading || !isFound ? (
                             <Table.Tr>
                                 <Table.Td colSpan={headers.length ?? 1}>
                                     {isLoading ? <AppLoading /> : <NoData />}

@@ -1,8 +1,11 @@
+import ReduxProvider from "@/providers/ReduxProvider";
 import { createTheme, MantineProvider } from "@mantine/core";
 import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
+import "react-toastify/dist/ReactToastify.css";
 import "../styles/globals.css";
+import { ToastContainer } from "react-toastify";
 
 const outfit = Outfit({
     subsets: ["latin"],
@@ -27,9 +30,12 @@ export default function RootLayout({
         <html lang="en">
             <body className={outfit.className}>
                 <NextTopLoader />
-                <MantineProvider theme={theme} withCssVariables>
-                    {children}
-                </MantineProvider>
+                <ReduxProvider>
+                    <ToastContainer />
+                    <MantineProvider theme={theme} withCssVariables>
+                        {children}
+                    </MantineProvider>
+                </ReduxProvider>
             </body>
         </html>
     );

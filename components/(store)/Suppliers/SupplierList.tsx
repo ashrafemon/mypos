@@ -6,7 +6,9 @@ import AppTable, {
     AppTableRow,
 } from "@/components/UI/Table/AppTable";
 import TextField from "@/components/UI/TextField";
+import { SupplierType } from "@/lib/models/Supplier";
 import { AppTableHeaderOptionsType, IValueType } from "@/lib/types/types";
+import { useFetchSuppliersQuery } from "@/states/actions/stores/suppliers";
 import { Icon } from "@iconify/react";
 import { ActionIcon, Button, Checkbox, Flex, Title } from "@mantine/core";
 import { useRouter } from "next/navigation";
@@ -37,10 +39,20 @@ const SupplierList = () => {
         setQueries((prevState) => ({ ...prevState, [field]: value }));
     };
 
+    const { data, isFetching, isError, error } = useFetchSuppliersQuery(
+        `offset=${queries.page}&limit=${queries.offset}${
+            queries.search ? `&search=${queries.search}` : ""
+        }`
+    );
+
+    console.log(error);
+
     return (
         <AppTable
-            isFound={Array(10).fill(5).length > 0}
-            isLoading={false}
+            isFound={data?.data?.length > 0}
+            isLoading={isFetching}
+            isError={isError}
+            error={error}
             topContent={
                 <Flex justify="space-between" gap="xs">
                     <Title component="h5" order={3}>
@@ -84,49 +96,42 @@ const SupplierList = () => {
                 />
             }
             headers={headers}
-            data={Array(10)
-                .fill(1)
-                .map((_, i) => (
-                    <AppTableRow key={i}>
-                        <AppTableCell>
-                            <Checkbox />
-                        </AppTableCell>
-                        <AppTableCell>Pureit</AppTableCell>
-                        <AppTableCell>shsidullarakib@gmail.com</AppTableCell>
-                        <AppTableCell>01721142653</AppTableCell>
-                        <AppTableCell>Rakib Shahidullah</AppTableCell>
-                        <AppTableCell>
-                            <Flex gap="xs">
-                                <ActionIcon size="lg" variant="light">
-                                    <Icon
-                                        icon="carbon:view-filled"
-                                        width={18}
-                                    />
-                                </ActionIcon>
-                                <ActionIcon
-                                    size="lg"
-                                    variant="light"
-                                    color="orange"
-                                >
-                                    <Icon
-                                        icon="weui:pencil-filled"
-                                        width={18}
-                                    />
-                                </ActionIcon>
-                                <ActionIcon
-                                    size="lg"
-                                    variant="light"
-                                    color="red"
-                                >
-                                    <Icon
-                                        icon="icon-park-outline:delete"
-                                        width={18}
-                                    />
-                                </ActionIcon>
-                            </Flex>
-                        </AppTableCell>
-                    </AppTableRow>
-                ))}
+            data={data?.data?.map((item: SupplierType, i: number) => (
+                <AppTableRow key={i}>
+                    <AppTableCell>
+                        <Checkbox />
+                    </AppTableCell>
+                    <AppTableCell>{item.name || "N/A"}</AppTableCell>
+                    <AppTableCell>{item.email || "N/A"}</AppTableCell>
+                    <AppTableCell>{item.phone || "N/A"}</AppTableCell>
+                    <AppTableCell>
+                        {item?.contactPerson?.name || "N/A"}
+                    </AppTableCell>
+                    <AppTableCell>
+                        <Flex gap="xs" justify="center">
+                            <ActionIcon size="lg" variant="light">
+                                <Icon icon="carbon:view-filled" width={18} />
+                            </ActionIcon>
+                            <ActionIcon
+                                size="lg"
+                                variant="light"
+                                color="orange"
+                                onClick={() =>
+                                    router.push(`/suppliers/${item.id}/edit`)
+                                }
+                            >
+                                <Icon icon="weui:pencil-filled" width={18} />
+                            </ActionIcon>
+                            <ActionIcon size="lg" variant="light" color="red">
+                                <Icon
+                                    icon="icon-park-outline:delete"
+                                    width={18}
+                                />
+                            </ActionIcon>
+                        </Flex>
+                    </AppTableCell>
+                </AppTableRow>
+            ))}
         />
     );
 };

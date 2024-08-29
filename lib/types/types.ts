@@ -41,7 +41,26 @@ export type AppTableType = TableProps & {
 
     isFound?: boolean;
     isLoading?: boolean;
+    isError?: boolean;
+    error?: any;
 
     contentHeight?: number | string;
     contentWidth?: number | string;
 };
+
+export type PaginateResponseType = {
+    current_page: number;
+    data: any;
+    first_page: number;
+    last_page: number;
+    per_page: number;
+    to: number;
+    total: number;
+};
+
+export type ResponseType = {
+    status?: string;
+    statusCode?: number;
+    message?: string;
+    data?: any;
+} | null;

@@ -30,6 +30,7 @@ export default class SupplierRepository {
                 name: true,
                 phone: true,
                 email: true,
+                contactPerson: true,
                 status: true,
             };
         }
