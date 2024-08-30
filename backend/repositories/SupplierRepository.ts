@@ -78,7 +78,9 @@ export default class SupplierRepository {
             });
         }
 
-        await this.db.supplier.create({ data: validate?.validated() });
+        await this.db.supplier.create({
+            data: { ...validate?.validated(), deletedAt: null },
+        });
         return this.helper.entityResponse({
             statusCode: 201,
             message: "Supplier added successfully...",

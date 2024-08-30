@@ -77,7 +77,9 @@ export default class AccountRepository {
             });
         }
 
-        await this.db.account.create({ data: validate?.validated() });
+        await this.db.account.create({
+            data: { ...validate?.validated(), deletedAt: null },
+        });
         return this.helper.entityResponse({
             statusCode: 201,
             message: "Account added successfully...",

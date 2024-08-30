@@ -3,13 +3,13 @@ generator client {
 }
 
 datasource db {
-    provider = "postgresql"
+    provider = "mongodb"
     url      = env("DATABASE_URL")
 }
 
 // User, Store, Store Accessible User Tables
 model TokenBlacklist {
-    id    String  @id @default(uuid())
+    id    String  @id @default(uuid()) @map("_id")
     token String?
 
     createdAt DateTime @default(now())
@@ -19,7 +19,7 @@ model TokenBlacklist {
 }
 
 model User {
-    id          String   @id @default(uuid())
+    id          String   @id @default(uuid()) @map("_id")
     roleId      String?
     name        String?
     email       String   @unique
@@ -41,7 +41,7 @@ model User {
 }
 
 model Employee {
-    id             String    @id @default(uuid())
+    id             String    @id @default(uuid()) @map("_id")
     userId         String?   @unique
     employmentType String?
     designation    String?
@@ -56,11 +56,11 @@ model Employee {
 
     user User? @relation(fields: [userId], references: [id])
 
-    @@map("employee")
+    @@map("employees")
 }
 
 model Attendance {
-    id          String    @id @default(uuid())
+    id          String    @id @default(uuid()) @map("_id")
     userId      String?
     date        DateTime?
     in          DateTime?
@@ -77,7 +77,7 @@ model Attendance {
 }
 
 model Store {
-    id          String  @id @default(uuid())
+    id          String  @id @default(uuid()) @map("_id")
     type        String?
     name        String
     code        String?
@@ -121,7 +121,7 @@ model Store {
 }
 
 model StoreSetting {
-    id         String  @id @default(uuid())
+    id         String  @id @default(uuid()) @map("_id")
     storeId    String
     currencyId String?
 
@@ -133,7 +133,7 @@ model StoreSetting {
 }
 
 model StoreUser {
-    id      String @id @default(uuid())
+    id      String @id @default(uuid()) @map("_id")
     userId  String
     storeId String
 
@@ -146,7 +146,7 @@ model StoreUser {
 
 // Store Required Tables
 model Counter {
-    id          String  @id @default(uuid())
+    id          String  @id @default(uuid()) @map("_id")
     storeId     String?
     name        String
     description String?
@@ -163,7 +163,7 @@ model Counter {
 }
 
 model TaxRate {
-    id          String  @id @default(uuid())
+    id          String  @id @default(uuid()) @map("_id")
     storeId     String?
     name        String
     rate        Float
@@ -182,7 +182,7 @@ model TaxRate {
 }
 
 model Currency {
-    id           String  @id @default(uuid())
+    id           String  @id @default(uuid()) @map("_id")
     storeId      String?
     name         String
     shortName    String?
@@ -204,7 +204,7 @@ model Currency {
 }
 
 model PaymentMethod {
-    id          String  @id @default(uuid())
+    id          String  @id @default(uuid()) @map("_id")
     storeId     String?
     type        String?
     name        String
@@ -224,7 +224,7 @@ model PaymentMethod {
 }
 
 model CustomerGroup {
-    id          String  @id @default(uuid())
+    id          String  @id @default(uuid()) @map("_id")
     storeId     String?
     name        String
     description String?
@@ -242,7 +242,7 @@ model CustomerGroup {
 }
 
 model Customer {
-    id       String    @id @default(uuid())
+    id       String    @id @default(uuid()) @map("_id")
     storeId  String?
     groupId  String?
     type     String?
@@ -267,7 +267,7 @@ model Customer {
 }
 
 model Supplier {
-    id            String  @id @default(uuid())
+    id            String  @id @default(uuid()) @map("_id")
     storeId       String?
     name          String
     phone         String?
@@ -291,7 +291,7 @@ model Supplier {
 
 // Product & Product Additional Tables
 model ProductCategory {
-    id          String  @id @default(uuid())
+    id          String  @id @default(uuid()) @map("_id")
     storeId     String?
     name        String
     description String?
@@ -309,7 +309,7 @@ model ProductCategory {
 }
 
 model Box {
-    id          String  @id @default(uuid())
+    id          String  @id @default(uuid()) @map("_id")
     storeId     String?
     name        String
     description String?
@@ -327,7 +327,7 @@ model Box {
 }
 
 model Unit {
-    id          String  @id @default(uuid())
+    id          String  @id @default(uuid()) @map("_id")
     storeId     String?
     name        String
     description String?
@@ -345,7 +345,7 @@ model Unit {
 }
 
 model Brand {
-    id          String  @id @default(uuid())
+    id          String  @id @default(uuid()) @map("_id")
     storeId     String?
     name        String
     description String?
@@ -364,7 +364,7 @@ model Brand {
 }
 
 model Variant {
-    id          String  @id @default(uuid())
+    id          String  @id @default(uuid()) @map("_id")
     storeId     String?
     name        String
     description String?
@@ -382,7 +382,7 @@ model Variant {
 }
 
 model VariantProperty {
-    id          String  @id @default(uuid())
+    id          String  @id @default(uuid()) @map("_id")
     storeId     String?
     variantId   String?
     name        String
@@ -401,7 +401,7 @@ model VariantProperty {
 }
 
 model Product {
-    id               String  @id @default(uuid())
+    id               String  @id @default(uuid()) @map("_id")
     storeId          String?
     supplierId       String?
     categoryId       String?
@@ -445,7 +445,7 @@ model Product {
 
 // Expense Tables
 model ExpenseCategory {
-    id          String  @id @default(uuid())
+    id          String  @id @default(uuid()) @map("_id")
     storeId     String?
     name        String
     description String?
@@ -464,7 +464,7 @@ model ExpenseCategory {
 }
 
 model Expense {
-    id          String   @id @default(uuid())
+    id          String   @id @default(uuid()) @map("_id")
     storeId     String?
     categoryId  String?
     date        DateTime
@@ -486,7 +486,7 @@ model Expense {
 
 // Accounting Tables
 model IncomeCategory {
-    id          String  @id @default(uuid())
+    id          String  @id @default(uuid()) @map("_id")
     storeId     String?
     name        String
     description String?
@@ -505,7 +505,7 @@ model IncomeCategory {
 }
 
 model Account {
-    id             String  @id @default(uuid())
+    id             String  @id @default(uuid()) @map("_id")
     storeId        String?
     type           String
     name           String
@@ -529,7 +529,7 @@ model Account {
 }
 
 model Income {
-    id            String   @id @default(uuid())
+    id            String   @id @default(uuid()) @map("_id")
     storeId       String?
     categoryId    String?
     accountId     String?
@@ -553,11 +553,11 @@ model Income {
 }
 
 model Transaction {
-    id                String    @id @default(uuid())
+    id                String    @id @default(uuid()) @map("_id")
     storeId           String?
-    type              String
     incomeCategoryId  String?
     expenseCategoryId String?
+    type              String
     refNo             String?
     date              DateTime?
     amount            Float?    @default(0)
@@ -576,7 +576,7 @@ model Transaction {
 }
 
 model AccountTransfer {
-    id            String    @id @default(uuid())
+    id            String    @id @default(uuid()) @map("_id")
     storeId       String?
     fromAccountId String?
     toAccountId   String?
@@ -599,7 +599,7 @@ model AccountTransfer {
 
 // Damage Tables
 model Damage {
-    id          String    @id @default(uuid())
+    id          String    @id @default(uuid()) @map("_id")
     storeId     String?
     damagerId   String?
     refNo       String?
@@ -618,7 +618,7 @@ model Damage {
 }
 
 model DamageProduct {
-    id        String  @id @default(uuid())
+    id        String  @id @default(uuid()) @map("_id")
     storeId   String?
     damageId  String?
     productId String?
@@ -639,7 +639,7 @@ model DamageProduct {
 
 // Quotation Tables
 model Quotation {
-    id          String    @id @default(uuid())
+    id          String    @id @default(uuid()) @map("_id")
     storeId     String?
     customerId  String?
     refNo       String?
@@ -662,7 +662,7 @@ model Quotation {
 }
 
 model QuotationProduct {
-    id          String  @id @default(uuid())
+    id          String  @id @default(uuid()) @map("_id")
     storeId     String?
     quotationId String?
     productId   String?

@@ -8,11 +8,15 @@ import AppTable, {
 import TextField from "@/components/UI/TextField";
 import { SupplierType } from "@/lib/models/Supplier";
 import { AppTableHeaderOptionsType, IValueType } from "@/lib/types/types";
-import { useFetchSuppliersQuery } from "@/states/actions/stores/suppliers";
+import {
+    useDeleteSupplierMutation,
+    useFetchSuppliersQuery,
+} from "@/states/actions/stores/suppliers";
 import { Icon } from "@iconify/react";
 import { ActionIcon, Button, Checkbox, Flex, Title } from "@mantine/core";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
+import { toast } from "react-toastify";
 
 const SupplierList = () => {
     const router = useRouter();
@@ -45,7 +49,13 @@ const SupplierList = () => {
         }`
     );
 
-    console.log(error);
+    const [deleteSupplier] = useDeleteSupplierMutation();
+    const deleteHandler = (id: string | any) => {
+        deleteSupplier(id)
+            .unwrap()
+            .then((res) => toast.success(res.message))
+            .catch((err) => toast.error(err.message));
+    };
 
     return (
         <AppTable
@@ -122,7 +132,12 @@ const SupplierList = () => {
                             >
                                 <Icon icon="weui:pencil-filled" width={18} />
                             </ActionIcon>
-                            <ActionIcon size="lg" variant="light" color="red">
+                            <ActionIcon
+                                size="lg"
+                                variant="light"
+                                color="red"
+                                onClick={() => deleteHandler(item.id)}
+                            >
                                 <Icon
                                     icon="icon-park-outline:delete"
                                     width={18}
