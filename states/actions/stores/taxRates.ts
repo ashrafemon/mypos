@@ -25,8 +25,9 @@ const taxRates = createApi({
     endpoints: (builder) => ({
         fetchTaxRates: builder.query({
             query: (params) => `tax-rates?${params}`,
-            transformResponse: (response: { data: PaginateResponseType }) =>
-                response.data,
+            transformResponse: (response: {
+                data: PaginateResponseType | TaxRateType[] | any;
+            }) => response.data,
             providesTags: ["StoreTaxRates"],
         }),
         createTaxRate: builder.mutation({

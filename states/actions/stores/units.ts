@@ -25,8 +25,9 @@ const units = createApi({
     endpoints: (builder) => ({
         fetchUnits: builder.query({
             query: (params) => `units?${params}`,
-            transformResponse: (response: { data: PaginateResponseType }) =>
-                response.data,
+            transformResponse: (response: {
+                data: PaginateResponseType | UnitType[] | any;
+            }) => response.data,
             providesTags: ["StoreUnits"],
         }),
         createUnit: builder.mutation({

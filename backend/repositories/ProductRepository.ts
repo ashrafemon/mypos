@@ -2,7 +2,7 @@ import HelperService from "@/backend/lib/HelperService";
 import PrismaService from "@/backend/lib/PrismaService";
 import moment from "moment";
 import ValidateService from "../lib/ValidateService";
-import { StoreRules, UpdateRules } from "../rules/productCategories";
+import { StoreRules, UpdateRules } from "../rules/products";
 import { DynamicObjectTypes } from "../types/baseTypes";
 
 export default class ProductRepository {
@@ -25,7 +25,19 @@ export default class ProductRepository {
         if (queries.fields && queries.fields.length) {
             fields = this.helper.pickDataAsBoolean(queries.fields) || {};
         } else {
-            fields = { id: true, name: true, status: true };
+            fields = {
+                id: true,
+                name: true,
+                code: true,
+                type: true,
+                price: true,
+                status: true,
+                category: {
+                    select: {
+                        name: true,
+                    },
+                },
+            };
         }
 
         if (queries.status) {
@@ -71,10 +83,12 @@ export default class ProductRepository {
             });
         }
 
-        await this.db.product.create({ data: validate?.validated() });
+        await this.db.product.create({
+            data: { ...validate?.validated(), deletedAt: null },
+        });
         return this.helper.entityResponse({
             statusCode: 201,
-            message: "Product category added successfully...",
+            message: "Product added successfully...",
         });
     }
 
@@ -90,8 +104,24 @@ export default class ProductRepository {
         } else {
             fields = {
                 id: true,
+                supplierId: true,
+                categoryId: true,
+                brandId: true,
+                unitId: true,
+                taxRateId: true,
+                boxId: true,
+                type: true,
                 name: true,
+                code: true,
+                barcodeSymbology: true,
+                price: true,
+                discount: true,
+                loyaltyPoint: true,
+                alertQuantity: true,
+                warranty: true,
+                taxMethod: true,
                 description: true,
+                photo: true,
                 order: true,
                 status: true,
             };
@@ -103,7 +133,7 @@ export default class ProductRepository {
         });
         if (!doc) {
             return this.helper.errorResponse({
-                message: "Product category not found...",
+                message: "Product not found...",
             });
         }
         return this.helper.entityResponse({ data: doc });
@@ -132,7 +162,7 @@ export default class ProductRepository {
         });
         if (!doc) {
             return this.helper.errorResponse({
-                message: "Product category not found...",
+                message: "Product not found...",
             });
         }
 
@@ -141,7 +171,7 @@ export default class ProductRepository {
             data: validate?.validated(),
         });
         return this.helper.entityResponse({
-            message: "Product category updated successfully...",
+            message: "Product updated successfully...",
         });
     }
 
@@ -156,7 +186,7 @@ export default class ProductRepository {
         });
         if (!doc) {
             return this.helper.errorResponse({
-                message: "Product category not found...",
+                message: "Product not found...",
             });
         }
         await this.db.product.update({
@@ -164,7 +194,7 @@ export default class ProductRepository {
             data: { deletedAt: moment().toDate() },
         });
         return this.helper.entityResponse({
-            message: "Product category deleted successfully...",
+            message: "Product deleted successfully...",
         });
     }
 }

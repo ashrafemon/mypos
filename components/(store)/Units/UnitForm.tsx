@@ -5,23 +5,23 @@ import SelectBox from "@/components/UI/SelectBox";
 import TextEditor from "@/components/UI/TextEditor";
 import TextField from "@/components/UI/TextField";
 import { ActivityStatusOptions } from "@/lib/constants/Options";
-import { ProductCategoryType } from "@/lib/models/ProductCategory";
+import { UnitType } from "@/lib/models/Unit";
 import { message, validateError } from "@/lib/utils/helper";
 import {
-    useCreateProductCategoryMutation,
-    useUpdateProductCategoryMutation,
-} from "@/states/actions/stores/productCategories";
+    useCreateUnitMutation,
+    useUpdateUnitMutation,
+} from "@/states/actions/stores/units";
 import { Button, Grid, Group } from "@mantine/core";
 import { useEffect, useState } from "react";
 import Validator from "Validator";
 
-const CategoryForm: React.FC<{
+const UnitForm: React.FC<{
     isFetching?: boolean;
-    data?: ProductCategoryType | null;
+    data?: UnitType | null;
     close: () => void;
 }> = ({ isFetching = false, data, close = () => {} }) => {
-    const [create, result] = useCreateProductCategoryMutation();
-    const [update, resultUpdate] = useUpdateProductCategoryMutation();
+    const [create, result] = useCreateUnitMutation();
+    const [update, resultUpdate] = useUpdateUnitMutation();
 
     const [form, setForm] = useState({
         name: "",
@@ -124,7 +124,7 @@ const CategoryForm: React.FC<{
 
     useEffect(() => {
         if (data && Object.keys(data).length > 0) {
-            const payload: ProductCategoryType = { ...data };
+            const payload: UnitType = { ...data };
             let obj = { ...form };
             Object.keys(payload).forEach((key: string) => {
                 if ((payload as any)[key] !== null) {
@@ -209,4 +209,4 @@ const CategoryForm: React.FC<{
     );
 };
 
-export default CategoryForm;
+export default UnitForm;

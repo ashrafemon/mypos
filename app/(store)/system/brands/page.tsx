@@ -1,4 +1,4 @@
-import BrandList from "@/components/(store)/Products/BrandList";
+import BrandList from "@/components/(store)/Brands/BrandList";
 
 const page = () => {
     return <BrandList />;

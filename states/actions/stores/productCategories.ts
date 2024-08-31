@@ -25,8 +25,9 @@ const productCategories = createApi({
     endpoints: (builder) => ({
         fetchProductCategories: builder.query({
             query: (params) => `products/categories?${params}`,
-            transformResponse: (response: { data: PaginateResponseType }) =>
-                response.data,
+            transformResponse: (response: {
+                data: PaginateResponseType | ProductCategoryType[] | any;
+            }) => response.data,
             providesTags: ["StoreProductCategories"],
         }),
         createProductCategory: builder.mutation({

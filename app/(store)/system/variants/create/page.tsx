@@ -1,4 +1,4 @@
-import VariantForm from "@/components/(store)/Products/VariantForm";
+import VariantForm from "@/components/(store)/Variants/VariantForm";
 import { Card, CardSection, Title } from "@mantine/core";
 
 const page = () => {

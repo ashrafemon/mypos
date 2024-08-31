@@ -25,8 +25,9 @@ const suppliers = createApi({
     endpoints: (builder) => ({
         fetchSuppliers: builder.query({
             query: (params) => `suppliers?${params}`,
-            transformResponse: (response: { data: PaginateResponseType }) =>
-                response.data,
+            transformResponse: (response: {
+                data: PaginateResponseType | SupplierType[] | any;
+            }) => response.data,
             providesTags: ["StoreSuppliers"],
         }),
         createSupplier: builder.mutation({

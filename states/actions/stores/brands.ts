@@ -25,8 +25,9 @@ const brands = createApi({
     endpoints: (builder) => ({
         fetchBrands: builder.query({
             query: (params) => `brands?${params}`,
-            transformResponse: (response: { data: PaginateResponseType }) =>
-                response.data,
+            transformResponse: (response: {
+                data: PaginateResponseType | BrandType[] | any;
+            }) => response.data,
             providesTags: ["StoreBrands"],
         }),
         createBrand: builder.mutation({

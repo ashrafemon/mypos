@@ -6,13 +6,14 @@ import AppTable, {
     AppTableRow,
 } from "@/components/UI/Table/AppTable";
 import TextField from "@/components/UI/TextField";
+import { UnitType } from "@/lib/models/Unit";
 import { AppTableHeaderOptionsType, IValueType } from "@/lib/types/types";
 import { message, promptMessage } from "@/lib/utils/helper";
 import {
-    useDeleteProductMutation,
-    useFetchProductQuery,
-    useFetchProductsQuery,
-} from "@/states/actions/stores/products";
+    useDeleteUnitMutation,
+    useFetchUnitQuery,
+    useFetchUnitsQuery,
+} from "@/states/actions/stores/units";
 import { Icon } from "@iconify/react";
 import {
     ActionIcon,
@@ -24,25 +25,21 @@ import {
     Title,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
-import ProductView from "./ProductView";
-import { ProductType } from "@/lib/models/Product";
+import UnitForm from "./UnitForm";
+import UnitView from "./UnitView";
 
-const ProductList = () => {
-    const router = useRouter();
+const UnitList = () => {
     const headers: AppTableHeaderOptionsType[] = useMemo(
         () => [
             { key: "checkbox", label: "Checkbox", align: "center" },
-            { key: "name", label: "Name (Code)" },
-            { key: "type", label: "Type" },
-            { key: "category", label: "Category" },
-            { key: "price", label: "Price" },
+            { key: "name", label: "Name" },
             { key: "status", label: "Status" },
             { key: "action", label: "Action", align: "center" },
         ],
         []
     );
+
     const [queries, setQueries] = useState({
         page: 1,
         offset: 10,
@@ -53,17 +50,17 @@ const ProductList = () => {
         setQueries((prevState) => ({ ...prevState, [field]: value }));
     };
 
-    const { data, isFetching, isError, error } = useFetchProductsQuery(
+    const { data, isFetching, isError, error } = useFetchUnitsQuery(
         `offset=${queries.page}&limit=${queries.offset}${
             queries.search ? `&search=${queries.search}` : ""
         }`
     );
 
-    const [deleteProduct, result] = useDeleteProductMutation();
+    const [deleteUnit, result] = useDeleteUnitMutation();
     const deleteHandler = (id: string | any) => {
         promptMessage(async () => {
             try {
-                const payload = await deleteProduct(id).unwrap();
+                const payload = await deleteUnit(id).unwrap();
                 message({
                     title: payload.message,
                     icon: "success",
@@ -80,17 +77,30 @@ const ProductList = () => {
     };
 
     const [selectedId, setSelectedId] = useState<string | null>(null);
+    const [type, setType] = useState<string | null>(null);
     const [opened, { open, close }] = useDisclosure(false);
+    const [formOpened, { open: formOpen, close: formClose }] =
+        useDisclosure(false);
 
-    const { data: product, isFetching: productIsFetching } =
-        useFetchProductQuery(selectedId, {
-            skip: !selectedId,
-            refetchOnMountOrArgChange: true,
-        });
+    const {
+        data: unit,
+        isFetching: unitIsFetching,
+        isUninitialized: unitIsUninitialized,
+    } = useFetchUnitQuery(selectedId, {
+        skip: !selectedId,
+        refetchOnMountOrArgChange: true,
+    });
 
     const viewHandler = (type: string, id: string | any = null) => {
         setSelectedId(id);
         type === "open" ? open() : close();
+        return;
+    };
+
+    const formHandler = (type: string, id: string | any = null) => {
+        setType(type === "close" ? null : type);
+        setSelectedId(id);
+        type === "close" ? formClose() : formOpen();
         return;
     };
 
@@ -99,11 +109,25 @@ const ProductList = () => {
             <Modal
                 opened={opened}
                 onClose={() => viewHandler("close")}
-                title="View Product"
+                title="View Unit"
                 classNames={{ title: "text-lg font-semibold" }}
                 centered
             >
-                <ProductView data={product} isFetching={productIsFetching} />
+                <UnitView data={unit} isFetching={unitIsFetching} />
+            </Modal>
+
+            <Modal
+                opened={formOpened}
+                onClose={() => formHandler("close")}
+                title={`${type === "edit" ? "Update" : "Add"} Unit`}
+                classNames={{ title: "text-lg font-semibold" }}
+                centered
+            >
+                <UnitForm
+                    close={() => formHandler("close")}
+                    data={!unitIsUninitialized ? unit : null}
+                    isFetching={unitIsFetching}
+                />
             </Modal>
 
             <AppTable
@@ -114,11 +138,11 @@ const ProductList = () => {
                 topContent={
                     <Flex justify="space-between" gap="xs">
                         <Title component="h5" order={3}>
-                            Product List
+                            Unit List
                         </Title>
 
                         <TextField
-                            placeholder="Search Product"
+                            placeholder="Search Unit"
                             leftSection={<Icon icon="mingcute:search-line" />}
                             value={queries.search}
                             onChange={(e) =>
@@ -132,9 +156,9 @@ const ProductList = () => {
                                 leftSection={
                                     <Icon icon="fluent:add-12-filled" />
                                 }
-                                onClick={() => router.push("/products/create")}
+                                onClick={() => formHandler("add")}
                             >
-                                Add Product
+                                Add Unit
                             </Button>
                             <Button
                                 variant="light"
@@ -156,19 +180,12 @@ const ProductList = () => {
                     />
                 }
                 headers={headers}
-                data={data?.data?.map((item: ProductType, i: number) => (
+                data={data?.data?.map((item: UnitType, i: number) => (
                     <AppTableRow key={i}>
                         <AppTableCell>
                             <Checkbox />
                         </AppTableCell>
-                        <AppTableCell>
-                            {item?.name || "N/A"} ({item?.code})
-                        </AppTableCell>
-                        <AppTableCell>{item?.type || "N/A"}</AppTableCell>
-                        <AppTableCell>
-                            {item?.category?.name || "N/A"}
-                        </AppTableCell>
-                        <AppTableCell>{item?.price || 0}</AppTableCell>
+                        <AppTableCell>{item?.name || "N/A"}</AppTableCell>
                         <AppTableCell>
                             <Badge
                                 color={
@@ -183,10 +200,8 @@ const ProductList = () => {
                                 <ActionIcon
                                     size="lg"
                                     variant="light"
+                                    onClick={() => viewHandler("open", item.id)}
                                     loading={result.isLoading}
-                                    onClick={() =>
-                                        viewHandler("open", item?.id)
-                                    }
                                 >
                                     <Icon
                                         icon="carbon:view-filled"
@@ -197,12 +212,8 @@ const ProductList = () => {
                                     size="lg"
                                     variant="light"
                                     color="orange"
+                                    onClick={() => formHandler("edit", item.id)}
                                     loading={result.isLoading}
-                                    onClick={() =>
-                                        router.push(
-                                            `/products/${item?.id}/edit`
-                                        )
-                                    }
                                 >
                                     <Icon
                                         icon="weui:pencil-filled"
@@ -213,7 +224,7 @@ const ProductList = () => {
                                     size="lg"
                                     variant="light"
                                     color="red"
-                                    onClick={() => deleteHandler(item?.id)}
+                                    onClick={() => deleteHandler(item.id)}
                                     loading={result.isLoading}
                                 >
                                     <Icon
@@ -230,4 +241,4 @@ const ProductList = () => {
     );
 };
 
-export default ProductList;
+export default UnitList;

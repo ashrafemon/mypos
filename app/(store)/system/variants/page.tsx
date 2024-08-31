@@ -1,4 +1,4 @@
-import VariantList from "@/components/(store)/Products/VariantList";
+import VariantList from "@/components/(store)/Variants/VariantList";
 
 const page = () => {
     return <VariantList />;

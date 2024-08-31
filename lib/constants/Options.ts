@@ -26,6 +26,11 @@ export const BarcodeSymbologyOptions = [
     { label: "Code 39", value: "C39" },
 ];
 
+export const TaxMethodOptions = [
+    { label: "Inclusive", value: "inclusive" },
+    { label: "Exclusive", value: "exclusive" },
+];
+
 export const AccountTypeOptions = [
     { label: "Cash", value: "cash" },
     { label: "Bank Account", value: "bank" },

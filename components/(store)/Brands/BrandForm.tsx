@@ -5,27 +5,28 @@ import SelectBox from "@/components/UI/SelectBox";
 import TextEditor from "@/components/UI/TextEditor";
 import TextField from "@/components/UI/TextField";
 import { ActivityStatusOptions } from "@/lib/constants/Options";
-import { ProductCategoryType } from "@/lib/models/ProductCategory";
+import { BrandType } from "@/lib/models/Brand";
 import { message, validateError } from "@/lib/utils/helper";
 import {
-    useCreateProductCategoryMutation,
-    useUpdateProductCategoryMutation,
-} from "@/states/actions/stores/productCategories";
+    useCreateBrandMutation,
+    useUpdateBrandMutation,
+} from "@/states/actions/stores/brands";
 import { Button, Grid, Group } from "@mantine/core";
 import { useEffect, useState } from "react";
 import Validator from "Validator";
 
-const CategoryForm: React.FC<{
+const BrandForm: React.FC<{
     isFetching?: boolean;
-    data?: ProductCategoryType | null;
+    data?: BrandType | null;
     close: () => void;
 }> = ({ isFetching = false, data, close = () => {} }) => {
-    const [create, result] = useCreateProductCategoryMutation();
-    const [update, resultUpdate] = useUpdateProductCategoryMutation();
+    const [create, result] = useCreateBrandMutation();
+    const [update, resultUpdate] = useUpdateBrandMutation();
 
     const [form, setForm] = useState({
         name: "",
         description: "",
+        photo: null,
         order: 0,
         status: "active",
     });
@@ -33,6 +34,7 @@ const CategoryForm: React.FC<{
     const [errors, setErrors] = useState({
         name: { text: "", show: false },
         description: { text: "", show: false },
+        photo: { text: "", show: false },
         order: { text: "", show: false },
         status: { text: "", show: false },
     });
@@ -41,12 +43,14 @@ const CategoryForm: React.FC<{
         setErrors({
             name: { text: "", show: false },
             description: { text: "", show: false },
+            photo: { text: "", show: false },
             order: { text: "", show: false },
             status: { text: "", show: false },
         });
         setForm({
             name: "",
             description: "",
+            photo: null,
             order: 0,
             status: "active",
         });
@@ -124,7 +128,7 @@ const CategoryForm: React.FC<{
 
     useEffect(() => {
         if (data && Object.keys(data).length > 0) {
-            const payload: ProductCategoryType = { ...data };
+            const payload: BrandType = { ...data };
             let obj = { ...form };
             Object.keys(payload).forEach((key: string) => {
                 if ((payload as any)[key] !== null) {
@@ -209,4 +213,4 @@ const CategoryForm: React.FC<{
     );
 };
 
-export default CategoryForm;
+export default BrandForm;
