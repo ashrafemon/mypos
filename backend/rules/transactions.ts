@@ -11,11 +11,11 @@ export const StoreRules = {
         .optional()
         .requiredWhen("type", "=", "withdraw"),
     refNo: vine.string(),
-    date: vine.date(),
+    date: vine.date({ formats: { utc: true } }),
     amount: vine.number(),
     description: vine.string().optional(),
     order: vine.number().optional(),
-    status: vine.string().in(["active", "inactive"]),
+    status: vine.string().in(["pending", "done"]),
 };
 
 export const UpdateRules = {
@@ -29,9 +29,9 @@ export const UpdateRules = {
         .optional()
         .requiredWhen("type", "=", "withdraw"),
     refNo: vine.string().optional(),
-    date: vine.date().optional(),
+    date: vine.date({ formats: { utc: true } }).optional(),
     amount: vine.number().optional(),
     description: vine.string().optional(),
     order: vine.number().optional(),
-    status: vine.string().in(["active", "inactive"]).optional(),
+    status: vine.string().in(["pending", "done"]).optional(),
 };

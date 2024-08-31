@@ -71,7 +71,9 @@ export default class UnitRepository {
             });
         }
 
-        await this.db.unit.create({ data: validate?.validated() });
+        await this.db.unit.create({
+            data: { ...validate?.validated(), deletedAt: null },
+        });
         return this.helper.entityResponse({
             statusCode: 201,
             message: "Unit added successfully...",

@@ -467,11 +467,12 @@ model Expense {
     id          String   @id @default(uuid()) @map("_id")
     storeId     String?
     categoryId  String?
+    refNo       String?
     date        DateTime
     title       String
     description String?
     amount      Float?   @default(0)
-    photo       String?
+    attachment  String?
     status      String   @default("pending")
 
     createdAt DateTime  @default(now())
@@ -562,7 +563,7 @@ model Transaction {
     date              DateTime?
     amount            Float?    @default(0)
     description       String?
-    status            String    @default("active")
+    status            String    @default("pending")
 
     createdAt DateTime  @default(now())
     updatedAt DateTime  @updatedAt

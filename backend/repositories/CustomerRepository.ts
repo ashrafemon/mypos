@@ -77,7 +77,9 @@ export default class CustomerRepository {
             });
         }
 
-        await this.db.customer.create({ data: validate?.validated() });
+        await this.db.customer.create({
+            data: { ...validate?.validated(), deletedAt: null },
+        });
         return this.helper.entityResponse({
             statusCode: 201,
             message: "Customer added successfully...",
@@ -95,6 +97,7 @@ export default class CustomerRepository {
             fields = this.helper.pickDataAsBoolean(queries.fields) || {};
         } else {
             fields = {
+                groupId: true,
                 id: true,
                 type: true,
                 name: true,

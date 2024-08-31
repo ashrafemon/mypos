@@ -77,7 +77,9 @@ export default class TransactionRepository {
             });
         }
 
-        await this.db.transaction.create({ data: validate?.validated() });
+        await this.db.transaction.create({
+            data: { ...validate?.validated(), deletedAt: null },
+        });
         return this.helper.entityResponse({
             statusCode: 201,
             message: "Transaction added successfully...",
@@ -96,14 +98,13 @@ export default class TransactionRepository {
         } else {
             fields = {
                 id: true,
-                type: true,
                 incomeCategoryId: true,
                 expenseCategoryId: true,
+                type: true,
                 refNo: true,
                 date: true,
                 amount: true,
                 description: true,
-                order: true,
                 status: true,
             };
         }

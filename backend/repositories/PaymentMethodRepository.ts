@@ -78,7 +78,9 @@ export default class PaymentMethodRepository {
             });
         }
 
-        await this.db.paymentMethod.create({ data: validate?.validated() });
+        await this.db.paymentMethod.create({
+            data: { ...validate?.validated(), deletedAt: null },
+        });
         return this.helper.entityResponse({
             statusCode: 201,
             message: "Payment method added successfully...",

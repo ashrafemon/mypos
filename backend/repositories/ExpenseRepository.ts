@@ -26,11 +26,15 @@ export default class ExpenseRepository {
             fields = this.helper.pickDataAsBoolean(queries.fields) || {};
         } else {
             fields = {
+                refNo: true,
                 id: true,
                 date: true,
                 title: true,
                 amount: true,
                 status: true,
+                category: {
+                    select: { name: true },
+                },
             };
         }
 
@@ -76,7 +80,15 @@ export default class ExpenseRepository {
             });
         }
 
-        await this.db.expense.create({ data: validate?.validated() });
+        const refNo = Math.floor(100000 + Math.random() * 900000);
+
+        await this.db.expense.create({
+            data: {
+                ...validate?.validated(),
+                refNo: `EX_${refNo}`,
+                deletedAt: null,
+            },
+        });
         return this.helper.entityResponse({
             statusCode: 201,
             message: "Expense added successfully...",
@@ -95,13 +107,19 @@ export default class ExpenseRepository {
         } else {
             fields = {
                 id: true,
+                refNo: true,
                 categoryId: true,
                 date: true,
                 title: true,
                 description: true,
                 amount: true,
-                photo: true,
+                attachment: true,
                 status: true,
+                category: {
+                    select: {
+                        name: true,
+                    },
+                },
             };
         }
 

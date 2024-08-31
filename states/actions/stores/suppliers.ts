@@ -1,4 +1,5 @@
 import { API_URL } from "@/lib/constants/Links";
+import { SupplierType } from "@/lib/models/Supplier";
 import { PaginateResponseType } from "@/lib/types/types";
 import { RootState } from "@/states";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
@@ -39,7 +40,8 @@ const suppliers = createApi({
         }),
         fetchSupplier: builder.query({
             query: (id) => `suppliers/${id}`,
-            transformResponse: (response: { data: object }) => response.data,
+            transformResponse: (response: { data: SupplierType }) =>
+                response.data,
             providesTags: ["StoreSupplier"],
         }),
         updateSupplier: builder.mutation({

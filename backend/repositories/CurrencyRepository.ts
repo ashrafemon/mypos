@@ -77,7 +77,9 @@ export default class CurrencyRepository {
             });
         }
 
-        await this.db.currency.create({ data: validate?.validated() });
+        await this.db.currency.create({
+            data: { ...validate?.validated(), deletedAt: null },
+        });
         return this.helper.entityResponse({
             statusCode: 201,
             message: "Currency added successfully...",

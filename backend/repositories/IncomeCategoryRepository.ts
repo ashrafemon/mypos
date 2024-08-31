@@ -71,7 +71,9 @@ export default class IncomeCategoryRepository {
             });
         }
 
-        await this.db.incomeCategory.create({ data: validate?.validated() });
+        await this.db.incomeCategory.create({
+            data: { ...validate?.validated(), deletedAt: null },
+        });
         return this.helper.entityResponse({
             statusCode: 201,
             message: "Income category added successfully...",

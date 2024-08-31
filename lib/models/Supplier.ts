@@ -1,7 +1,4 @@
-type ContactPersonType = {
-    name?: string;
-    phone?: string;
-};
+import { ContactPersonType } from "./Base";
 
 export type SupplierType = {
     id?: string;

@@ -71,7 +71,9 @@ export default class TaxRateRepository {
             });
         }
 
-        await this.db.taxRate.create({ data: validate?.validated() });
+        await this.db.taxRate.create({
+            data: { ...validate?.validated(), deletedAt: null },
+        });
         return this.helper.entityResponse({
             statusCode: 201,
             message: "Tax rate added successfully...",

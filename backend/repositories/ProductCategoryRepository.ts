@@ -71,7 +71,9 @@ export default class ProductCategoryRepository {
             });
         }
 
-        await this.db.productCategory.create({ data: validate?.validated() });
+        await this.db.productCategory.create({
+            data: { ...validate?.validated(), deletedAt: null },
+        });
         return this.helper.entityResponse({
             statusCode: 201,
             message: "Product category added successfully...",

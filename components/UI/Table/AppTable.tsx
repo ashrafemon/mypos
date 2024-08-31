@@ -1,5 +1,5 @@
 import { AppTableType } from "@/lib/types/types";
-import { Card, Checkbox, ScrollArea, Table, Text, Title } from "@mantine/core";
+import { Card, Checkbox, Table } from "@mantine/core";
 import React from "react";
 import AppLoading from "../AppLoading";
 import NoData from "../NoData";
@@ -68,7 +68,7 @@ const AppTable: React.FC<AppTableType> = ({
                     )}
 
                     <Table.Tbody>
-                        {isError ? (
+                        {isError || isLoading ? (
                             <Table.Tr>
                                 <Table.Td
                                     colSpan={headers.length ?? 1}
@@ -76,21 +76,17 @@ const AppTable: React.FC<AppTableType> = ({
                                     c="red"
                                     p="lg"
                                 >
-                                    <Title component="h5" order={3}>
-                                        {error.status}
-                                    </Title>
-                                    <Title component="h5" order={1}>
-                                        {error.originalStatus}
-                                    </Title>
-                                    <Title component="h5" order={4}>
-                                        {error.error}
-                                    </Title>
+                                    <AppLoading
+                                        isLoading={isLoading}
+                                        isError={isError}
+                                        error={error}
+                                    />
                                 </Table.Td>
                             </Table.Tr>
-                        ) : isLoading || !isFound ? (
+                        ) : !isFound ? (
                             <Table.Tr>
                                 <Table.Td colSpan={headers.length ?? 1}>
-                                    {isLoading ? <AppLoading /> : <NoData />}
+                                    <NoData />
                                 </Table.Td>
                             </Table.Tr>
                         ) : (

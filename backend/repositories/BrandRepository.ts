@@ -71,7 +71,9 @@ export default class BrandRepository {
             });
         }
 
-        await this.db.brand.create({ data: validate?.validated() });
+        await this.db.brand.create({
+            data: { ...validate?.validated(), deletedAt: null },
+        });
         return this.helper.entityResponse({
             statusCode: 201,
             message: "Brand added successfully...",

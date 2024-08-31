@@ -71,7 +71,9 @@ export default class CustomerGroupRepository {
             });
         }
 
-        await this.db.customerGroup.create({ data: validate?.validated() });
+        await this.db.customerGroup.create({
+            data: { ...validate?.validated(), deletedAt: null },
+        });
         return this.helper.entityResponse({
             statusCode: 201,
             message: "Customer group added successfully...",

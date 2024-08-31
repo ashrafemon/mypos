@@ -6,7 +6,7 @@ import TextEditor from "@/components/UI/TextEditor";
 import TextField from "@/components/UI/TextField";
 import { ActivityStatusOptions } from "@/lib/constants/Options";
 import { SupplierType } from "@/lib/models/Supplier";
-import { validateError } from "@/lib/utils/helper";
+import { message, validateError } from "@/lib/utils/helper";
 import {
     useCreateSupplierMutation,
     useFetchSupplierQuery,
@@ -14,11 +14,10 @@ import {
 } from "@/states/actions/stores/suppliers";
 import { Button, Grid, Group } from "@mantine/core";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import React, { useEffect, useState } from "react";
 import Validator from "Validator";
 
-const SupplierForm = () => {
+const SupplierForm: React.FC = () => {
     const { id } = useParams();
     const router = useRouter();
 
@@ -108,7 +107,7 @@ const SupplierForm = () => {
     const formAction = async (cb = () => {}) => {
         const validator = await Validator.make(form, {
             name: "required",
-            email: "required|email",
+            email: "sometimes|email",
             phone: "required",
             status: "required|in:active,inactive",
         });
@@ -121,49 +120,40 @@ const SupplierForm = () => {
             return;
         }
 
-        if (id) {
-            update(form)
-                .unwrap()
-                .then((res) => {
-                    toast.success(res.message);
-                    cb();
-                })
-                .catch((err) => {
-                    toast.error(err.message);
-                    if (err.status === "validateError") {
-                        setErrors((prevState) => ({
-                            ...prevState,
-                            ...validateError(err.data),
-                        }));
-                    }
-                });
-        } else {
-            create(form)
-                .unwrap()
-                .then((res) => {
-                    toast.success(res.message);
-                    resetHandler();
-                    cb();
-                })
-                .catch((err) => {
-                    toast.error(err.message);
-                    if (err.status === "validateError") {
-                        setErrors((prevState) => ({
-                            ...prevState,
-                            ...validateError(err.data),
-                        }));
-                    }
-                });
+        try {
+            const payload = id
+                ? await update(form).unwrap()
+                : await create(form).unwrap();
+
+            resetHandler();
+            message({
+                title: payload.message,
+                icon: "success",
+                timer: 3000,
+            });
+            cb();
+        } catch (err: { message: string; status: string; data: any } | any) {
+            message({
+                title: err.message,
+                icon: "error",
+                timer: 3000,
+            });
+            if (err.status === "validateError") {
+                setErrors((prevState) => ({
+                    ...prevState,
+                    ...validateError(err.data),
+                }));
+            }
         }
     };
 
     useEffect(() => {
         if (data && Object.keys(data).length > 0) {
-            const supplier: SupplierType = { ...data };
+            const payload: SupplierType = { ...data };
             let obj = { ...form };
-            Object.keys(supplier).forEach((key: string) => {
-                if ((supplier as any)[key] !== null) {
-                    (obj as any)[key] = (supplier as any)[key];
+            Object.keys(payload).forEach((key: string) => {
+                if ((payload as any)[key] !== null) {
+                    (obj as any)[key] = (payload as any)[key];
                 }
             });
             setForm(obj);

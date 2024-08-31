@@ -1,4 +1,4 @@
-import { TableProps } from "@mantine/core";
+import { LoaderProps, TableProps } from "@mantine/core";
 
 export type IValueType = string | number | undefined | null;
 
@@ -64,3 +64,16 @@ export type ResponseType = {
     message?: string;
     data?: any;
 } | null;
+
+export type AErrorType = {
+    status?: number;
+    originalStatus?: string;
+    error?: string;
+};
+
+export type LoaderType = {
+    size?: number;
+    isLoading?: boolean;
+    isError?: boolean;
+    error?: AErrorType | any;
+} & LoaderProps;

@@ -71,7 +71,9 @@ export default class CounterRepository {
             });
         }
 
-        await this.db.counter.create({ data: validate?.validated() });
+        await this.db.counter.create({
+            data: { ...validate?.validated(), deletedAt: null },
+        });
         return this.helper.entityResponse({
             statusCode: 201,
             message: "Counter added successfully...",

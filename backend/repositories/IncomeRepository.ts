@@ -76,7 +76,9 @@ export default class IncomeRepository {
             });
         }
 
-        await this.db.expense.create({ data: validate?.validated() });
+        await this.db.expense.create({
+            data: { ...validate?.validated(), deletedAt: null },
+        });
         return this.helper.entityResponse({
             statusCode: 201,
             message: "Expense added successfully...",

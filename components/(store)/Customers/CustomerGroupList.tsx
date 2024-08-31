@@ -1,12 +1,20 @@
 "use client";
 
+import AppLoading from "@/components/UI/AppLoading";
 import AppPaginator from "@/components/UI/Table/AppPaginator";
 import AppTable, {
     AppTableCell,
     AppTableRow,
 } from "@/components/UI/Table/AppTable";
 import TextField from "@/components/UI/TextField";
+import { CustomerGroupType } from "@/lib/models/CustomerGroup";
 import { AppTableHeaderOptionsType, IValueType } from "@/lib/types/types";
+import { message, promptMessage } from "@/lib/utils/helper";
+import {
+    useDeleteCustomerGroupMutation,
+    useFetchCustomerGroupQuery,
+    useFetchCustomerGroupsQuery,
+} from "@/states/actions/stores/customerGroups";
 import { Icon } from "@iconify/react";
 import {
     ActionIcon,
@@ -20,6 +28,7 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 import { useMemo, useState } from "react";
 import CustomerGroupForm from "./CustomerGroupForm";
+import CustomerGroupView from "./CustomerGroupView";
 
 const CustomerGroupList = () => {
     const headers: AppTableHeaderOptionsType[] = useMemo(
@@ -42,26 +51,91 @@ const CustomerGroupList = () => {
         setQueries((prevState) => ({ ...prevState, [field]: value }));
     };
 
+    const { data, isFetching, isError, error } = useFetchCustomerGroupsQuery(
+        `offset=${queries.page}&limit=${queries.offset}${
+            queries.search ? `&search=${queries.search}` : ""
+        }`
+    );
+
+    const [deleteGroup, result] = useDeleteCustomerGroupMutation();
+    const deleteHandler = (id: string | any) => {
+        promptMessage(async () => {
+            try {
+                const payload = await deleteGroup(id).unwrap();
+                message({
+                    title: payload.message,
+                    icon: "success",
+                    timer: 3000,
+                });
+            } catch (err: { message: string; status: string } | any) {
+                message({
+                    title: err.message,
+                    icon: "error",
+                    timer: 3000,
+                });
+            }
+        });
+    };
+
+    const [selectedId, setSelectedId] = useState<string | null>(null);
+    const [type, setType] = useState<string | null>(null);
     const [opened, { open, close }] = useDisclosure(false);
+    const [formOpened, { open: formOpen, close: formClose }] =
+        useDisclosure(false);
+
+    const {
+        data: group,
+        isFetching: groupIsFetching,
+        isUninitialized: groupIsUninitialized,
+    } = useFetchCustomerGroupQuery(selectedId, {
+        skip: !selectedId,
+        refetchOnMountOrArgChange: true,
+    });
+
+    const viewHandler = (type: string, id: string | any = null) => {
+        setSelectedId(id);
+        type === "open" ? open() : close();
+        return;
+    };
+
+    const formHandler = (type: string, id: string | any = null) => {
+        setType(type === "close" ? null : type);
+        setSelectedId(id);
+        type === "close" ? formClose() : formOpen();
+        return;
+    };
 
     return (
         <>
             <Modal
                 opened={opened}
-                onClose={close}
-                title={
-                    <Title component="h5" order={4}>
-                        Add Customer Group
-                    </Title>
-                }
+                onClose={() => viewHandler("close")}
+                title="View Customer Group"
+                classNames={{ title: "text-lg font-semibold" }}
                 centered
             >
-                <CustomerGroupForm />
+                <CustomerGroupView data={group} isFetching={groupIsFetching} />
+            </Modal>
+
+            <Modal
+                opened={formOpened}
+                onClose={() => formHandler("close")}
+                title={`${type === "edit" ? "Update" : "Add"} Customer Group`}
+                classNames={{ title: "text-lg font-semibold" }}
+                centered
+            >
+                <CustomerGroupForm
+                    close={() => formHandler("close")}
+                    data={!groupIsUninitialized ? group : null}
+                    isFetching={groupIsFetching}
+                />
             </Modal>
 
             <AppTable
-                isFound={Array(10).fill(5).length > 0}
-                isLoading={false}
+                isFound={data?.data?.length > 0}
+                isLoading={isFetching}
+                isError={isError}
+                error={error}
                 topContent={
                     <Flex justify="space-between" gap="xs">
                         <Title component="h5" order={3}>
@@ -83,7 +157,7 @@ const CustomerGroupList = () => {
                                 leftSection={
                                     <Icon icon="fluent:add-12-filled" />
                                 }
-                                onClick={open}
+                                onClick={() => formHandler("add")}
                             >
                                 Add Customer Group
                             </Button>
@@ -107,49 +181,62 @@ const CustomerGroupList = () => {
                     />
                 }
                 headers={headers}
-                data={Array(10)
-                    .fill(1)
-                    .map((_, i) => (
-                        <AppTableRow key={i}>
-                            <AppTableCell>
-                                <Checkbox />
-                            </AppTableCell>
-                            <AppTableCell>VIP</AppTableCell>
-                            <AppTableCell>
-                                <Badge color="green">Active</Badge>
-                            </AppTableCell>
-                            <AppTableCell>
-                                <Flex gap="xs">
-                                    <ActionIcon size="lg" variant="light">
-                                        <Icon
-                                            icon="carbon:view-filled"
-                                            width={18}
-                                        />
-                                    </ActionIcon>
-                                    <ActionIcon
-                                        size="lg"
-                                        variant="light"
-                                        color="orange"
-                                    >
-                                        <Icon
-                                            icon="weui:pencil-filled"
-                                            width={18}
-                                        />
-                                    </ActionIcon>
-                                    <ActionIcon
-                                        size="lg"
-                                        variant="light"
-                                        color="red"
-                                    >
-                                        <Icon
-                                            icon="icon-park-outline:delete"
-                                            width={18}
-                                        />
-                                    </ActionIcon>
-                                </Flex>
-                            </AppTableCell>
-                        </AppTableRow>
-                    ))}
+                data={data?.data?.map((item: CustomerGroupType, i: number) => (
+                    <AppTableRow key={i}>
+                        <AppTableCell>
+                            <Checkbox />
+                        </AppTableCell>
+                        <AppTableCell>{item.name}</AppTableCell>
+                        <AppTableCell>
+                            <Badge
+                                color={
+                                    item.status === "active" ? "green" : "red"
+                                }
+                            >
+                                {item.status}
+                            </Badge>
+                        </AppTableCell>
+                        <AppTableCell>
+                            <Flex gap="xs" justify="center">
+                                <ActionIcon
+                                    size="lg"
+                                    variant="light"
+                                    onClick={() => viewHandler("open", item.id)}
+                                    loading={result.isLoading}
+                                >
+                                    <Icon
+                                        icon="carbon:view-filled"
+                                        width={18}
+                                    />
+                                </ActionIcon>
+                                <ActionIcon
+                                    size="lg"
+                                    variant="light"
+                                    color="orange"
+                                    onClick={() => formHandler("edit", item.id)}
+                                    loading={result.isLoading}
+                                >
+                                    <Icon
+                                        icon="weui:pencil-filled"
+                                        width={18}
+                                    />
+                                </ActionIcon>
+                                <ActionIcon
+                                    size="lg"
+                                    variant="light"
+                                    color="red"
+                                    onClick={() => deleteHandler(item.id)}
+                                    loading={result.isLoading}
+                                >
+                                    <Icon
+                                        icon="icon-park-outline:delete"
+                                        width={18}
+                                    />
+                                </ActionIcon>
+                            </Flex>
+                        </AppTableCell>
+                    </AppTableRow>
+                ))}
             />
         </>
     );

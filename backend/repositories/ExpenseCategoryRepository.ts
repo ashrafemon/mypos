@@ -71,7 +71,9 @@ export default class ExpenseCategoryRepository {
             });
         }
 
-        await this.db.expenseCategory.create({ data: validate?.validated() });
+        await this.db.expenseCategory.create({
+            data: { ...validate?.validated(), deletedAt: null },
+        });
         return this.helper.entityResponse({
             statusCode: 201,
             message: "Expense category added successfully...",

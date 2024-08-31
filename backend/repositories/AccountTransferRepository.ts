@@ -76,7 +76,9 @@ export default class AccountTransferRepository {
             });
         }
 
-        await this.db.accountTransfer.create({ data: validate?.validated() });
+        await this.db.accountTransfer.create({
+            data: { ...validate?.validated(), deletedAt: null },
+        });
         return this.helper.entityResponse({
             statusCode: 201,
             message: "Account transfer added successfully...",
@@ -95,7 +97,6 @@ export default class AccountTransferRepository {
         } else {
             fields = {
                 id: true,
-                type: true,
                 fromAccountId: true,
                 toAccountId: true,
                 refNo: true,
