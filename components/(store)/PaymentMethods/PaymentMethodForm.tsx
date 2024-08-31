@@ -4,47 +4,36 @@ import AppLoading from "@/components/UI/AppLoading";
 import SelectBox from "@/components/UI/SelectBox";
 import TextEditor from "@/components/UI/TextEditor";
 import TextField from "@/components/UI/TextField";
-import {
-    ActivityStatusOptions,
-    CurrencyPositionOptions,
-} from "@/lib/constants/Options";
-import { CurrencyType } from "@/lib/models/Currency";
+import { ActivityStatusOptions } from "@/lib/constants/Options";
+import { PaymentMethodType } from "@/lib/models/PaymentMethod";
 import { message, validateError } from "@/lib/utils/helper";
 import {
-    useCreateCurrencyMutation,
-    useUpdateCurrencyMutation,
-} from "@/states/actions/stores/currencies";
+    useCreatePaymentMethodMutation,
+    useUpdatePaymentMethodMutation,
+} from "@/states/actions/stores/paymentMethods";
 import { Button, Grid, Group } from "@mantine/core";
 import { useEffect, useState } from "react";
 import Validator from "Validator";
 
-const CurrencyForm: React.FC<{
+const PaymentMethodForm: React.FC<{
     isFetching?: boolean;
-    data?: CurrencyType | null;
+    data?: PaymentMethodType | null;
     close: () => void;
 }> = ({ isFetching = false, data, close = () => {} }) => {
-    const [create, result] = useCreateCurrencyMutation();
-    const [update, resultUpdate] = useUpdateCurrencyMutation();
+    const [create, result] = useCreatePaymentMethodMutation();
+    const [update, resultUpdate] = useUpdatePaymentMethodMutation();
 
     const [form, setForm] = useState({
+        type: "offline",
         name: "",
-        symbol: "",
-        shortName: "",
-        decimalPlace: 2,
-        position: "start",
-        baseAmount: 0,
         description: "",
         order: 0,
         status: "active",
     });
 
     const [errors, setErrors] = useState({
+        type: { text: "", show: false },
         name: { text: "", show: false },
-        symbol: { text: "", show: false },
-        shortName: { text: "", show: false },
-        decimalPlace: { text: "", show: false },
-        position: { text: "", show: false },
-        baseAmount: { text: "", show: false },
         description: { text: "", show: false },
         order: { text: "", show: false },
         status: { text: "", show: false },
@@ -52,23 +41,15 @@ const CurrencyForm: React.FC<{
 
     const resetHandler = () => {
         setErrors({
+            type: { text: "", show: false },
             name: { text: "", show: false },
-            symbol: { text: "", show: false },
-            shortName: { text: "", show: false },
-            decimalPlace: { text: "", show: false },
-            position: { text: "", show: false },
-            baseAmount: { text: "", show: false },
             description: { text: "", show: false },
             order: { text: "", show: false },
             status: { text: "", show: false },
         });
         setForm({
+            type: "offline",
             name: "",
-            symbol: "",
-            shortName: "",
-            decimalPlace: 2,
-            position: "start",
-            baseAmount: 0,
             description: "",
             order: 0,
             status: "active",
@@ -105,10 +86,8 @@ const CurrencyForm: React.FC<{
 
     const formAction = async (cb = () => {}) => {
         const validator = await Validator.make(form, {
+            type: "required|in:offline,online",
             name: "required",
-            symbol: "required",
-            position: "required|in:start,end",
-            decimalPlace: "required|numeric",
             description: "sometimes",
             status: "required|in:active,inactive",
         });
@@ -150,7 +129,7 @@ const CurrencyForm: React.FC<{
 
     useEffect(() => {
         if (data && Object.keys(data).length > 0) {
-            const payload: CurrencyType = { ...data };
+            const payload: PaymentMethodType = { ...data };
             let obj = { ...form };
             Object.keys(payload).forEach((key: string) => {
                 if ((payload as any)[key] !== null) {
@@ -171,85 +150,12 @@ const CurrencyForm: React.FC<{
                 <Grid.Col span={{ base: 12, md: 6 }}>
                     <TextField
                         label="Name"
-                        placeholder="Ex. Bangladeshi Taka"
+                        placeholder="Ex. Cash"
                         withAsterisk
                         value={form.name}
                         error={errors.name.text}
                         onChange={(e) =>
                             fieldChangeHandler("name", null, e.target.value)
-                        }
-                    />
-                </Grid.Col>
-                <Grid.Col span={{ base: 12, md: 6 }}>
-                    <TextField
-                        label="Symbol"
-                        placeholder="Ex. ৳"
-                        withAsterisk
-                        value={form.symbol}
-                        error={errors.symbol.text}
-                        onChange={(e) =>
-                            fieldChangeHandler("symbol", null, e.target.value)
-                        }
-                    />
-                </Grid.Col>
-                <Grid.Col span={{ base: 12, md: 6 }}>
-                    <TextField
-                        label="Short Name"
-                        placeholder="Ex. BDT"
-                        withAsterisk
-                        value={form.shortName}
-                        error={errors.shortName.text}
-                        onChange={(e) =>
-                            fieldChangeHandler(
-                                "shortName",
-                                null,
-                                e.target.value
-                            )
-                        }
-                    />
-                </Grid.Col>
-                <Grid.Col span={{ base: 12, md: 6 }}>
-                    <TextField
-                        label="Decimal Place"
-                        placeholder="Ex. 2"
-                        withAsterisk
-                        value={form.decimalPlace}
-                        error={errors.decimalPlace.text}
-                        onChange={(e) =>
-                            fieldChangeHandler(
-                                "decimalPlace",
-                                null,
-                                e.target.value
-                            )
-                        }
-                    />
-                </Grid.Col>
-                <Grid.Col span={{ base: 12, md: 6 }}>
-                    <TextField
-                        label="Base Amount"
-                        placeholder="Ex. 108"
-                        withAsterisk
-                        value={form.baseAmount}
-                        error={errors.baseAmount.text}
-                        onChange={(e) =>
-                            fieldChangeHandler(
-                                "baseAmount",
-                                null,
-                                e.target.value
-                            )
-                        }
-                    />
-                </Grid.Col>
-                <Grid.Col span={{ base: 12, md: 6 }}>
-                    <SelectBox
-                        label="Position"
-                        placeholder="Ex. Start"
-                        data={CurrencyPositionOptions}
-                        withAsterisk
-                        value={form.position}
-                        error={errors.position.text}
-                        onChange={(value) =>
-                            fieldChangeHandler("position", null, value)
                         }
                     />
                 </Grid.Col>
@@ -266,10 +172,10 @@ const CurrencyForm: React.FC<{
                         }
                     />
                 </Grid.Col>
-                <Grid.Col span={{ base: 12, md: 12 }}>
+                <Grid.Col span={12}>
                     <TextEditor
                         label="Description"
-                        placeholder="Ex. Something about currency"
+                        placeholder="Ex. Something about payment gateway"
                         minRows={2}
                         value={form.description}
                         error={errors.description.text}
@@ -282,7 +188,7 @@ const CurrencyForm: React.FC<{
                         }
                     />
                 </Grid.Col>
-                <Grid.Col span={{ base: 12, md: 12 }}>
+                <Grid.Col span={12}>
                     <Group gap="xs">
                         <Button
                             type="submit"
@@ -308,4 +214,4 @@ const CurrencyForm: React.FC<{
     );
 };
 
-export default CurrencyForm;
+export default PaymentMethodForm;

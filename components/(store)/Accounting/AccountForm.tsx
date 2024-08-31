@@ -109,7 +109,7 @@ const AccountForm: React.FC<{
         const validator = await Validator.make(form, {
             type: "required|in:cash,bank,mfs,card",
             name: "required",
-            no: "required",
+            no: "required_if:type,!=,cash",
             openingBalance: "required|numeric",
             description: "sometimes",
             order: "sometimes|numeric",

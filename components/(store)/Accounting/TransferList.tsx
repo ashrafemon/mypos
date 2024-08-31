@@ -195,7 +195,7 @@ const TransferList = () => {
                                         loading={result.isLoading}
                                         onClick={() =>
                                             router.push(
-                                                `/accounting/transactions/${item?.id}/edit`
+                                                `/accounting/transfers/${item?.id}/edit`
                                             )
                                         }
                                     >

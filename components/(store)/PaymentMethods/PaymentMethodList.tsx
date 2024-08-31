@@ -6,14 +6,14 @@ import AppTable, {
     AppTableRow,
 } from "@/components/UI/Table/AppTable";
 import TextField from "@/components/UI/TextField";
-import { CurrencyType } from "@/lib/models/Currency";
+import { PaymentMethodType } from "@/lib/models/PaymentMethod";
 import { AppTableHeaderOptionsType, IValueType } from "@/lib/types/types";
 import { message, promptMessage } from "@/lib/utils/helper";
 import {
-    useDeleteCurrencyMutation,
-    useFetchCurrenciesQuery,
-    useFetchCurrencyQuery,
-} from "@/states/actions/stores/currencies";
+    useDeletePaymentMethodMutation,
+    useFetchPaymentMethodQuery,
+    useFetchPaymentMethodsQuery,
+} from "@/states/actions/stores/paymentMethods";
 import { Icon } from "@iconify/react";
 import {
     ActionIcon,
@@ -26,15 +26,14 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useMemo, useState } from "react";
-import CurrencyForm from "./CurrencyForm";
-import CurrencyView from "./CurrencyView";
+import PaymentGatewayForm from "./PaymentMethodForm";
+import PaymentMethodView from "./PaymentMethodView";
 
-const CurrencyList = () => {
+const PaymentMethodList = () => {
     const headers: AppTableHeaderOptionsType[] = useMemo(
         () => [
             { key: "checkbox", label: "Checkbox", align: "center" },
             { key: "name", label: "Name" },
-            { key: "symbol", label: "Symbol" },
             { key: "status", label: "Status" },
             { key: "action", label: "Action", align: "center" },
         ],
@@ -51,17 +50,17 @@ const CurrencyList = () => {
         setQueries((prevState) => ({ ...prevState, [field]: value }));
     };
 
-    const { data, isFetching, isError, error } = useFetchCurrenciesQuery(
+    const { data, isFetching, isError, error } = useFetchPaymentMethodsQuery(
         `offset=${queries.page}&limit=${queries.offset}${
             queries.search ? `&search=${queries.search}` : ""
         }`
     );
 
-    const [deleteCurrency, result] = useDeleteCurrencyMutation();
+    const [deleteMethod, result] = useDeletePaymentMethodMutation();
     const deleteHandler = (id: string | any) => {
         promptMessage(async () => {
             try {
-                const payload = await deleteCurrency(id).unwrap();
+                const payload = await deleteMethod(id).unwrap();
                 message({
                     title: payload.message,
                     icon: "success",
@@ -84,10 +83,10 @@ const CurrencyList = () => {
         useDisclosure(false);
 
     const {
-        data: currency,
-        isFetching: currencyIsFetching,
-        isUninitialized: currencyIsUninitialized,
-    } = useFetchCurrencyQuery(selectedId, {
+        data: method,
+        isFetching: methodIsFetching,
+        isUninitialized: methodIsUninitialized,
+    } = useFetchPaymentMethodQuery(selectedId, {
         skip: !selectedId,
         refetchOnMountOrArgChange: true,
     });
@@ -110,24 +109,27 @@ const CurrencyList = () => {
             <Modal
                 opened={opened}
                 onClose={() => viewHandler("close")}
-                title="View Currency"
+                title="View Payment Method"
                 classNames={{ title: "text-lg font-semibold" }}
                 centered
             >
-                <CurrencyView data={currency} isFetching={currencyIsFetching} />
+                <PaymentMethodView
+                    data={method}
+                    isFetching={methodIsFetching}
+                />
             </Modal>
 
             <Modal
                 opened={formOpened}
                 onClose={() => formHandler("close")}
-                title={`${type === "edit" ? "Update" : "Add"} Currency`}
+                title={`${type === "edit" ? "Update" : "Add"} Payment Method`}
                 classNames={{ title: "text-lg font-semibold" }}
                 centered
             >
-                <CurrencyForm
+                <PaymentGatewayForm
                     close={() => formHandler("close")}
-                    data={!currencyIsUninitialized ? currency : null}
-                    isFetching={currencyIsFetching}
+                    data={!methodIsUninitialized ? method : null}
+                    isFetching={methodIsFetching}
                 />
             </Modal>
 
@@ -139,11 +141,11 @@ const CurrencyList = () => {
                 topContent={
                     <Flex justify="space-between" gap="xs">
                         <Title component="h5" order={3}>
-                            Currency List
+                            Payment Method List
                         </Title>
 
                         <TextField
-                            placeholder="Search Currency"
+                            placeholder="Search Payment Method"
                             leftSection={<Icon icon="mingcute:search-line" />}
                             value={queries.search}
                             onChange={(e) =>
@@ -159,7 +161,7 @@ const CurrencyList = () => {
                                 }
                                 onClick={() => formHandler("add")}
                             >
-                                Add Currency
+                                Add Payment Method
                             </Button>
                             <Button
                                 variant="light"
@@ -181,20 +183,19 @@ const CurrencyList = () => {
                     />
                 }
                 headers={headers}
-                data={data?.data?.map((item: CurrencyType, i: number) => (
+                data={data?.data?.map((item: PaymentMethodType, i: number) => (
                     <AppTableRow key={i}>
                         <AppTableCell>
                             <Checkbox />
                         </AppTableCell>
                         <AppTableCell>{item?.name || "N/A"}</AppTableCell>
-                        <AppTableCell>{item?.symbol || "N/A"}</AppTableCell>
                         <AppTableCell>
                             <Badge
                                 color={
-                                    item.status === "active" ? "green" : "red"
+                                    item?.status === "active" ? "green" : "red"
                                 }
                             >
-                                {item.status}
+                                {item?.status}
                             </Badge>
                         </AppTableCell>
                         <AppTableCell>
@@ -243,4 +244,4 @@ const CurrencyList = () => {
     );
 };
 
-export default CurrencyList;
+export default PaymentMethodList;

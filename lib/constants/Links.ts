@@ -207,7 +207,7 @@ export const StoreLinks = [
             { name: "List Counter", link: "/system/counters" },
             { name: "List Tax/Vat", link: "/system/taxes" },
             { name: "List Currency", link: "/system/currencies" },
-            { name: "List Payment Gateway", link: "/system/payment-gateways" },
+            { name: "List Payment Method", link: "/system/payment-methods" },
         ],
     },
 ];

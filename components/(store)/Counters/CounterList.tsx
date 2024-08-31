@@ -6,7 +6,14 @@ import AppTable, {
     AppTableRow,
 } from "@/components/UI/Table/AppTable";
 import TextField from "@/components/UI/TextField";
+import { CounterType } from "@/lib/models/Counter";
 import { AppTableHeaderOptionsType, IValueType } from "@/lib/types/types";
+import { message, promptMessage } from "@/lib/utils/helper";
+import {
+    useDeleteCounterMutation,
+    useFetchCounterQuery,
+    useFetchCountersQuery,
+} from "@/states/actions/stores/counters";
 import { Icon } from "@iconify/react";
 import {
     ActionIcon,
@@ -20,6 +27,7 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 import { useMemo, useState } from "react";
 import CounterForm from "./CounterForm";
+import CounterView from "./CounterView";
 
 const CounterList = () => {
     const headers: AppTableHeaderOptionsType[] = useMemo(
@@ -42,26 +50,91 @@ const CounterList = () => {
         setQueries((prevState) => ({ ...prevState, [field]: value }));
     };
 
+    const { data, isFetching, isError, error } = useFetchCountersQuery(
+        `offset=${queries.page}&limit=${queries.offset}${
+            queries.search ? `&search=${queries.search}` : ""
+        }`
+    );
+
+    const [deleteCounter, result] = useDeleteCounterMutation();
+    const deleteHandler = (id: string | any) => {
+        promptMessage(async () => {
+            try {
+                const payload = await deleteCounter(id).unwrap();
+                message({
+                    title: payload.message,
+                    icon: "success",
+                    timer: 3000,
+                });
+            } catch (err: { message: string; status: string } | any) {
+                message({
+                    title: err.message,
+                    icon: "error",
+                    timer: 3000,
+                });
+            }
+        });
+    };
+
+    const [selectedId, setSelectedId] = useState<string | null>(null);
+    const [type, setType] = useState<string | null>(null);
     const [opened, { open, close }] = useDisclosure(false);
+    const [formOpened, { open: formOpen, close: formClose }] =
+        useDisclosure(false);
+
+    const {
+        data: counter,
+        isFetching: counterIsFetching,
+        isUninitialized: counterIsUninitialized,
+    } = useFetchCounterQuery(selectedId, {
+        skip: !selectedId,
+        refetchOnMountOrArgChange: true,
+    });
+
+    const viewHandler = (type: string, id: string | any = null) => {
+        setSelectedId(id);
+        type === "open" ? open() : close();
+        return;
+    };
+
+    const formHandler = (type: string, id: string | any = null) => {
+        setType(type === "close" ? null : type);
+        setSelectedId(id);
+        type === "close" ? formClose() : formOpen();
+        return;
+    };
 
     return (
         <>
             <Modal
                 opened={opened}
-                onClose={close}
-                title={
-                    <Title component="h5" order={4}>
-                        Add Counter
-                    </Title>
-                }
+                onClose={() => viewHandler("close")}
+                title="View Counter"
+                classNames={{ title: "text-lg font-semibold" }}
                 centered
             >
-                <CounterForm />
+                <CounterView data={counter} isFetching={counterIsFetching} />
+            </Modal>
+
+            <Modal
+                opened={formOpened}
+                onClose={() => formHandler("close")}
+                title={`${type === "edit" ? "Update" : "Add"} Customer Group`}
+                classNames={{ title: "text-lg font-semibold" }}
+                centered
+            >
+                <CounterForm
+                    close={() => formHandler("close")}
+                    data={!counterIsUninitialized ? counter : null}
+                    isFetching={counterIsFetching}
+                />
             </Modal>
 
             <AppTable
-                isFound={Array(10).fill(5).length > 0}
-                isLoading={false}
+                isFound={data?.data?.length > 0}
+                isLoading={isFetching}
+                isError={isError}
+                error={error}
                 topContent={
                     <Flex justify="space-between" gap="xs">
                         <Title component="h5" order={3}>
@@ -83,7 +156,7 @@ const CounterList = () => {
                                 leftSection={
                                     <Icon icon="fluent:add-12-filled" />
                                 }
-                                onClick={open}
+                                onClick={() => formHandler("add")}
                             >
                                 Add Counter
                             </Button>
@@ -107,49 +180,62 @@ const CounterList = () => {
                     />
                 }
                 headers={headers}
-                data={Array(10)
-                    .fill(1)
-                    .map((_, i) => (
-                        <AppTableRow key={i}>
-                            <AppTableCell>
-                                <Checkbox />
-                            </AppTableCell>
-                            <AppTableCell>Counter {i + 1}</AppTableCell>
-                            <AppTableCell>
-                                <Badge color="green">Active</Badge>
-                            </AppTableCell>
-                            <AppTableCell>
-                                <Flex gap="xs">
-                                    <ActionIcon size="lg" variant="light">
-                                        <Icon
-                                            icon="carbon:view-filled"
-                                            width={18}
-                                        />
-                                    </ActionIcon>
-                                    <ActionIcon
-                                        size="lg"
-                                        variant="light"
-                                        color="orange"
-                                    >
-                                        <Icon
-                                            icon="weui:pencil-filled"
-                                            width={18}
-                                        />
-                                    </ActionIcon>
-                                    <ActionIcon
-                                        size="lg"
-                                        variant="light"
-                                        color="red"
-                                    >
-                                        <Icon
-                                            icon="icon-park-outline:delete"
-                                            width={18}
-                                        />
-                                    </ActionIcon>
-                                </Flex>
-                            </AppTableCell>
-                        </AppTableRow>
-                    ))}
+                data={data?.data?.map((item: CounterType, i: number) => (
+                    <AppTableRow key={i}>
+                        <AppTableCell>
+                            <Checkbox />
+                        </AppTableCell>
+                        <AppTableCell>{item?.name || "N/A"}</AppTableCell>
+                        <AppTableCell>
+                            <Badge
+                                color={
+                                    item.status === "active" ? "green" : "red"
+                                }
+                            >
+                                {item.status}
+                            </Badge>
+                        </AppTableCell>
+                        <AppTableCell>
+                            <Flex gap="xs" justify="center">
+                                <ActionIcon
+                                    size="lg"
+                                    variant="light"
+                                    onClick={() => viewHandler("open", item.id)}
+                                    loading={result.isLoading}
+                                >
+                                    <Icon
+                                        icon="carbon:view-filled"
+                                        width={18}
+                                    />
+                                </ActionIcon>
+                                <ActionIcon
+                                    size="lg"
+                                    variant="light"
+                                    color="orange"
+                                    onClick={() => formHandler("edit", item.id)}
+                                    loading={result.isLoading}
+                                >
+                                    <Icon
+                                        icon="weui:pencil-filled"
+                                        width={18}
+                                    />
+                                </ActionIcon>
+                                <ActionIcon
+                                    size="lg"
+                                    variant="light"
+                                    color="red"
+                                    onClick={() => deleteHandler(item.id)}
+                                    loading={result.isLoading}
+                                >
+                                    <Icon
+                                        icon="icon-park-outline:delete"
+                                        width={18}
+                                    />
+                                </ActionIcon>
+                            </Flex>
+                        </AppTableCell>
+                    </AppTableRow>
+                ))}
             />
         </>
     );
