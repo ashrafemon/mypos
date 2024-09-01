@@ -6,7 +6,14 @@ import AppTable, {
     AppTableRow,
 } from "@/components/UI/Table/AppTable";
 import TextField from "@/components/UI/TextField";
-import { IValueType } from "@/lib/types/types";
+import { ExpenseCategoryType } from "@/lib/models/ExpenseCategory";
+import { AppTableHeaderOptionsType, IValueType } from "@/lib/types/types";
+import { message, promptMessage } from "@/lib/utils/helper";
+import {
+    useDeleteIncomeCategoryMutation,
+    useFetchIncomeCategoriesQuery,
+    useFetchIncomeCategoryQuery,
+} from "@/states/actions/stores/incomeCategories";
 import { Icon } from "@iconify/react";
 import {
     ActionIcon,
@@ -18,39 +25,116 @@ import {
     Title,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import CategoryForm from "./CategoryForm";
+import CategoryView from "./CategoryView";
 
 const CategoryList = () => {
+    const headers: AppTableHeaderOptionsType[] = useMemo(
+        () => [
+            { key: "checkbox", label: "Checkbox", align: "center" },
+            { key: "name", label: "Name" },
+            { key: "status", label: "Status" },
+            { key: "action", label: "Action", align: "center" },
+        ],
+        []
+    );
+
     const [queries, setQueries] = useState({
         page: 1,
         offset: 10,
+        search: "",
     });
 
     const handleQueryChange = (field: string, value: IValueType) => {
         setQueries((prevState) => ({ ...prevState, [field]: value }));
     };
 
+    const { data, isFetching, isError, error } = useFetchIncomeCategoriesQuery(
+        `offset=${queries.page}&limit=${queries.offset}${
+            queries.search ? `&search=${queries.search}` : ""
+        }`
+    );
+
+    const [deleteCategory, result] = useDeleteIncomeCategoryMutation();
+    const deleteHandler = (id: string | any) => {
+        promptMessage(async () => {
+            try {
+                const payload = await deleteCategory(id).unwrap();
+                message({
+                    title: payload.message,
+                    icon: "success",
+                    timer: 3000,
+                });
+            } catch (err: { message: string; status: string } | any) {
+                message({
+                    title: err.message,
+                    icon: "error",
+                    timer: 3000,
+                });
+            }
+        });
+    };
+
+    const [selectedId, setSelectedId] = useState<string | null>(null);
+    const [type, setType] = useState<string | null>(null);
     const [opened, { open, close }] = useDisclosure(false);
+    const [formOpened, { open: formOpen, close: formClose }] =
+        useDisclosure(false);
+
+    const {
+        data: category,
+        isFetching: categoryIsFetching,
+        isUninitialized: categoryIsUninitialized,
+    } = useFetchIncomeCategoryQuery(selectedId, {
+        skip: !selectedId,
+        refetchOnMountOrArgChange: true,
+    });
+
+    const viewHandler = (type: string, id: string | any = null) => {
+        setSelectedId(id);
+        type === "open" ? open() : close();
+        return;
+    };
+
+    const formHandler = (type: string, id: string | any = null) => {
+        setType(type === "close" ? null : type);
+        setSelectedId(id);
+        type === "close" ? formClose() : formOpen();
+        return;
+    };
 
     return (
         <>
             <Modal
                 opened={opened}
-                onClose={close}
-                title={
-                    <Title component="h5" order={4}>
-                        Add Category
-                    </Title>
-                }
+                onClose={() => viewHandler("close")}
+                title="View Category"
+                classNames={{ title: "text-lg font-semibold" }}
                 centered
             >
-                <CategoryForm />
+                <CategoryView data={category} isFetching={categoryIsFetching} />
+            </Modal>
+
+            <Modal
+                opened={formOpened}
+                onClose={() => formHandler("close")}
+                title={`${type === "edit" ? "Update" : "Add"} Category`}
+                classNames={{ title: "text-lg font-semibold" }}
+                centered
+            >
+                <CategoryForm
+                    close={() => formHandler("close")}
+                    data={!categoryIsUninitialized ? category : null}
+                    isFetching={categoryIsFetching}
+                />
             </Modal>
 
             <AppTable
-                isFound={Array(10).fill(5).length > 0}
-                isLoading={false}
+                isFound={data?.data?.length > 0}
+                isLoading={isFetching}
+                isError={isError}
+                error={error}
                 topContent={
                     <Flex justify="space-between" gap="xs">
                         <Title component="h5" order={3}>
@@ -68,7 +152,7 @@ const CategoryList = () => {
                                 leftSection={
                                     <Icon icon="fluent:add-12-filled" />
                                 }
-                                onClick={open}
+                                onClick={() => formHandler("add")}
                             >
                                 Add Income Category
                             </Button>
@@ -91,26 +175,35 @@ const CategoryList = () => {
                         }
                     />
                 }
-                headers={[
-                    { key: "checkbox", label: "Checkbox", align: "center" },
-                    { key: "name", label: "Name" },
-                    { key: "status", label: "Status" },
-                    { key: "action", label: "Action", align: "center" },
-                ]}
-                data={Array(10)
-                    .fill(1)
-                    .map((_, i) => (
+                headers={headers}
+                data={data?.data?.map(
+                    (item: ExpenseCategoryType, i: number) => (
                         <AppTableRow key={i}>
                             <AppTableCell>
                                 <Checkbox />
                             </AppTableCell>
-                            <AppTableCell>VIP</AppTableCell>
+                            <AppTableCell>{item.name}</AppTableCell>
                             <AppTableCell>
-                                <Badge color="green">Active</Badge>
+                                <Badge
+                                    color={
+                                        item.status === "active"
+                                            ? "green"
+                                            : "red"
+                                    }
+                                >
+                                    {item.status}
+                                </Badge>
                             </AppTableCell>
                             <AppTableCell>
-                                <Flex gap="xs">
-                                    <ActionIcon size="lg" variant="light">
+                                <Flex gap="xs" justify="center">
+                                    <ActionIcon
+                                        size="lg"
+                                        variant="light"
+                                        onClick={() =>
+                                            viewHandler("open", item.id)
+                                        }
+                                        loading={result.isLoading}
+                                    >
                                         <Icon
                                             icon="carbon:view-filled"
                                             width={18}
@@ -120,6 +213,10 @@ const CategoryList = () => {
                                         size="lg"
                                         variant="light"
                                         color="orange"
+                                        onClick={() =>
+                                            formHandler("edit", item.id)
+                                        }
+                                        loading={result.isLoading}
                                     >
                                         <Icon
                                             icon="weui:pencil-filled"
@@ -130,6 +227,8 @@ const CategoryList = () => {
                                         size="lg"
                                         variant="light"
                                         color="red"
+                                        onClick={() => deleteHandler(item.id)}
+                                        loading={result.isLoading}
                                     >
                                         <Icon
                                             icon="icon-park-outline:delete"
@@ -139,7 +238,8 @@ const CategoryList = () => {
                                 </Flex>
                             </AppTableCell>
                         </AppTableRow>
-                    ))}
+                    )
+                )}
             />
         </>
     );

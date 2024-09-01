@@ -189,7 +189,7 @@ const ExpenseList = () => {
                                     loading={result.isLoading}
                                     onClick={() =>
                                         router.push(
-                                            `/customers/${item?.id}/edit`
+                                            `/expenses/${item?.id}/edit`
                                         )
                                     }
                                 >

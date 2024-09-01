@@ -534,12 +534,13 @@ model Income {
     storeId       String?
     categoryId    String?
     accountId     String?
+    refNo         String?
     date          DateTime
     title         String
     description   String?
     contactPerson Json?
     amount        Float?   @default(0)
-    photo         String?
+    attachment    String?
     status        String   @default("pending")
 
     createdAt DateTime  @default(now())
@@ -550,7 +551,7 @@ model Income {
     category IncomeCategory? @relation(fields: [categoryId], references: [id])
     account  Account?        @relation(fields: [accountId], references: [id])
 
-    @@map("icomes")
+    @@map("incomes")
 }
 
 model Transaction {

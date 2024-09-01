@@ -1,7 +1,20 @@
+import { AccountType } from "./Account";
+import { ContactPersonType } from "./Base";
+import { IncomeCategoryType } from "./IncomeCategory";
+
 export type IncomeType = {
     id?: string;
-    name?: string;
+    categoryId?: string;
+    accountId?: string;
+    refNo?: string;
+    date?: string;
+    title?: string;
     description?: string;
-    order?: string;
+    contactPerson?: ContactPersonType | null;
+    amount?: number;
+    attachment?: string;
     status?: string;
+
+    category?: IncomeCategoryType | null;
+    account?: AccountType | null;
 };

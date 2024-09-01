@@ -3,7 +3,7 @@ import vine from "@vinejs/vine";
 export const StoreRules = {
     categoryId: vine.string(),
     accountId: vine.string(),
-    date: vine.date(),
+    date: vine.date({ formats: { utc: true } }),
     title: vine.string(),
     amount: vine.number().optional(),
     description: vine.string().optional(),
@@ -20,7 +20,7 @@ export const StoreRules = {
 export const UpdateRules = {
     categoryId: vine.string().optional(),
     accountId: vine.string().optional(),
-    date: vine.date().optional(),
+    date: vine.date({ formats: { utc: true } }).optional(),
     title: vine.string().optional(),
     amount: vine.number().optional(),
     description: vine.string().optional(),

@@ -2,10 +2,10 @@ import HelperService from "@/backend/lib/HelperService";
 import PrismaService from "@/backend/lib/PrismaService";
 import moment from "moment";
 import ValidateService from "../lib/ValidateService";
-import { StoreRules, UpdateRules } from "../rules/incomes";
+import { StoreRules, UpdateRules } from "../rules/productCategories";
 import { DynamicObjectTypes } from "../types/baseTypes";
 
-export default class IncomeRepository {
+export default class OutletRepository {
     private helper;
     private db;
 
@@ -27,28 +27,20 @@ export default class IncomeRepository {
         } else {
             fields = {
                 id: true,
-                refNo: true,
-                date: true,
-                title: true,
-                amount: true,
+                name: true,
+                code: true,
+                phone: true,
+                email: true,
                 status: true,
-                category: {
-                    select: {
-                        name: true,
-                    },
-                },
             };
         }
 
         if (queries.status) {
             condition["status"] = queries.status;
         }
-        if (queries.storeId) {
-            condition["storeId"] = queries.storeId;
-        }
 
         if (queries.get_all && Number(queries.get_all) === 1) {
-            const docs = await this.db.income.findMany({
+            const docs = await this.db.store.findMany({
                 select: fields,
                 where: condition,
             });
@@ -56,8 +48,8 @@ export default class IncomeRepository {
             return this.helper.entityResponse({ data: docs });
         } else {
             const [count, docs] = await this.db.$transaction([
-                this.db.income.count({ where: condition }),
-                this.db.income.findMany({
+                this.db.store.count({ where: condition }),
+                this.db.store.findMany({
                     select: fields,
                     where: condition,
                     skip: offset - 1,
@@ -82,18 +74,12 @@ export default class IncomeRepository {
             });
         }
 
-        const refNo = Math.floor(100000 + Math.random() * 900000);
-
-        await this.db.income.create({
-            data: {
-                ...validate?.validated(),
-                refNo: `IN_${refNo}`,
-                deletedAt: null,
-            },
+        await this.db.store.create({
+            data: { ...validate?.validated(), deletedAt: null },
         });
         return this.helper.entityResponse({
             statusCode: 201,
-            message: "Income added successfully...",
+            message: "Store added successfully...",
         });
     }
 
@@ -109,26 +95,25 @@ export default class IncomeRepository {
         } else {
             fields = {
                 id: true,
-                categoryId: true,
-                accountId: true,
-                refNo: true,
-                date: true,
-                title: true,
+                type: true,
+                name: true,
+                code: true,
+                phone: true,
+                email: true,
+                address: true,
                 description: true,
-                amount: true,
-                attachment: true,
-                contactPerson: true,
+                photo: true,
                 status: true,
             };
         }
 
-        const doc = await this.db.income.findFirst({
+        const doc = await this.db.store.findFirst({
             where: condition,
             select: fields,
         });
         if (!doc) {
             return this.helper.errorResponse({
-                message: "Income not found...",
+                message: "Store not found...",
             });
         }
         return this.helper.entityResponse({ data: doc });
@@ -152,19 +137,21 @@ export default class IncomeRepository {
             id: id,
             deletedAt: { equals: null },
         };
-        const doc = await this.db.income.findFirst({ where: condition });
+        const doc = await this.db.store.findFirst({
+            where: condition,
+        });
         if (!doc) {
             return this.helper.errorResponse({
-                message: "Income not found...",
+                message: "Store not found...",
             });
         }
 
-        await this.db.income.update({
+        await this.db.store.update({
             where: { id: doc.id },
             data: validate?.validated(),
         });
         return this.helper.entityResponse({
-            message: "Income updated successfully...",
+            message: "Store updated successfully...",
         });
     }
 
@@ -174,18 +161,20 @@ export default class IncomeRepository {
             deletedAt: { equals: null },
         };
 
-        const doc = await this.db.income.findFirst({ where: condition });
+        const doc = await this.db.store.findFirst({
+            where: condition,
+        });
         if (!doc) {
             return this.helper.errorResponse({
-                message: "Income not found...",
+                message: "Store not found...",
             });
         }
-        await this.db.income.update({
+        await this.db.store.update({
             where: { id: doc.id },
             data: { deletedAt: moment().toDate() },
         });
         return this.helper.entityResponse({
-            message: "Income deleted successfully...",
+            message: "Store deleted successfully...",
         });
     }
 }

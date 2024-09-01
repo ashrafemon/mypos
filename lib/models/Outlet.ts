@@ -1,7 +1,12 @@
 export type OutletType = {
     id?: string;
+    type?: string;
     name?: string;
+    code?: string;
+    phone?: string;
+    email?: string;
     description?: string;
-    order?: string;
+    address?: string;
+    photo?: string;
     status?: string;
 };
