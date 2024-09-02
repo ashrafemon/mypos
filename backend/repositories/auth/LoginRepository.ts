@@ -28,7 +28,6 @@ export default class LoginRepository {
         }
 
         const searchKey = body.user.includes("@") ? "email" : "phone";
-
         const user = await this.db.user.findFirst({
             where: { [searchKey]: body.user },
         });

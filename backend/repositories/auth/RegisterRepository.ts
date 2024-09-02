@@ -37,7 +37,7 @@ export default class RegisterRepository {
             });
         }
 
-        const hash = await bcrypt.hash(body.password, 20);
+        const hash = await bcrypt.hash(body.password, 10);
 
         const payload = {
             ...validate?.validated(),
