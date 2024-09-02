@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+import * as jose from "jose";
 import { cookies } from "next/headers";
 import HelperService from "./HelperService";
 
@@ -12,25 +12,25 @@ class AuthService {
         this.helper = new HelperService();
     }
 
-    isAuthenticate() {
-        try {
-            const verify: { exp: number } | any = jwt.verify(
-                this.token,
+    async isAuthenticate() {
+        const jwtConfig = {
+            secret: new TextEncoder().encode(
                 process.env.NEXT_PUBLIC_JWT_SECRET!
-            );
+            ),
+        };
+        const decoded = await jose.jwtVerify(this.token, jwtConfig.secret);
 
-            if (!verify.exp) {
-                return false;
-            }
-            const isLive = new Date(verify.exp * 1000) > new Date();
-            if (!isLive) {
-                return false;
-            }
-            this.authUser = verify;
-            return true;
-        } catch (err: { message: string } | any) {
+        if (!decoded.payload.exp) {
             return false;
         }
+
+        const isLive = new Date(decoded.payload.exp * 1000) > new Date();
+        if (!isLive) {
+            return false;
+        }
+
+        this.user = decoded.payload;
+        return true;
     }
 
     authUser() {

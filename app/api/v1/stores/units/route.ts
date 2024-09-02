@@ -1,17 +1,11 @@
 import UnitController from "@/backend/controllers/stores/UnitController";
-import AuthService from "@/backend/lib/AuthService";
 import HelperService from "@/backend/lib/HelperService";
 import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
     const helper = new HelperService();
-    const authService = new AuthService();
 
     try {
-        if (!authService.isAuthenticate()) {
-            return authService.unAuthenticate();
-        }
-
         const queries = helper.getQueryStrings(request.url);
         const controller = new UnitController();
         return await controller.index(queries);
