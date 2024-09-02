@@ -29,7 +29,7 @@ export type ProductType = {
     alertQuantity?: number;
     warranty?: WarrantyType | null;
     taxMethod?: string;
-    photo?: string;
+    attachment?: string;
     description?: string;
     order?: number;
     status?: string;

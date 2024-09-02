@@ -85,7 +85,7 @@ model Store {
     email       String?
     address     String?
     description String?
-    photo       String?
+    attachment  String?
     status      String  @default("active")
 
     createdAt DateTime  @default(now())
@@ -210,7 +210,7 @@ model PaymentMethod {
     name        String
     shortName   String?
     description String?
-    photo       String?
+    attachment  String?
     order       Int?    @default(0)
     status      String  @default("active")
 
@@ -242,19 +242,19 @@ model CustomerGroup {
 }
 
 model Customer {
-    id       String    @id @default(uuid()) @map("_id")
-    storeId  String?
-    groupId  String?
-    type     String?
-    name     String
-    phone    String?
-    email    String?
-    dob      DateTime?
-    address  String?
-    photo    String?
-    discount Float?    @default(0)
-    order    Int?      @default(0)
-    status   String    @default("active")
+    id         String    @id @default(uuid()) @map("_id")
+    storeId    String?
+    groupId    String?
+    type       String?
+    name       String
+    phone      String?
+    email      String?
+    dob        DateTime?
+    address    String?
+    attachment String?
+    discount   Float?    @default(0)
+    order      Int?      @default(0)
+    status     String    @default("active")
 
     createdAt DateTime  @default(now())
     updatedAt DateTime  @updatedAt
@@ -275,7 +275,7 @@ model Supplier {
     address       String?
     contactPerson Json?
     description   String?
-    photo         String?
+    attachment    String?
     order         Int?    @default(0)
     status        String  @default("active")
 
@@ -349,7 +349,7 @@ model Brand {
     storeId     String?
     name        String
     description String?
-    photo       String?
+    attachment  String?
     order       Int?    @default(0)
     status      String  @default("active")
 
@@ -421,7 +421,7 @@ model Product {
     warranty         Json?
     taxMethod        String? @default("inclusive")
 
-    photo       String?
+    attachment  String?
     description String?
     order       Int?    @default(0)
     status      String  @default("active")

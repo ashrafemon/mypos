@@ -46,6 +46,7 @@ const CustomerForm = () => {
         type: "retail",
         address: "",
         discount: 0,
+        attachment: null,
         status: "active",
     });
 
@@ -58,6 +59,7 @@ const CustomerForm = () => {
         type: { text: "", show: false },
         address: { text: "", show: false },
         discount: { text: "", show: false },
+        attachment: { text: "", show: false },
         status: { text: "", show: false },
     });
 
@@ -71,6 +73,7 @@ const CustomerForm = () => {
             type: { text: "", show: false },
             address: { text: "", show: false },
             discount: { text: "", show: false },
+            attachment: { text: "", show: false },
             status: { text: "", show: false },
         });
         setForm({
@@ -82,6 +85,7 @@ const CustomerForm = () => {
             type: "retail",
             address: "",
             discount: 0,
+            attachment: null,
             status: "active",
         });
     };

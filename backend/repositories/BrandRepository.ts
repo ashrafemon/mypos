@@ -25,7 +25,7 @@ export default class BrandRepository {
         if (queries.fields && queries.fields.length) {
             fields = this.helper.pickDataAsBoolean(queries.fields) || {};
         } else {
-            fields = { id: true, name: true, photo: true, status: true };
+            fields = { id: true, name: true, attachment: true, status: true };
         }
 
         if (queries.status) {
@@ -94,7 +94,7 @@ export default class BrandRepository {
                 id: true,
                 name: true,
                 description: true,
-                photo: true,
+                attachment: true,
                 order: true,
                 status: true,
             };

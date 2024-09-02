@@ -28,6 +28,7 @@ const PaymentMethodForm: React.FC<{
         name: "",
         description: "",
         order: 0,
+        attachment: null,
         status: "active",
     });
 
@@ -35,6 +36,7 @@ const PaymentMethodForm: React.FC<{
         type: { text: "", show: false },
         name: { text: "", show: false },
         description: { text: "", show: false },
+        attachment: { text: "", show: false },
         order: { text: "", show: false },
         status: { text: "", show: false },
     });
@@ -44,6 +46,7 @@ const PaymentMethodForm: React.FC<{
             type: { text: "", show: false },
             name: { text: "", show: false },
             description: { text: "", show: false },
+            attachment: { text: "", show: false },
             order: { text: "", show: false },
             status: { text: "", show: false },
         });
@@ -52,6 +55,7 @@ const PaymentMethodForm: React.FC<{
             name: "",
             description: "",
             order: 0,
+            attachment: null,
             status: "active",
         });
     };

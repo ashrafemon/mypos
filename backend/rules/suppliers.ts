@@ -11,7 +11,7 @@ export const StoreRules = {
         })
         .optional(),
     address: vine.string().optional(),
-    photo: vine.string().optional(),
+    attachment: vine.string().optional(),
     description: vine.string().optional(),
     order: vine.number().optional(),
     status: vine.string().in(["active", "inactive"]),
@@ -28,7 +28,7 @@ export const UpdateRules = {
         })
         .optional(),
     address: vine.string().optional(),
-    photo: vine.string().optional(),
+    attachment: vine.string().optional(),
     description: vine.string().optional(),
     order: vine.number().optional(),
     status: vine.string().in(["active", "inactive"]).optional(),

@@ -39,6 +39,7 @@ const SupplierForm: React.FC = () => {
         },
         address: "",
         description: "",
+        attachment: null,
         status: "active",
     });
 
@@ -49,6 +50,7 @@ const SupplierForm: React.FC = () => {
         address: { text: "", show: false },
         "contactPerson.name": { text: "", show: false },
         description: { text: "", show: false },
+        attachment: { text: "", show: false },
         status: { text: "", show: false },
     });
 
@@ -60,6 +62,7 @@ const SupplierForm: React.FC = () => {
             address: { text: "", show: false },
             "contactPerson.name": { text: "", show: false },
             description: { text: "", show: false },
+            attachment: { text: "", show: false },
             status: { text: "", show: false },
         });
         setForm({
@@ -72,6 +75,7 @@ const SupplierForm: React.FC = () => {
             },
             address: "",
             description: "",
+            attachment: null,
             status: "active",
         });
     };

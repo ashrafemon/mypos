@@ -105,7 +105,7 @@ export default class CustomerRepository {
                 email: true,
                 dob: true,
                 address: true,
-                photo: true,
+                attachment: true,
                 discount: true,
                 order: true,
                 status: true,

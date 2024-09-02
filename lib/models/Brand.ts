@@ -2,7 +2,7 @@ export type BrandType = {
     id?: string;
     name?: string;
     description?: string;
-    photo?: string;
+    attachment?: string;
     order?: string;
     status?: string;
 };

@@ -3,6 +3,7 @@ export type PaymentMethodType = {
     type?: string;
     name?: string;
     description?: string;
+    attachment?: string;
     order?: string;
     status?: string;
 };

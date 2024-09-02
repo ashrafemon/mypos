@@ -26,7 +26,7 @@ const BrandForm: React.FC<{
     const [form, setForm] = useState({
         name: "",
         description: "",
-        photo: null,
+        attachment: null,
         order: 0,
         status: "active",
     });
@@ -34,7 +34,7 @@ const BrandForm: React.FC<{
     const [errors, setErrors] = useState({
         name: { text: "", show: false },
         description: { text: "", show: false },
-        photo: { text: "", show: false },
+        attachment: { text: "", show: false },
         order: { text: "", show: false },
         status: { text: "", show: false },
     });
@@ -43,14 +43,14 @@ const BrandForm: React.FC<{
         setErrors({
             name: { text: "", show: false },
             description: { text: "", show: false },
-            photo: { text: "", show: false },
+            attachment: { text: "", show: false },
             order: { text: "", show: false },
             status: { text: "", show: false },
         });
         setForm({
             name: "",
             description: "",
-            photo: null,
+            attachment: null,
             order: 0,
             status: "active",
         });

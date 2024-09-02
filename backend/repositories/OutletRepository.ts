@@ -2,7 +2,7 @@ import HelperService from "@/backend/lib/HelperService";
 import PrismaService from "@/backend/lib/PrismaService";
 import moment from "moment";
 import ValidateService from "../lib/ValidateService";
-import { StoreRules, UpdateRules } from "../rules/productCategories";
+import { StoreRules, UpdateRules } from "../rules/stores";
 import { DynamicObjectTypes } from "../types/baseTypes";
 
 export default class OutletRepository {
@@ -102,7 +102,7 @@ export default class OutletRepository {
                 email: true,
                 address: true,
                 description: true,
-                photo: true,
+                attachment: true,
                 status: true,
             };
         }

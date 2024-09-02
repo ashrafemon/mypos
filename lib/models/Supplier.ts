@@ -8,7 +8,7 @@ export type SupplierType = {
     address?: string;
     contactPerson?: ContactPersonType | null;
     description?: string;
-    photo?: string;
+    attachment?: string;
     order?: string;
     status?: string;
 };

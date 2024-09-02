@@ -30,7 +30,7 @@ export default class PaymentMethodRepository {
                 type: true,
                 name: true,
                 shortName: true,
-                photo: true,
+                attachment: true,
                 status: true,
             };
         }
@@ -103,7 +103,7 @@ export default class PaymentMethodRepository {
                 name: true,
                 shortName: true,
                 description: true,
-                photo: true,
+                attachment: true,
                 order: true,
                 status: true,
             };

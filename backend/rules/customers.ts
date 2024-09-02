@@ -10,7 +10,7 @@ export const StoreRules = {
     type: vine.string().in(["retail", "wholesale"]),
     description: vine.string().optional(),
     address: vine.string().optional(),
-    photo: vine.string().optional(),
+    attachment: vine.string().optional(),
     order: vine.number().optional(),
     status: vine.string().in(["active", "inactive"]),
 };
@@ -25,7 +25,7 @@ export const UpdateRules = {
     type: vine.string().in(["retail", "wholesale"]).optional(),
     description: vine.string().optional(),
     address: vine.string().optional(),
-    photo: vine.string().optional(),
+    attachment: vine.string().optional(),
     order: vine.number().optional(),
     status: vine.string().in(["active", "inactive"]).optional(),
 };

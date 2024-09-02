@@ -121,7 +121,7 @@ export default class ProductRepository {
                 warranty: true,
                 taxMethod: true,
                 description: true,
-                photo: true,
+                attachment: true,
                 order: true,
                 status: true,
             };

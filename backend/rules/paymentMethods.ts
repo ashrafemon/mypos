@@ -5,7 +5,7 @@ export const StoreRules = {
     name: vine.string(),
     shortName: vine.string().optional(),
     description: vine.string().optional(),
-    photo: vine.string().optional(),
+    attachment: vine.string().optional(),
     order: vine.number().optional(),
     status: vine.string().in(["active", "inactive"]),
 };
@@ -15,7 +15,7 @@ export const UpdateRules = {
     name: vine.string().optional(),
     shortName: vine.string().optional(),
     description: vine.string().optional(),
-    photo: vine.string().optional(),
+    attachment: vine.string().optional(),
     order: vine.number().optional(),
     status: vine.string().in(["active", "inactive"]).optional(),
 };

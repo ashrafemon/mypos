@@ -7,6 +7,6 @@ export type OutletType = {
     email?: string;
     description?: string;
     address?: string;
-    photo?: string;
+    attachment?: string;
     status?: string;
 };

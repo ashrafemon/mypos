@@ -105,7 +105,7 @@ export default class SupplierRepository {
                 address: true,
                 contactPerson: true,
                 description: true,
-                photo: true,
+                attachment: true,
                 order: true,
                 status: true,
             };
