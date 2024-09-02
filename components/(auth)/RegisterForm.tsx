@@ -1,27 +1,31 @@
 "use client";
 
 import { message, validateError } from "@/lib/utils/helper";
-import { useCreateLoginMutation } from "@/states/actions/auth";
+import { useCreateRegisterMutation } from "@/states/actions/auth";
 import { Box, Button, Stack } from "@mantine/core";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import Validator from "Validator";
-import TextField from "../UI/TextField";
 import SecretTextField from "../UI/SecretTextField";
+import TextField from "../UI/TextField";
 
-const LoginForm = () => {
+const RegisterForm = () => {
     const router = useRouter();
 
-    const [create, result] = useCreateLoginMutation();
+    const [create, result] = useCreateRegisterMutation();
 
     const [form, setForm] = useState({
-        user: "",
+        name: "",
+        email: "",
+        phone: "",
         password: "",
     });
 
     const [errors, setErrors] = useState({
-        user: { text: "", show: false },
+        name: { text: "", show: false },
+        email: { text: "", show: false },
+        phone: { text: "", show: false },
         password: { text: "", show: false },
     });
 
@@ -36,7 +40,9 @@ const LoginForm = () => {
     const submitHandler = async (e: React.SyntheticEvent) => {
         e.preventDefault();
         const validator = await Validator.make(form, {
-            user: "required",
+            name: "required",
+            email: "required|email",
+            phone: "required",
             password: "required|min:6",
         });
 
@@ -57,7 +63,7 @@ const LoginForm = () => {
                 timer: 3000,
             });
 
-            router.push("/dashboard");
+            router.push("/login");
         } catch (err: { message: string; status: string; data: any } | any) {
             message({
                 title: err.message,
@@ -77,11 +83,29 @@ const LoginForm = () => {
         <form onSubmit={submitHandler}>
             <Stack gap="md">
                 <TextField
-                    label="Email Address/Phone"
+                    label="Name"
                     placeholder="Ex. john@xyz.com/0190000000"
-                    value={form.user}
-                    error={errors.user.text}
-                    onChange={(e) => fieldChangeHandler("user", e.target.value)}
+                    value={form.name}
+                    error={errors.name.text}
+                    onChange={(e) => fieldChangeHandler("name", e.target.value)}
+                />
+                <TextField
+                    label="Email Address"
+                    placeholder="Ex. john@xyz.com"
+                    value={form.email}
+                    error={errors.email.text}
+                    onChange={(e) =>
+                        fieldChangeHandler("email", e.target.value)
+                    }
+                />
+                <TextField
+                    label="Phone"
+                    placeholder="Ex. 0190000000"
+                    value={form.phone}
+                    error={errors.phone.text}
+                    onChange={(e) =>
+                        fieldChangeHandler("phone", e.target.value)
+                    }
                 />
                 <SecretTextField
                     label="Password"
@@ -93,22 +117,16 @@ const LoginForm = () => {
                     }
                 />
 
-                <Box ta="right">
-                    <Link href="/" className="text-sm font-semibold underline">
-                        Forget Password
-                    </Link>
-                </Box>
-
                 <Button type="submit" loading={result.isLoading}>
-                    Login
+                    Register
                 </Button>
 
                 <Box ta="center">
                     <Link
-                        href="/register"
+                        href="/login"
                         className="text-sm font-semibold underline"
                     >
-                        Don&apos;t have an account?
+                        Already have an account?
                     </Link>
                 </Box>
             </Stack>
@@ -116,4 +134,4 @@ const LoginForm = () => {
     );
 };
 
-export default LoginForm;
+export default RegisterForm;
