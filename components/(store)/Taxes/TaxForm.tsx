@@ -170,7 +170,7 @@ const TaxForm: React.FC<{
                         }
                     />
                 </Grid.Col>
-                <Grid.Col span={{ base: 12, md: 6 }}>
+                <Grid.Col span={{ base: 12, md: 12 }}>
                     <SelectBox
                         label="Status"
                         placeholder="Ex. Active"

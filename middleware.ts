@@ -8,14 +8,13 @@ export async function middleware(request: NextRequest) {
         request.nextUrl.pathname.includes("logout") ||
         request.nextUrl.pathname.includes("stores")
     ) {
-        const authService = new AuthService();
-        await authService.verifyAuth();
+        const authService = await new AuthService().verifyAuth();
 
-        if (!authService.check()) {
-            return authService.unAuthenticate();
+        if (!authService?.check()) {
+            return authService?.unAuthenticate();
         }
 
-        request.auth = authService.authUser();
+        // request.auth = authService?.authUser();
         return NextResponse.next();
     }
 

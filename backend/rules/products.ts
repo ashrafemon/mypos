@@ -1,6 +1,7 @@
 import vine from "@vinejs/vine";
 
 export const StoreRules = {
+    storeId: vine.string().optional(),
     supplierId: vine.string(),
     categoryId: vine.string(),
     brandId: vine.string(),
@@ -12,7 +13,7 @@ export const StoreRules = {
     type: vine.string(),
     name: vine.string(),
     code: vine.string(),
-    barcodeSymbology: vine.string(),
+    barcodeSymbology: vine.string().in(["code39", "code128"]),
     price: vine.number(),
     discount: vine.number(),
     loyaltyPoint: vine.number(),
@@ -32,6 +33,7 @@ export const StoreRules = {
 };
 
 export const UpdateRules = {
+    storeId: vine.string().optional(),
     supplierId: vine.string().optional(),
     categoryId: vine.string().optional(),
     brandId: vine.string().optional(),

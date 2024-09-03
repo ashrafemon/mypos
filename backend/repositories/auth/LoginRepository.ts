@@ -104,9 +104,8 @@ export default class LoginRepository {
             });
         }
 
-        const authService = new AuthService();
-        await authService.verifyAuth();
-        const authUser = authService.authUser();
+        const authService = await new AuthService().verifyAuth();
+        const authUser = authService?.authUser();
 
         const storeUser = await this.db.storeUser.count({
             where: { userId: authUser.id, storeId: body.storeId },
@@ -142,9 +141,8 @@ export default class LoginRepository {
     }
 
     async userStores() {
-        const authService = new AuthService();
-        await authService.verifyAuth();
-        const authUser = authService.authUser();
+        const authService = await new AuthService().verifyAuth();
+        const authUser = authService?.authUser();
 
         const storeUser = await this.db.storeUser.findMany({
             select: { storeId: true },

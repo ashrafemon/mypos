@@ -1,6 +1,7 @@
 import vine from "@vinejs/vine";
 
 export const StoreRules = {
+    storeId: vine.string().optional(),
     type: vine.string().in(["deposit", "withdraw"]),
     incomeCategoryId: vine
         .string()
@@ -19,6 +20,7 @@ export const StoreRules = {
 };
 
 export const UpdateRules = {
+    storeId: vine.string().optional(),
     type: vine.string().in(["deposit", "withdraw"]).optional(),
     incomeCategoryId: vine
         .string()

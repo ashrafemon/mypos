@@ -83,9 +83,15 @@ export default class ProductRepository {
             });
         }
 
-        await this.db.product.create({
-            data: { ...validate?.validated(), deletedAt: null },
-        });
+        const payload = { ...validate?.validated(), deletedAt: null };
+        if (body.code && body.barcodeSymbology) {
+            payload["barcode"] = this.helper.buildBarcode(
+                body.code,
+                body.barcodeSymbology
+            );
+        }
+
+        await this.db.product.create({ data: payload });
         return this.helper.entityResponse({
             statusCode: 201,
             message: "Product added successfully...",
@@ -114,6 +120,7 @@ export default class ProductRepository {
                 name: true,
                 code: true,
                 barcodeSymbology: true,
+                barcode: true,
                 price: true,
                 discount: true,
                 loyaltyPoint: true,
@@ -166,9 +173,17 @@ export default class ProductRepository {
             });
         }
 
+        const payload = { ...validate?.validated() };
+        payload["barcode"] = this.helper.buildBarcode(
+            body.code !== doc.code ? body.code : doc.code,
+            body.barcodeSymbology !== doc.barcodeSymbology
+                ? body.barcodeSymbology
+                : doc.barcodeSymbology
+        );
+
         await this.db.product.update({
             where: { id: doc.id },
-            data: validate?.validated(),
+            data: payload,
         });
         return this.helper.entityResponse({
             message: "Product updated successfully...",

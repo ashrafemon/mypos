@@ -1,6 +1,7 @@
 import vine from "@vinejs/vine";
 
 export const StoreRules = {
+    storeId: vine.string().optional(),
     name: vine.string().minLength(3),
     phone: vine.string().regex(/^\d+$/),
     email: vine.string().email(),
@@ -18,6 +19,7 @@ export const StoreRules = {
 };
 
 export const UpdateRules = {
+    storeId: vine.string().optional(),
     name: vine.string().minLength(3).optional(),
     phone: vine.string().regex(/^\d+$/).optional(),
     email: vine.string().email().optional(),

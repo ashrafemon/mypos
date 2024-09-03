@@ -1,6 +1,7 @@
 import vine from "@vinejs/vine";
 
 export const StoreRules = {
+    storeId: vine.string().optional(),
     type: vine.string().in(["offline", "online"]),
     name: vine.string(),
     shortName: vine.string().optional(),
@@ -11,6 +12,7 @@ export const StoreRules = {
 };
 
 export const UpdateRules = {
+    storeId: vine.string().optional(),
     type: vine.string().in(["offline", "online"]).optional(),
     name: vine.string().optional(),
     shortName: vine.string().optional(),

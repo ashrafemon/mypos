@@ -39,6 +39,7 @@ class AuthService {
 
         this.setAuthUser(decoded.payload);
         this.isAuthenticated = true;
+        return this;
     }
 
     unAuthenticate() {

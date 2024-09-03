@@ -197,7 +197,7 @@ const ProductForm: React.FC = () => {
             type: "required",
             name: "required",
             code: "required",
-            barcodeSymbology: "required|in:C128,C39",
+            barcodeSymbology: "required|in:code128,code39",
             price: "required|numeric",
             discount: "sometimes|numeric",
             alertQuantity: "sometimes|numeric",

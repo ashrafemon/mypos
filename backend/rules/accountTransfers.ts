@@ -1,6 +1,7 @@
 import vine from "@vinejs/vine";
 
 export const StoreRules = {
+    storeId: vine.string().optional(),
     fromAccountId: vine.string(),
     toAccountId: vine.string(),
     refNo: vine.string(),
@@ -11,6 +12,7 @@ export const StoreRules = {
 };
 
 export const UpdateRules = {
+    storeId: vine.string().optional(),
     fromAccountId: vine.string().optional(),
     toAccountId: vine.string().optional(),
     refNo: vine.string().optional(),

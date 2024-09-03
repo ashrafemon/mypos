@@ -1,5 +1,6 @@
+import { Canvas, createCanvas } from "canvas";
+import jsBarcode from "jsbarcode";
 import { NextResponse } from "next/server";
-
 export default class HelperService {
     entityResponse({
         status = "success",
@@ -74,5 +75,13 @@ export default class HelperService {
             items.forEach((item) => (result[item] = true));
         }
         return result;
+    }
+
+    buildBarcode(value: string, symbology: string = "code39") {
+        const svg = new Canvas(400, 10, "image");
+        jsBarcode(svg, value, {
+            format: symbology.toUpperCase(),
+        });
+        return svg.toDataURL("image/png");
     }
 }

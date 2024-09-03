@@ -22,8 +22,8 @@ export const DurationPeriodOptions = [
 ];
 
 export const BarcodeSymbologyOptions = [
-    { label: "Code 128", value: "C128" },
-    { label: "Code 39", value: "C39" },
+    { label: "Code 128", value: "code128" },
+    { label: "Code 39", value: "code39" },
 ];
 
 export const TaxMethodOptions = [

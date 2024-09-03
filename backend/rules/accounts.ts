@@ -1,6 +1,7 @@
 import vine from "@vinejs/vine";
 
 export const StoreRules = {
+    storeId: vine.string().optional(),
     type: vine.string().in(["cash", "bank", "mfs", "card"]),
     name: vine.string(),
     no: vine.string(),
@@ -17,6 +18,7 @@ export const StoreRules = {
 };
 
 export const UpdateRules = {
+    storeId: vine.string().optional(),
     type: vine.string().in(["cash", "bank", "mfs", "card"]).optional(),
     name: vine.string().optional(),
     no: vine.string().optional(),

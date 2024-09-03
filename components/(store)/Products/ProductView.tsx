@@ -1,6 +1,7 @@
 import AppLoading from "@/components/UI/AppLoading";
 import { ProductType } from "@/lib/models/Product";
 import { Stack, Text } from "@mantine/core";
+import Image from "next/image";
 import React from "react";
 
 const ProductView: React.FC<{
@@ -61,6 +62,15 @@ const ProductView: React.FC<{
             <Text size="sm" fw={600}>
                 Description: {data?.description || "N/A"}
             </Text>
+
+            {data.barcode && (
+                <Image
+                    src={data?.barcode}
+                    alt="Product Barcode"
+                    width={250}
+                    height={10}
+                />
+            )}
         </Stack>
     );
 };
