@@ -6,35 +6,39 @@ class AuthService {
     private token: string | any;
     private user: any;
     private helper;
+    private isAuthenticated: boolean = false;
 
     constructor() {
         this.token = cookies().get("authToken")?.value;
         this.helper = new HelperService();
     }
 
-    async isAuthenticate() {
+    check() {
+        return this.isAuthenticated;
+    }
+
+    async verifyAuth() {
         const jwtConfig = {
             secret: new TextEncoder().encode(
                 process.env.NEXT_PUBLIC_JWT_SECRET!
             ),
         };
+
         const decoded = await jose.jwtVerify(this.token, jwtConfig.secret);
-
-        if (!decoded.payload.exp) {
-            return false;
+        const expAt = decoded.payload.exp;
+        if (!expAt) {
+            this.isAuthenticated = false;
+            return;
         }
 
-        const isLive = new Date(decoded.payload.exp * 1000) > new Date();
+        const isLive = new Date(expAt * 1000) > new Date();
         if (!isLive) {
-            return false;
+            this.isAuthenticated = false;
+            return;
         }
 
-        this.user = decoded.payload;
-        return true;
-    }
-
-    authUser() {
-        return this.user;
+        this.setAuthUser(decoded.payload);
+        this.isAuthenticated = true;
     }
 
     unAuthenticate() {
@@ -42,6 +46,34 @@ class AuthService {
             statusCode: 401,
             message: "Sorry, you are unauthenticated",
         });
+    }
+
+    authUser() {
+        return this.user;
+    }
+
+    setAuthUser(value: object | null) {
+        const keys = [
+            "id",
+            "name",
+            "email",
+            "phone",
+            "gender",
+            "avatar",
+            "selectedStoreId",
+        ];
+
+        if (!value) {
+            return;
+        }
+
+        const payload = {};
+        Object.keys(value).forEach((key: string) => {
+            if (keys.includes(key)) {
+                (payload as any)[key] = (value as any)[key];
+            }
+        });
+        this.user = payload;
     }
 }
 

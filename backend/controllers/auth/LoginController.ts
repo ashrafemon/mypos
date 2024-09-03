@@ -1,5 +1,5 @@
 import LoginRepository from "@/backend/repositories/auth/LoginRepository";
-import { LoginType } from "@/backend/types/authTypes";
+import { LoginType, StoreLoginType } from "@/backend/types/authTypes";
 
 export default class LoginController {
     constructor(private readonly repository = new LoginRepository()) {}
@@ -8,9 +8,17 @@ export default class LoginController {
         return await this.repository.login(body);
     }
 
-    storeLogin() {}
+    async storeLogin(body: StoreLoginType) {
+        return await this.repository.storeLogin(body);
+    }
+
+    async userStores() {
+        return await this.repository.userStores();
+    }
 
     me() {}
 
-    logout() {}
+    logout() {
+        return this.repository.logout();
+    }
 }

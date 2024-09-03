@@ -1,8 +1,9 @@
+import AuthService from "@/backend/lib/AuthService";
 import HelperService from "@/backend/lib/HelperService";
 import PrismaService from "@/backend/lib/PrismaService";
 import ValidateService from "@/backend/lib/ValidateService";
 import { LoginRules } from "@/backend/rules/auth";
-import { LoginType } from "@/backend/types/authTypes";
+import { LoginType, StoreLoginType } from "@/backend/types/authTypes";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
@@ -92,6 +93,82 @@ export default class LoginRepository {
         return this.helper.entityResponse({
             data: token,
             message: "Login successful",
+        });
+    }
+
+    async storeLogin(body: StoreLoginType) {
+        if (!body.storeId) {
+            return this.helper.errorResponse({
+                statusCode: 400,
+                message: "Sorry, Please select a store",
+            });
+        }
+
+        const authService = new AuthService();
+        await authService.verifyAuth();
+        const authUser = authService.authUser();
+
+        const storeUser = await this.db.storeUser.count({
+            where: { userId: authUser.id, storeId: body.storeId },
+        });
+
+        if (!storeUser) {
+            return this.helper.errorResponse({
+                statusCode: 403,
+                message:
+                    "Sorry, You don't have permission to access this store",
+            });
+        }
+
+        const token = jwt.sign(
+            { ...authUser, selectedStoreId: body.storeId },
+            process.env.NEXT_PUBLIC_JWT_SECRET!,
+            { expiresIn: "1h" }
+        );
+
+        cookies().set({
+            name: "authToken",
+            value: token,
+            httpOnly: true,
+            path: "/",
+            maxAge: 60 * 60 * 24 * 365 * 1000,
+            expires: new Date(Date.now() + 60 * 60 * 24 * 365 * 1000),
+        });
+
+        return this.helper.entityResponse({
+            data: token,
+            message: "Store login successful",
+        });
+    }
+
+    async userStores() {
+        const authService = new AuthService();
+        await authService.verifyAuth();
+        const authUser = authService.authUser();
+
+        const storeUser = await this.db.storeUser.findMany({
+            select: { storeId: true },
+            where: { userId: authUser.id },
+        });
+
+        const storeIds = storeUser.map(
+            (item: { storeId: string }) => item.storeId
+        );
+
+        const stores = await this.db.store.findMany({
+            select: { id: true, name: true },
+            where: { id: { in: storeIds } },
+        });
+
+        return this.helper.entityResponse({
+            data: stores,
+        });
+    }
+
+    logout() {
+        cookies().delete("authToken");
+        return this.helper.entityResponse({
+            message: "Logout successful",
         });
     }
 }

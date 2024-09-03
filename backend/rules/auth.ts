@@ -12,3 +12,9 @@ export const LoginRules = {
     password: vine.string().minLength(6),
     // code: vine.string(),
 };
+
+export const StoreLoginRules = {
+    user: vine.string(),
+    password: vine.string().minLength(6),
+    // code: vine.string(),
+};

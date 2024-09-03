@@ -57,7 +57,7 @@ const LoginForm = () => {
                 timer: 3000,
             });
 
-            router.push("/dashboard");
+            router.push("/store-login");
         } catch (err: { message: string; status: string; data: any } | any) {
             message({
                 title: err.message,

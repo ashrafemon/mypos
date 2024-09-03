@@ -2,6 +2,7 @@ import { API_URL } from "@/lib/constants/Links";
 import { RootState } from "@/states";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { jsonHeaders } from "./options";
+import { OutletType } from "@/lib/models/Outlet";
 
 const auth = createApi({
     reducerPath: "authApi",
@@ -19,6 +20,7 @@ const auth = createApi({
     }),
     keepUnusedDataFor: 5,
     refetchOnReconnect: true,
+    tagTypes: ["UserStores"],
     endpoints: (builder) => ({
         createRegister: builder.mutation({
             query: (data) => ({
@@ -36,6 +38,27 @@ const auth = createApi({
             }),
             transformErrorResponse: (response) => response.data,
         }),
+        createStoreLogin: builder.mutation({
+            query: (data) => ({
+                url: "store-login",
+                method: "POST",
+                body: JSON.stringify(data),
+            }),
+            transformErrorResponse: (response) => response.data,
+        }),
+        createLogout: builder.mutation({
+            query: () => ({
+                url: "logout",
+                method: "POST",
+            }),
+            transformErrorResponse: (response) => response.data,
+        }),
+        fetchUserStores: builder.query({
+            query: () => `user-stores`,
+            transformResponse: (response: { data: OutletType[] | any }) =>
+                response.data,
+            providesTags: ["UserStores"],
+        }),
         // fetchMe: builder.query({
         //     query: () => "me",
         //     transformResponse: (response: { data: any }) => response.data,
@@ -43,6 +66,12 @@ const auth = createApi({
     }),
 });
 
-export const { useCreateLoginMutation, useCreateRegisterMutation } = auth;
+export const {
+    useCreateLoginMutation,
+    useCreateStoreLoginMutation,
+    useCreateRegisterMutation,
+    useCreateLogoutMutation,
+    useFetchUserStoresQuery,
+} = auth;
 
 export default auth;
