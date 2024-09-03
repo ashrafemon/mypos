@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function middleware(request: NextRequest) {
     const authService = new AuthService();
     const isAuthenticated = await authService.isAuthenticate();
-    if (isAuthenticated) {
+    if (!isAuthenticated) {
         return authService.unAuthenticate();
     }
     return NextResponse.next();
