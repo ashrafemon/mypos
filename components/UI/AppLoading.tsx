@@ -9,8 +9,6 @@ const AppLoading: React.FC<LoaderType> = ({
     error,
     ...props
 }) => {
-    console.log(error);
-
     return (
         <Box ta="center" p="xl">
             {isError && (

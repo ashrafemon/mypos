@@ -86,8 +86,8 @@ export default class LoginRepository {
             value: token,
             httpOnly: true,
             path: "/",
-            maxAge: 60 * 60 * 24 * 365 * 1000,
-            expires: new Date(Date.now() + 60 * 60 * 24 * 365 * 1000),
+            maxAge: 3600,
+            expires: new Date(Date.now() + 3600),
         });
 
         return this.helper.entityResponse({
@@ -130,8 +130,8 @@ export default class LoginRepository {
             value: token,
             httpOnly: true,
             path: "/",
-            maxAge: 60 * 60 * 24 * 365 * 1000,
-            expires: new Date(Date.now() + 60 * 60 * 24 * 365 * 1000),
+            maxAge: 3600,
+            expires: new Date(Date.now() + 3600),
         });
 
         return this.helper.entityResponse({
