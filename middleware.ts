@@ -1,20 +1,31 @@
 import AuthService from "@/backend/lib/AuthService";
+import HelperService from "@/backend/lib/HelperService";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function middleware(request: NextRequest) {
+    const helper = new HelperService();
+    const authService = await new AuthService().verifyAuth();
+    if (!authService?.check()) {
+        return authService?.unAuthenticate();
+    }
+    const authUser = authService.authUser();
+
+    if (
+        request.nextUrl.pathname.includes("stores") &&
+        !request.nextUrl.pathname.endsWith("stores") &&
+        !authUser.selectedStoreId
+    ) {
+        return helper.errorResponse({
+            statusCode: 403,
+            message: "Sorry, You are not permitted to access this store",
+        });
+    }
+
     if (
         request.nextUrl.pathname.includes("store-login") ||
         request.nextUrl.pathname.includes("user-stores") ||
-        request.nextUrl.pathname.includes("logout") ||
-        request.nextUrl.pathname.includes("stores")
+        request.nextUrl.pathname.includes("logout")
     ) {
-        const authService = await new AuthService().verifyAuth();
-
-        if (!authService?.check()) {
-            return authService?.unAuthenticate();
-        }
-
-        // request.auth = authService?.authUser();
         return NextResponse.next();
     }
 

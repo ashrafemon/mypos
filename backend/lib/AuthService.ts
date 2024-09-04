@@ -18,6 +18,10 @@ class AuthService {
     }
 
     async verifyAuth() {
+        if (!this.token) {
+            return;
+        }
+
         const jwtConfig = {
             secret: new TextEncoder().encode(
                 process.env.NEXT_PUBLIC_JWT_SECRET!

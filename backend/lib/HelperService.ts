@@ -79,7 +79,7 @@ export default class HelperService {
     }
 
     buildBarcode(value: string, symbology: string = "code39") {
-        const svg = createCanvas(400, 10, "svg");
+        const svg = createCanvas(400, 10);
         jsBarcode(svg, value, {
             format: symbology.toUpperCase(),
         });

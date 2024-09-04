@@ -79,6 +79,9 @@ const StoreLoginForm = () => {
                     key={i}
                     color="black"
                     onClick={() => storeLoginHandler(item.id)}
+                    loading={
+                        resultLogout?.isLoading || resultStoreLogin?.isLoading
+                    }
                 >
                     {item.name}
                 </Button>
