@@ -1,15 +1,29 @@
 export type PurchaseType = {
     id?: string;
-    name?: string;
+    supplierId?: string;
+    refNo?: string;
+    invoiceNo?: string;
+    date?: string;
+    discount?: number;
+    otherCharge?: number;
+    subtotal?: number;
+    total?: number;
     description?: string;
-    order?: string;
+    attachment?: string;
     status?: string;
 };
 
 export type PurchaseReturnType = {
     id?: string;
-    name?: string;
+    supplierId?: string;
+    refNo?: string;
+    invoiceNo?: string;
+    date?: string;
+    discount?: number;
+    otherCharge?: number;
+    subtotal?: number;
+    total?: number;
     description?: string;
-    order?: string;
+    attachment?: string;
     status?: string;
 };

@@ -77,3 +77,35 @@ export type LoaderType = {
     isError?: boolean;
     error?: AErrorType | any;
 } & LoaderProps;
+
+export type PurchaseProductType = {
+    productId: string | any;
+    productName: string | any;
+    quantity: number | any;
+    amount: number | any;
+    total: number | any;
+    expireAt?: any;
+};
+
+export type PurchasePaymentType = {
+    methodId: string;
+    methodName?: string;
+    amount: number;
+    transactionNo?: string | any;
+};
+
+export type PurchaseFormType = {
+    supplierId: string | null;
+    refNo: string;
+    invoiceNo: string;
+    date: any;
+    discount: number;
+    otherCharge: number;
+    subtotal?: number;
+    total?: number;
+    products: PurchaseProductType[];
+    payments: PurchasePaymentType[];
+    description: string;
+    attachment: string | null;
+    status: string;
+};

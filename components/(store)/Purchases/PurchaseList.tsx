@@ -6,9 +6,16 @@ import AppTable, {
     AppTableRow,
 } from "@/components/UI/Table/AppTable";
 import TextField from "@/components/UI/TextField";
+import { PurchaseType } from "@/lib/models/Purchase";
 import { AppTableHeaderOptionsType, IValueType } from "@/lib/types/types";
+import { message, promptMessage } from "@/lib/utils/helper";
+import {
+    useDeletePurchaseMutation,
+    useFetchPurchasesQuery,
+} from "@/states/actions/stores/purchases";
 import { Icon } from "@iconify/react";
 import { ActionIcon, Button, Checkbox, Flex, Title } from "@mantine/core";
+import moment from "moment";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
@@ -37,10 +44,38 @@ const PurchaseList = () => {
         setQueries((prevState) => ({ ...prevState, [field]: value }));
     };
 
+    const { data, isFetching, isError, error } = useFetchPurchasesQuery(
+        `offset=${queries.page}&limit=${queries.offset}${
+            queries.search ? `&search=${queries.search}` : ""
+        }`
+    );
+
+    const [deletePurchase, result] = useDeletePurchaseMutation();
+    const deleteHandler = (id: string | any) => {
+        promptMessage(async () => {
+            try {
+                const payload = await deletePurchase(id).unwrap();
+                message({
+                    title: payload.message,
+                    icon: "success",
+                    timer: 3000,
+                });
+            } catch (err: { message: string; status: string } | any) {
+                message({
+                    title: err.message,
+                    icon: "error",
+                    timer: 3000,
+                });
+            }
+        });
+    };
+
     return (
         <AppTable
-            isFound={Array(10).fill(5).length > 0}
-            isLoading={false}
+            isFound={data?.data?.length > 0}
+            isLoading={isFetching}
+            isError={isError}
+            error={error}
             topContent={
                 <Flex justify="space-between" gap="xs">
                     <Title component="h5" order={3}>
@@ -84,51 +119,54 @@ const PurchaseList = () => {
                 />
             }
             headers={headers}
-            data={Array(10)
-                .fill(1)
-                .map((_, i) => (
-                    <AppTableRow key={i}>
-                        <AppTableCell>
-                            <Checkbox />
-                        </AppTableCell>
-                        <AppTableCell>PR_5452226</AppTableCell>
-                        <AppTableCell>INV_5554112555100</AppTableCell>
-                        <AppTableCell>25/01/2024</AppTableCell>
-                        <AppTableCell>100000</AppTableCell>
-                        <AppTableCell>5000</AppTableCell>
-                        <AppTableCell>5000</AppTableCell>
-                        <AppTableCell>
-                            <Flex gap="xs">
-                                <ActionIcon size="lg" variant="light">
-                                    <Icon
-                                        icon="carbon:view-filled"
-                                        width={18}
-                                    />
-                                </ActionIcon>
-                                <ActionIcon
-                                    size="lg"
-                                    variant="light"
-                                    color="orange"
-                                >
-                                    <Icon
-                                        icon="weui:pencil-filled"
-                                        width={18}
-                                    />
-                                </ActionIcon>
-                                <ActionIcon
-                                    size="lg"
-                                    variant="light"
-                                    color="red"
-                                >
-                                    <Icon
-                                        icon="icon-park-outline:delete"
-                                        width={18}
-                                    />
-                                </ActionIcon>
-                            </Flex>
-                        </AppTableCell>
-                    </AppTableRow>
-                ))}
+            data={data?.data?.map((item: PurchaseType, i: number) => (
+                <AppTableRow key={i}>
+                    <AppTableCell>
+                        <Checkbox />
+                    </AppTableCell>
+                    <AppTableCell>{item.refNo || "N/A"}</AppTableCell>
+                    <AppTableCell>{item.invoiceNo || "N/A"}</AppTableCell>
+                    <AppTableCell>
+                        {item.date
+                            ? moment(item.date).format("Do MM, YYYY")
+                            : "N/A"}
+                    </AppTableCell>
+                    <AppTableCell>{item.total}</AppTableCell>
+                    <AppTableCell>0</AppTableCell>
+                    <AppTableCell>0</AppTableCell>
+                    <AppTableCell>
+                        <Flex gap="xs" justify="center">
+                            <ActionIcon
+                                size="lg"
+                                variant="light"
+                                loading={result.isLoading}
+                            >
+                                <Icon icon="carbon:view-filled" width={18} />
+                            </ActionIcon>
+                            <ActionIcon
+                                size="lg"
+                                variant="light"
+                                color="orange"
+                                loading={result.isLoading}
+                            >
+                                <Icon icon="weui:pencil-filled" width={18} />
+                            </ActionIcon>
+                            <ActionIcon
+                                size="lg"
+                                variant="light"
+                                color="red"
+                                onClick={() => deleteHandler(item.id)}
+                                loading={result.isLoading}
+                            >
+                                <Icon
+                                    icon="icon-park-outline:delete"
+                                    width={18}
+                                />
+                            </ActionIcon>
+                        </Flex>
+                    </AppTableCell>
+                </AppTableRow>
+            ))}
         />
     );
 };

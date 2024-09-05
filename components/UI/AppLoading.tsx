@@ -13,13 +13,13 @@ const AppLoading: React.FC<LoaderType> = ({
         <Box ta="center" p="xl">
             {isError && (
                 <>
-                    <Text className="text-6xl" fw={600}>
+                    <Text className="text-6xl" fw={600} c="red">
                         {error.status || error?.data?.statusCode}
                     </Text>
-                    <Title component="h5" order={1}>
+                    <Title component="h5" order={1} c="red">
                         {error.originalStatus || error?.data?.status}
                     </Title>
-                    <Title component="h5" order={4}>
+                    <Title component="h5" order={4} c="red">
                         {error.error || error?.data?.message}
                     </Title>
                 </>

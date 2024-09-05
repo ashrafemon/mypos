@@ -25,8 +25,9 @@ const paymentMethods = createApi({
     endpoints: (builder) => ({
         fetchPaymentMethods: builder.query({
             query: (params) => `payment-methods?${params}`,
-            transformResponse: (response: { data: PaginateResponseType }) =>
-                response.data,
+            transformResponse: (response: {
+                data: PaginateResponseType | PaymentMethodType[] | any;
+            }) => response.data,
             providesTags: ["StorePaymentMethods"],
         }),
         createPaymentMethod: builder.mutation({

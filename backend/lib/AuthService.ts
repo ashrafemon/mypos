@@ -19,7 +19,7 @@ class AuthService {
 
     async verifyAuth() {
         if (!this.token) {
-            return;
+            return this;
         }
 
         const jwtConfig = {
@@ -32,13 +32,13 @@ class AuthService {
         const expAt = decoded.payload.exp;
         if (!expAt) {
             this.isAuthenticated = false;
-            return;
+            return this;
         }
 
         const isLive = new Date(expAt * 1000) > new Date();
         if (!isLive) {
             this.isAuthenticated = false;
-            return;
+            return this;
         }
 
         this.setAuthUser(decoded.payload);

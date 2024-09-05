@@ -219,6 +219,7 @@ model PaymentMethod {
     deletedAt DateTime?
 
     // store Store? @relation(fields: [storeId], references: [id])
+    purchasePayments PurchasePayment[]
 
     @@map("payment_methods")
 }
@@ -439,6 +440,7 @@ model Product {
     taxRate           TaxRate?           @relation(fields: [taxRateId], references: [id])
     damageProducts    DamageProduct[]
     quotationProducts QuotationProduct[]
+    purchaseProducts  PurchaseProduct[]
 
     @@map("products")
 }
@@ -681,4 +683,72 @@ model QuotationProduct {
     product   Product?   @relation(fields: [productId], references: [id])
 
     @@map("quotation_products")
+}
+
+// Purchase Tables
+model Purchase {
+    id          String    @id @default(uuid()) @map("_id")
+    storeId     String?
+    supplierId  String?
+    refNo       String?
+    invoiceNo   String?
+    date        DateTime?
+    discount    Float?    @default(0)
+    otherCharge Float?    @default(0)
+    subtotal    Float?    @default(0)
+    total       Float?    @default(0)
+    description String?
+    attachment  String?
+    status      String?   @default("ordered")
+
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    deletedAt DateTime?
+
+    // store             Store?             @relation(fields: [storeId], references: [id])
+    purchaseProducts PurchaseProduct[]
+    PurchasePayment  PurchasePayment[]
+
+    @@map("purchases")
+}
+
+model PurchaseProduct {
+    id          String  @id @default(uuid()) @map("_id")
+    storeId     String?
+    purchaseId  String
+    productId   String
+    productName String?
+    quantity    Float?
+    amount      Float?  @default(0)
+    total       Float?  @default(0)
+
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    deletedAt DateTime?
+
+    // store     Store?     @relation(fields: [storeId], references: [id])
+    purchase Purchase? @relation(fields: [purchaseId], references: [id])
+    product  Product?  @relation(fields: [productId], references: [id])
+
+    @@map("purchase_products")
+}
+
+model PurchasePayment {
+    id            String  @id @default(uuid()) @map("_id")
+    storeId       String?
+    purchaseId    String
+    methodId      String
+    methodName    String?
+    transactionNo String?
+    amount        Float?  @default(0)
+
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    deletedAt DateTime?
+
+    // store     Store?     @relation(fields: [storeId], references: [id])
+    purchase Purchase?      @relation(fields: [purchaseId], references: [id])
+    method   PaymentMethod? @relation(fields: [methodId], references: [id])
+
+    @@map("purchase_payments")
 }
