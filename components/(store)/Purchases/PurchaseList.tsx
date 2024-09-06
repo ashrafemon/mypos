@@ -70,6 +70,18 @@ const PurchaseList = () => {
         });
     };
 
+    const paid = (payments: { amount: number }[] = []) => {
+        return payments.reduce((acc, curr) => acc + Number(curr["amount"]), 0);
+    };
+
+    const due = (total: number = 0, payments: { amount: number }[] = []) => {
+        const paidAmount = paid(payments);
+        if (paidAmount > Number(total)) {
+            return 0;
+        }
+        return Number(total) - paidAmount;
+    };
+
     return (
         <AppTable
             isFound={data?.data?.length > 0}
@@ -132,8 +144,10 @@ const PurchaseList = () => {
                             : "N/A"}
                     </AppTableCell>
                     <AppTableCell>{item.total}</AppTableCell>
-                    <AppTableCell>0</AppTableCell>
-                    <AppTableCell>0</AppTableCell>
+                    <AppTableCell>{paid(item.purchasePayments)}</AppTableCell>
+                    <AppTableCell>
+                        {due(item.total, item.purchasePayments)}
+                    </AppTableCell>
                     <AppTableCell>
                         <Flex gap="xs" justify="center">
                             <ActionIcon
@@ -148,6 +162,9 @@ const PurchaseList = () => {
                                 variant="light"
                                 color="orange"
                                 loading={result.isLoading}
+                                onClick={() =>
+                                    router.push(`/purchases/${item.id}/edit`)
+                                }
                             >
                                 <Icon icon="weui:pencil-filled" width={18} />
                             </ActionIcon>

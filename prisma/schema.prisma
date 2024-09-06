@@ -707,20 +707,21 @@ model Purchase {
 
     // store             Store?             @relation(fields: [storeId], references: [id])
     purchaseProducts PurchaseProduct[]
-    PurchasePayment  PurchasePayment[]
+    purchasePayments PurchasePayment[]
 
     @@map("purchases")
 }
 
 model PurchaseProduct {
-    id          String  @id @default(uuid()) @map("_id")
+    id          String    @id @default(uuid()) @map("_id")
     storeId     String?
     purchaseId  String
     productId   String
     productName String?
+    expireAt    DateTime?
     quantity    Float?
-    amount      Float?  @default(0)
-    total       Float?  @default(0)
+    amount      Float?    @default(0)
+    total       Float?    @default(0)
 
     createdAt DateTime  @default(now())
     updatedAt DateTime  @updatedAt

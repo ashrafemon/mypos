@@ -48,6 +48,7 @@ export const UpdateRules = {
     products: vine
         .array(
             vine.object({
+                id: vine.string().optional(),
                 productId: vine.string(),
                 productName: vine.string(),
                 expireAt: vine.date({ formats: { utc: true } }).optional(),
@@ -60,6 +61,7 @@ export const UpdateRules = {
     payments: vine
         .array(
             vine.object({
+                id: vine.string().optional(),
                 methodId: vine.string(),
                 methodName: vine.string(),
                 amount: vine.number(),

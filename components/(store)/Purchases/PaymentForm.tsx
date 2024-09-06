@@ -37,6 +37,7 @@ const PaymentForm: React.FC<{
     };
 
     const submitHandler = async (e: React.SyntheticEvent) => {
+        e.stopPropagation();
         e.preventDefault();
 
         const validator = await Validator.make(form, {

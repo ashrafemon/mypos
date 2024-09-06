@@ -4,6 +4,10 @@ import moment from "moment";
 import ValidateService from "../lib/ValidateService";
 import { StoreRules, UpdateRules } from "../rules/purchases";
 import { DynamicObjectTypes } from "../types/baseTypes";
+import {
+    PurchasePaymentType,
+    PurchaseProductType,
+} from "../types/purchaseTypes";
 
 export default class PurchaseRepository {
     private helper;
@@ -32,6 +36,7 @@ export default class PurchaseRepository {
                 date: true,
                 total: true,
                 status: true,
+                purchasePayments: { select: { amount: true } },
             };
         }
 
@@ -165,13 +170,35 @@ export default class PurchaseRepository {
             fields = {
                 id: true,
                 supplierId: true,
+                refNo: true,
                 invoiceNo: true,
                 date: true,
                 discount: true,
                 otherCharge: true,
+                subtotal: true,
+                total: true,
                 description: true,
                 attachment: true,
                 status: true,
+                purchaseProducts: {
+                    select: {
+                        id: true,
+                        productId: true,
+                        productName: true,
+                        quantity: true,
+                        amount: true,
+                        total: true,
+                        // expireAt: true,
+                    },
+                },
+                purchasePayments: {
+                    select: {
+                        id: true,
+                        methodId: true,
+                        methodName: true,
+                        amount: true,
+                    },
+                },
             };
         }
 
@@ -213,6 +240,114 @@ export default class PurchaseRepository {
                 message: "Purchase not found...",
             });
         }
+
+        const {
+            storeId,
+            supplierId,
+            refNo,
+            date,
+            discount,
+            otherCharge,
+            subtotal,
+            total,
+            description,
+            attachment,
+            status,
+        } = validate?.validated();
+
+        await this.db.purchase.update({
+            where: { id: doc.id },
+            data: {
+                supplierId,
+                refNo,
+                date,
+                discount,
+                otherCharge,
+                subtotal,
+                total,
+                description,
+                attachment,
+                status,
+            },
+        });
+
+        const entryProducts: string[] = [];
+        const entryPayments: string[] = [];
+
+        validate
+            ?.validated()
+            .products.map(async (item: PurchaseProductType) => {
+                if (item.id) {
+                    entryProducts.push(item.id);
+                    await this.db.purchaseProduct.update({
+                        where: { id: item.id },
+                        data: {
+                            productId: item.productId,
+                            productName: item.productName,
+                            quantity: item.quantity,
+                            amount: item.amount,
+                            total: item.total,
+                        },
+                    });
+                } else {
+                    const product = await this.db.purchaseProduct.create({
+                        data: {
+                            storeId: doc.storeId,
+                            purchaseId: doc.id,
+                            productId: item.productId,
+                            productName: item.productName,
+                            quantity: item.quantity,
+                            amount: item.amount,
+                            total: item.total,
+                            deletedAt: null,
+                        },
+                    });
+                    entryProducts.push(product.id);
+                }
+            });
+
+        validate
+            ?.validated()
+            .payments.map(async (item: PurchasePaymentType) => {
+                if (item.id) {
+                    entryPayments.push(item.id);
+                    await this.db.purchasePayment.update({
+                        where: { id: item.id },
+                        data: {
+                            methodId: item.methodId,
+                            methodName: item.methodName,
+                            amount: item.amount,
+                        },
+                    });
+                } else {
+                    const payment = await this.db.purchasePayment.create({
+                        data: {
+                            storeId: storeId,
+                            purchaseId: doc.id,
+                            methodId: item.methodId,
+                            methodName: item.methodName,
+                            amount: item.amount,
+                            deletedAt: null,
+                        },
+                    });
+                    entryPayments.push(payment.id);
+                }
+            });
+
+        await this.db.purchaseProduct.deleteMany({
+            where: {
+                purchaseId: doc.id,
+                // storeId: storeId,
+                id: { notIn: entryProducts },
+            },
+        });
+        await this.db.purchasePayment.deleteMany({
+            where: {
+                purchaseId: doc.id,
+                // storeId: storeId,
+                id: { notIn: entryPayments },
+            },
+        });
 
         return this.helper.entityResponse({
             message: "Purchase updated successfully...",
