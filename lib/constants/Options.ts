@@ -5,6 +5,11 @@ export const ActivityStatusOptions = [
 
 export const QuotationStatusOptions = [{ label: "Sent", value: "sent" }];
 
+export const PurchaseStatusOptions = [
+    { label: "Ordered", value: "ordered" },
+    { label: "Received", value: "received" },
+];
+
 export const CustomerTypeOptions = [
     { label: "Retail", value: "retail" },
     { label: "Wholesale", value: "wholesale" },

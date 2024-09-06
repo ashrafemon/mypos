@@ -134,15 +134,15 @@ export const StoreLinks = [
     //         { name: "List Transfer", link: "/transfers" },
     //     ],
     // },
-    {
-        name: "Damages",
-        link: "#",
-        icon: "ri:file-damage-fill",
-        links: [
-            { name: "Add Damage", link: "/damages/create" },
-            { name: "List Damage", link: "/damages" },
-        ],
-    },
+    // {
+    //     name: "Damages",
+    //     link: "#",
+    //     icon: "ri:file-damage-fill",
+    //     links: [
+    //         { name: "Add Damage", link: "/damages/create" },
+    //         { name: "List Damage", link: "/damages" },
+    //     ],
+    // },
     {
         name: "HR Management",
         link: "#",
@@ -200,12 +200,12 @@ export const StoreLinks = [
         link: "#",
         icon: "hugeicons:solar-system",
         links: [
-            { name: "List Counter", link: "/system/counters" },
-            { name: "List Tax/Vat", link: "/system/taxes" },
-            { name: "List Currency", link: "/system/currencies" },
-            { name: "List Payment Method", link: "/system/payment-methods" },
-            { name: "List Unit", link: "/system/units" },
-            { name: "List Brand", link: "/system/brands" },
+            { name: "Counter", link: "/system/counters" },
+            { name: "Tax/Vat", link: "/system/taxes" },
+            { name: "Currency", link: "/system/currencies" },
+            { name: "Payment Method", link: "/system/payment-methods" },
+            { name: "Unit", link: "/system/units" },
+            { name: "Brand", link: "/system/brands" },
             // { name: "List Variant", link: "/system/variants" },
         ],
     },

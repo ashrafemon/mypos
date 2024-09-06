@@ -21,6 +21,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import Validator from "Validator";
 import ProductList from "./ProductList";
+import { PurchaseStatusOptions } from "@/lib/constants/Options";
 
 const PurchaseForm = () => {
     const { id } = useParams();
@@ -280,6 +281,19 @@ const PurchaseForm = () => {
                         error={errors.refNo.text}
                         onChange={(e) =>
                             fieldChangeHandler("refNo", null, e.target.value)
+                        }
+                    />
+                </Grid.Col>
+                <Grid.Col span={{ base: 12, md: 3 }}>
+                    <SelectBox
+                        label="Status"
+                        placeholder="Ex. Ordered"
+                        data={PurchaseStatusOptions}
+                        withAsterisk
+                        value={form.status}
+                        error={errors.status.text}
+                        onChange={(value) =>
+                            fieldChangeHandler("status", null, value)
                         }
                     />
                 </Grid.Col>
