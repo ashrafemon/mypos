@@ -1,65 +1,261 @@
 "use client";
 
+import AppLoading from "@/components/UI/AppLoading";
 import DateField from "@/components/UI/DateField";
 import SelectBox from "@/components/UI/SelectBox";
-import AppTable, {
-    AppTableCell,
-    AppTableFooter,
-    AppTableRow,
-} from "@/components/UI/Table/AppTable";
 import TextEditor from "@/components/UI/TextEditor";
 import TextField from "@/components/UI/TextField";
-import { ActivityStatusOptions } from "@/lib/constants/Options";
-import { AppTableHeaderOptionsType } from "@/lib/types/types";
-import { Icon } from "@iconify/react";
+import { QuotationStatusOptions } from "@/lib/constants/Options";
+import { QuotationType } from "@/lib/models/Quotation";
+import { QuotationFormType } from "@/lib/types/types";
+import { message, selectGenerator, validateError } from "@/lib/utils/helper";
+import { useFetchCustomersQuery } from "@/states/actions/stores/customers";
+import { useFetchProductsQuery } from "@/states/actions/stores/products";
 import {
-    ActionIcon,
-    Button,
-    Flex,
-    Grid,
-    Group,
-    Stack,
-    Table,
-    Text,
-    Title,
-} from "@mantine/core";
-import { useRouter } from "next/navigation";
-import { useMemo } from "react";
+    useCreateQuotationMutation,
+    useFetchQuotationQuery,
+    useUpdateQuotationMutation,
+} from "@/states/actions/stores/quotations";
+import { Icon } from "@iconify/react";
+import { ActionIcon, Button, Grid, Group, Stack, Title } from "@mantine/core";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import Validator from "Validator";
+import ProductList from "./ProductList";
 
 const QuotationForm = () => {
+    const { id } = useParams();
     const router = useRouter();
 
-    const headers: AppTableHeaderOptionsType[] = useMemo(
-        () => [
-            { key: "name", label: "Name" },
-            { key: "quantity", label: "Quantity" },
-            { key: "amount", label: "Amount" },
-            { key: "total", label: "Total" },
-            { key: "action", label: "Action", align: "center" },
-        ],
-        []
-    );
+    const { data: customers, isFetching: customersIsFetching } =
+        useFetchCustomersQuery("get_all=1&status=active");
+    const { data: products } = useFetchProductsQuery("get_all=1&status=active");
+
+    const { data, isFetching } = useFetchQuotationQuery(id, {
+        skip: !id,
+        refetchOnMountOrArgChange: true,
+    });
+
+    const [create, result] = useCreateQuotationMutation();
+    const [update, resultUpdate] = useUpdateQuotationMutation();
+
+    const [form, setForm] = useState<QuotationFormType>({
+        customerId: null,
+        // refNo: "",
+        invoiceNo: "",
+        date: new Date(),
+        discount: 0,
+        otherCharge: 0,
+        // subtotal: 0,
+        // total: 0,
+        products: [],
+        description: "",
+        attachment: null,
+        status: "sent",
+    });
+
+    const [errors, setErrors] = useState({
+        customerId: { text: "", show: false },
+        // refNo: { text: "", show: false },
+        invoiceNo: { text: "", show: false },
+        date: { text: "", show: false },
+        discount: { text: "", show: false },
+        otherCharge: { text: "", show: false },
+        subtotal: { text: "", show: false },
+        total: { text: "", show: false },
+        description: { text: "", show: false },
+        attachment: { text: "", show: false },
+        status: { text: "", show: false },
+    });
+
+    const totalCalculation = useMemo(() => {
+        const formProducts = form.products ?? [];
+
+        const products = formProducts.length;
+        const quantity = formProducts.reduce(
+            (acc, curr) => acc + curr["quantity"],
+            0
+        );
+        const subtotal = formProducts.reduce(
+            (acc, curr) => acc + curr["total"],
+            0
+        );
+        const total =
+            subtotal + Number(form.otherCharge) - Number(form.discount);
+
+        return {
+            products: products,
+            quantity: quantity,
+            subtotal: subtotal,
+            total: total,
+        };
+    }, [form.discount, form.otherCharge, form.products]);
+
+    const resetHandler = () => {
+        setErrors({
+            customerId: { text: "", show: false },
+            // refNo: { text: "", show: false },
+            invoiceNo: { text: "", show: false },
+            date: { text: "", show: false },
+            discount: { text: "", show: false },
+            otherCharge: { text: "", show: false },
+            subtotal: { text: "", show: false },
+            total: { text: "", show: false },
+            description: { text: "", show: false },
+            attachment: { text: "", show: false },
+            status: { text: "", show: false },
+        });
+        setForm({
+            customerId: null,
+            // refNo: "",
+            invoiceNo: "",
+            date: new Date(),
+            discount: 0,
+            otherCharge: 0,
+            subtotal: 0,
+            total: 0,
+            products: [],
+            description: "",
+            attachment: null,
+            status: "sent",
+        });
+    };
+
+    const fieldChangeHandler = (
+        field: string,
+        subfield: string | any,
+        value: any
+    ) => {
+        let errKey = field;
+        let fieldValue = value;
+
+        if (subfield) {
+            errKey += "." + subfield;
+            fieldValue = { ...(form as any)[field] };
+            fieldValue[subfield] = value;
+        }
+
+        if (errKey) {
+            setErrors((prevState) => ({
+                ...prevState,
+                [errKey]: { text: "", show: false },
+            }));
+        }
+        setForm((prevState) => ({ ...prevState, [field]: fieldValue }));
+    };
+
+    const submitHandler = async (e: React.SyntheticEvent) => {
+        e.preventDefault();
+        await formAction(() => router.push("/quotations"));
+    };
+
+    const formAction = async (cb = () => {}) => {
+        const validator = await Validator.make(form, {
+            customerId: "required",
+            // refNo: "required",
+            date: "required|date",
+            discount: "numeric",
+            otherCharge: "numeric",
+            // subtotal: "required|numeric",
+            // total: "required|numeric",
+            description: "sometimes",
+            status: "required|in:sent",
+        });
+
+        if (validator.fails()) {
+            setErrors((prevState) => ({
+                ...prevState,
+                ...validateError(validator.getErrors()),
+            }));
+            return;
+        }
+
+        try {
+            const data = {
+                ...form,
+                subtotal: totalCalculation.subtotal,
+                total: totalCalculation.total,
+            };
+
+            const payload = id
+                ? await update(data).unwrap()
+                : await create(data).unwrap();
+
+            resetHandler();
+            message({
+                title: payload.message,
+                icon: "success",
+                timer: 3000,
+            });
+            cb();
+        } catch (err: { message: string; status: string; data: any } | any) {
+            message({
+                title: err.message,
+                icon: "error",
+                timer: 3000,
+            });
+            if (err.status === "validateError") {
+                setErrors((prevState) => ({
+                    ...prevState,
+                    ...validateError(err.data),
+                }));
+            }
+        }
+    };
+
+    useEffect(() => {
+        if (data && Object.keys(data).length > 0) {
+            const payload: QuotationType = { ...data };
+            let obj = { ...form };
+            Object.keys(payload).forEach((key: string) => {
+                if ((payload as any)[key] !== null) {
+                    if (key === "date") {
+                        (obj as any)[key] = new Date((payload as any)[key]);
+                    } else if (key === "quotationProducts") {
+                        (obj as any)["products"] = (payload as any)[key];
+                    } else {
+                        (obj as any)[key] = (payload as any)[key];
+                    }
+                }
+            });
+            setForm(obj);
+        }
+    }, [data]);
+
+    if (isFetching || customersIsFetching) {
+        return <AppLoading />;
+    }
 
     return (
-        <form>
+        <form onSubmit={submitHandler}>
             <Grid>
                 <Grid.Col span={{ base: 12, md: 3 }}>
                     <DateField
                         label="Date"
                         placeholder="Ex. 25/01/1999"
                         withAsterisk
+                        value={form.date}
+                        error={errors.date.text}
+                        onChange={(value) =>
+                            fieldChangeHandler("date", null, value)
+                        }
                     />
                 </Grid.Col>
                 <Grid.Col span={{ base: 12, md: 3 }}>
                     <SelectBox
                         label="Customer"
                         placeholder="Ex. Global Brand"
-                        data={ActivityStatusOptions}
+                        data={selectGenerator(customers, "name", "id")}
                         withAsterisk
                         leftSection={
                             <ActionIcon onClick={() => console.log("Hello")}>
                                 <Icon icon="fluent:add-12-filled" />
                             </ActionIcon>
+                        }
+                        value={form.customerId}
+                        error={errors.customerId.text}
+                        onChange={(value) =>
+                            fieldChangeHandler("customerId", null, value)
                         }
                     />
                 </Grid.Col>
@@ -67,117 +263,110 @@ const QuotationForm = () => {
                     <SelectBox
                         label="Status"
                         placeholder="Ex. Sent"
-                        data={ActivityStatusOptions}
+                        data={QuotationStatusOptions}
                         withAsterisk
+                        value={form.status}
+                        error={errors.status.text}
+                        onChange={(value) =>
+                            fieldChangeHandler("status", null, value)
+                        }
                     />
                 </Grid.Col>
-                <Grid.Col span={12}>
-                    <AppTable
-                        withRowBorders={false}
-                        withColumnBorders={false}
-                        isFound={Array(10).fill(5).length > 0}
-                        isLoading={false}
-                        contentHeight="auto"
-                        topContent={
-                            <SelectBox
-                                label="Select Product"
-                                placeholder="Ex. Select Product"
-                                data={ActivityStatusOptions}
-                                withAsterisk
-                            />
-                        }
-                        headers={headers}
-                        data={Array(5)
-                            .fill(1)
-                            .map((_, i) => (
-                                <AppTableRow key={i}>
-                                    <AppTableCell miw={250}>
-                                        <Title component="h6" order={6}>
-                                            Break Oil Change (484)
-                                        </Title>
-                                    </AppTableCell>
-                                    <AppTableCell w={100}>
-                                        <TextField placeholder="Ex. 10" />
-                                    </AppTableCell>
-                                    <AppTableCell w={200}>
-                                        <TextField placeholder="Ex. 10" />
-                                    </AppTableCell>
-                                    <AppTableCell w={150}>
-                                        <Title component="h5" order={4}>
-                                            10000
-                                        </Title>
-                                        <Text size="sm">Inclusive</Text>
-                                    </AppTableCell>
-                                    <AppTableCell w={10}>
-                                        <Flex gap="xs">
-                                            <ActionIcon
-                                                size="lg"
-                                                variant="light"
-                                                color="red"
-                                            >
-                                                <Icon
-                                                    icon="icon-park-outline:delete"
-                                                    width={18}
-                                                />
-                                            </ActionIcon>
-                                        </Flex>
-                                    </AppTableCell>
-                                </AppTableRow>
-                            ))}
-                        footer={
-                            <AppTableFooter>
-                                <AppTableRow>
-                                    <AppTableCell></AppTableCell>
-                                    <AppTableCell colSpan={4}>
-                                        <Stack gap="xs">
-                                            <Title
-                                                component="h6"
-                                                order={5}
-                                                ta="center"
-                                            >
-                                                Total Product: 5 (1050)
-                                            </Title>
-
-                                            <TextField
-                                                label="Discount"
-                                                placeholder="Ex. 10"
-                                            />
-                                            <TextField
-                                                label="Other Charge"
-                                                placeholder="Ex. 10"
-                                            />
-
-                                            <Button
-                                                variant="light"
-                                                color="black"
-                                                size="xl"
-                                                classNames={{
-                                                    label: "text-2xl",
-                                                }}
-                                            >
-                                                Total: 100000
-                                            </Button>
-                                        </Stack>
-                                    </AppTableCell>
-                                </AppTableRow>
-                            </AppTableFooter>
-                        }
+                <Grid.Col span={{ base: 12, md: 9 }}>
+                    <ProductList
+                        products={products}
+                        selectedProducts={form.products}
+                        formHandler={setForm}
                     />
+                </Grid.Col>
+                <Grid.Col span={{ base: 12, md: 3 }}>
+                    <Stack gap="xs">
+                        <TextField
+                            label="Discount"
+                            placeholder="Ex. 10"
+                            value={form.discount}
+                            error={errors.discount.text}
+                            onChange={(e) =>
+                                fieldChangeHandler(
+                                    "discount",
+                                    null,
+                                    e.target.value
+                                )
+                            }
+                        />
+                        <TextField
+                            label="Other Charge"
+                            placeholder="Ex. 10"
+                            value={form.otherCharge}
+                            error={errors.otherCharge.text}
+                            onChange={(e) =>
+                                fieldChangeHandler(
+                                    "otherCharge",
+                                    null,
+                                    e.target.value
+                                )
+                            }
+                        />
+
+                        <Title component="h6" order={5} ta="center">
+                            Total Product: {totalCalculation.products} (
+                            {totalCalculation.quantity})
+                        </Title>
+
+                        <Button
+                            variant="light"
+                            color="black"
+                            size="xl"
+                            classNames={{
+                                label: "text-2xl",
+                            }}
+                        >
+                            Total: {totalCalculation.total}
+                        </Button>
+                    </Stack>
                 </Grid.Col>
                 <Grid.Col span={12}>
                     <TextEditor
                         label="Description"
-                        placeholder="Ex. Something about quotation"
+                        placeholder="Ex. Something about purchase"
                         minRows={2}
+                        value={form.description}
+                        error={errors.description.text}
+                        onChange={(e) =>
+                            fieldChangeHandler(
+                                "description",
+                                null,
+                                e.target.value
+                            )
+                        }
                     />
                 </Grid.Col>
                 <Grid.Col span={12}>
                     <Group gap="xs">
-                        <Button>Save</Button>
-                        <Button>Save & Add More</Button>
+                        <Button
+                            type="submit"
+                            loading={
+                                result?.isLoading || resultUpdate?.isLoading
+                            }
+                        >
+                            Save
+                        </Button>
+                        {!id && (
+                            <Button
+                                onClick={() => formAction()}
+                                loading={
+                                    result?.isLoading || resultUpdate?.isLoading
+                                }
+                            >
+                                Save & Add More
+                            </Button>
+                        )}
                         <Button
                             color="red"
                             onClick={() => router.push("/quotations")}
+                            loading={
+                                result?.isLoading || resultUpdate?.isLoading
+                            }
                         >
                             Back
                         </Button>

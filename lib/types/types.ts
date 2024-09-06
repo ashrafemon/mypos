@@ -109,3 +109,18 @@ export type PurchaseFormType = {
     attachment: string | null;
     status: string;
 };
+
+export type QuotationFormType = {
+    customerId: string | null;
+    // refNo: string;
+    invoiceNo: string;
+    date: any;
+    discount: number;
+    otherCharge: number;
+    subtotal?: number;
+    total?: number;
+    products: PurchaseProductType[];
+    description: string;
+    attachment: string | null;
+    status: string;
+};

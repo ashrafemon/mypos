@@ -3,6 +3,8 @@ export const ActivityStatusOptions = [
     { label: "In-Active", value: "inactive" },
 ];
 
+export const QuotationStatusOptions = [{ label: "Sent", value: "sent" }];
+
 export const CustomerTypeOptions = [
     { label: "Retail", value: "retail" },
     { label: "Wholesale", value: "wholesale" },

@@ -646,13 +646,15 @@ model Quotation {
     id          String    @id @default(uuid()) @map("_id")
     storeId     String?
     customerId  String?
-    refNo       String?
+    // refNo       String?
+    invoiceNo   String?
     date        DateTime?
     discount    Float?    @default(0)
     otherCharge Float?    @default(0)
     subtotal    Float?    @default(0)
     total       Float?    @default(0)
     description String?
+    attachment  String?
     status      String?   @default("sent")
 
     createdAt DateTime  @default(now())
@@ -670,6 +672,7 @@ model QuotationProduct {
     storeId     String?
     quotationId String?
     productId   String?
+    productName String?
     quantity    Float?
     amount      Float?  @default(0)
     total       Float?  @default(0)

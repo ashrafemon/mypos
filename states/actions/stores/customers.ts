@@ -25,8 +25,9 @@ const customers = createApi({
     endpoints: (builder) => ({
         fetchCustomers: builder.query({
             query: (params) => `customers?${params}`,
-            transformResponse: (response: { data: PaginateResponseType }) =>
-                response.data,
+            transformResponse: (response: {
+                data: PaginateResponseType | CustomerType[] | any;
+            }) => response.data,
             providesTags: ["StoreCustomers"],
         }),
         createCustomer: builder.mutation({

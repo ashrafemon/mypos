@@ -2,14 +2,11 @@ import HelperService from "@/backend/lib/HelperService";
 import PrismaService from "@/backend/lib/PrismaService";
 import moment from "moment";
 import ValidateService from "../lib/ValidateService";
-import { StoreRules, UpdateRules } from "../rules/purchases";
+import { StoreRules, UpdateRules } from "../rules/quotations";
 import { DynamicObjectTypes } from "../types/baseTypes";
-import {
-    PurchasePaymentType,
-    PurchaseProductType,
-} from "../types/purchaseTypes";
+import { QuotationProductType } from "../types/quotationTypes";
 
-export default class PurchaseRepository {
+export default class QuotationRepository {
     private helper;
     private db;
 
@@ -36,7 +33,6 @@ export default class PurchaseRepository {
                 date: true,
                 total: true,
                 status: true,
-                purchasePayments: { select: { amount: true } },
             };
         }
 
@@ -48,7 +44,7 @@ export default class PurchaseRepository {
         }
 
         if (queries.get_all && Number(queries.get_all) === 1) {
-            const docs = await this.db.purchase.findMany({
+            const docs = await this.db.quotation.findMany({
                 select: fields,
                 where: condition,
             });
@@ -56,8 +52,8 @@ export default class PurchaseRepository {
             return this.helper.entityResponse({ data: docs });
         } else {
             const [count, docs] = await this.db.$transaction([
-                this.db.purchase.count({ where: condition }),
-                this.db.purchase.findMany({
+                this.db.quotation.count({ where: condition }),
+                this.db.quotation.findMany({
                     select: fields,
                     where: condition,
                     skip: offset - 1,
@@ -84,7 +80,7 @@ export default class PurchaseRepository {
 
         const {
             storeId,
-            supplierId,
+            customerId,
             refNo,
             date,
             discount,
@@ -96,10 +92,10 @@ export default class PurchaseRepository {
             status,
         } = validate?.validated();
 
-        const purchase = await this.db.purchase.create({
+        const quotation = await this.db.quotation.create({
             data: {
                 storeId,
-                supplierId,
+                customerId,
                 refNo,
                 date,
                 discount,
@@ -109,35 +105,25 @@ export default class PurchaseRepository {
                 description,
                 attachment,
                 status,
-                invoiceNo: `PUR_${Math.floor(100000 + Math.random() * 900000)}`,
+                invoiceNo: `QUO_${Math.floor(100000 + Math.random() * 900000)}`,
                 deletedAt: null,
             },
         });
 
         const products = validate
             ?.validated()
-            .products.map((p: PurchaseProductType) => ({
+            .products.map((p: QuotationProductType) => ({
                 ...p,
                 storeId: storeId,
-                purchaseId: purchase.id,
+                quotationId: quotation.id,
                 deletedAt: null,
             }));
 
-        const payments = validate
-            ?.validated()
-            .payments.map((p: PurchasePaymentType) => ({
-                ...p,
-                storeId: storeId,
-                purchaseId: purchase.id,
-                deletedAt: null,
-            }));
-
-        await this.db.purchaseProduct.createMany({ data: products });
-        await this.db.purchasePayment.createMany({ data: payments });
+        await this.db.quotationProduct.createMany({ data: products });
 
         return this.helper.entityResponse({
             statusCode: 201,
-            message: "Purchase added successfully...",
+            message: "Quotation added successfully...",
         });
     }
 
@@ -153,7 +139,7 @@ export default class PurchaseRepository {
         } else {
             fields = {
                 id: true,
-                supplierId: true,
+                customerId: true,
                 refNo: true,
                 invoiceNo: true,
                 date: true,
@@ -164,7 +150,7 @@ export default class PurchaseRepository {
                 description: true,
                 attachment: true,
                 status: true,
-                purchaseProducts: {
+                quotationProducts: {
                     select: {
                         id: true,
                         productId: true,
@@ -172,27 +158,18 @@ export default class PurchaseRepository {
                         quantity: true,
                         amount: true,
                         total: true,
-                        // expireAt: true,
-                    },
-                },
-                purchasePayments: {
-                    select: {
-                        id: true,
-                        methodId: true,
-                        methodName: true,
-                        amount: true,
                     },
                 },
             };
         }
 
-        const doc = await this.db.purchase.findFirst({
+        const doc = await this.db.quotation.findFirst({
             where: condition,
             select: fields,
         });
         if (!doc) {
             return this.helper.errorResponse({
-                message: "Purchase not found...",
+                message: "Quotation not found...",
             });
         }
         return this.helper.entityResponse({ data: doc });
@@ -216,17 +193,17 @@ export default class PurchaseRepository {
             id: id,
             deletedAt: { equals: null },
         };
-        const doc = await this.db.purchase.findFirst({
+        const doc = await this.db.quotation.findFirst({
             where: condition,
         });
         if (!doc) {
             return this.helper.errorResponse({
-                message: "Purchase not found...",
+                message: "Quotation not found...",
             });
         }
 
         const {
-            supplierId,
+            customerId,
             refNo,
             date,
             discount,
@@ -238,10 +215,10 @@ export default class PurchaseRepository {
             status,
         } = validate?.validated();
 
-        await this.db.purchase.update({
+        await this.db.quotation.update({
             where: { id: doc.id },
             data: {
-                supplierId,
+                customerId,
                 refNo,
                 date,
                 discount,
@@ -255,14 +232,13 @@ export default class PurchaseRepository {
         });
 
         const entryProducts: string[] = [];
-        const entryPayments: string[] = [];
 
         validate
             ?.validated()
-            .products.map(async (item: PurchaseProductType) => {
+            .products.map(async (item: QuotationProductType) => {
                 if (item.id) {
                     entryProducts.push(item.id);
-                    await this.db.purchaseProduct.update({
+                    await this.db.quotationProduct.update({
                         where: { id: item.id },
                         data: {
                             productId: item.productId,
@@ -273,10 +249,10 @@ export default class PurchaseRepository {
                         },
                     });
                 } else {
-                    const product = await this.db.purchaseProduct.create({
+                    const product = await this.db.quotationProduct.create({
                         data: {
                             storeId: doc.storeId,
-                            purchaseId: doc.id,
+                            quotationId: doc.id,
                             productId: item.productId,
                             productName: item.productName,
                             quantity: item.quantity,
@@ -289,51 +265,16 @@ export default class PurchaseRepository {
                 }
             });
 
-        validate
-            ?.validated()
-            .payments.map(async (item: PurchasePaymentType) => {
-                if (item.id) {
-                    entryPayments.push(item.id);
-                    await this.db.purchasePayment.update({
-                        where: { id: item.id },
-                        data: {
-                            methodId: item.methodId,
-                            methodName: item.methodName,
-                            amount: item.amount,
-                        },
-                    });
-                } else {
-                    const payment = await this.db.purchasePayment.create({
-                        data: {
-                            storeId: doc.storeId,
-                            purchaseId: doc.id,
-                            methodId: item.methodId,
-                            methodName: item.methodName,
-                            amount: item.amount,
-                            deletedAt: null,
-                        },
-                    });
-                    entryPayments.push(payment.id);
-                }
-            });
-
-        await this.db.purchaseProduct.deleteMany({
+        await this.db.quotationProduct.deleteMany({
             where: {
-                purchaseId: doc.id,
+                quotationId: doc.id,
                 // storeId: storeId,
                 id: { notIn: entryProducts },
             },
         });
-        await this.db.purchasePayment.deleteMany({
-            where: {
-                purchaseId: doc.id,
-                // storeId: storeId,
-                id: { notIn: entryPayments },
-            },
-        });
 
         return this.helper.entityResponse({
-            message: "Purchase updated successfully...",
+            message: "Quotation updated successfully...",
         });
     }
 
@@ -343,32 +284,27 @@ export default class PurchaseRepository {
             deletedAt: { equals: null },
         };
 
-        const doc = await this.db.purchase.findFirst({
+        const doc = await this.db.quotation.findFirst({
             where: condition,
         });
         if (!doc) {
             return this.helper.errorResponse({
-                message: "Purchase not found...",
+                message: "Quotation not found...",
             });
         }
 
-        await this.db.purchase.update({
+        await this.db.quotation.update({
             where: { id: doc.id },
             data: { deletedAt: moment().toDate() },
         });
 
-        await this.db.purchaseProduct.updateMany({
-            where: { purchaseId: doc.id },
-            data: { deletedAt: moment().toDate() },
-        });
-
-        await this.db.purchasePayment.updateMany({
-            where: { purchaseId: doc.id },
+        await this.db.quotationProduct.updateMany({
+            where: { quotationId: doc.id },
             data: { deletedAt: moment().toDate() },
         });
 
         return this.helper.entityResponse({
-            message: "Purchase deleted successfully...",
+            message: "Quotation deleted successfully...",
         });
     }
 }
