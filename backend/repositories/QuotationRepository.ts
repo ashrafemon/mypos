@@ -28,7 +28,7 @@ export default class QuotationRepository {
         } else {
             fields = {
                 id: true,
-                refNo: true,
+                // refNo: true,
                 invoiceNo: true,
                 date: true,
                 total: true,
@@ -81,7 +81,7 @@ export default class QuotationRepository {
         const {
             storeId,
             customerId,
-            refNo,
+            // refNo,
             date,
             discount,
             otherCharge,
@@ -96,7 +96,7 @@ export default class QuotationRepository {
             data: {
                 storeId,
                 customerId,
-                refNo,
+                // refNo,
                 date,
                 discount,
                 otherCharge,
@@ -140,7 +140,7 @@ export default class QuotationRepository {
             fields = {
                 id: true,
                 customerId: true,
-                refNo: true,
+                // refNo: true,
                 invoiceNo: true,
                 date: true,
                 discount: true,
@@ -204,7 +204,7 @@ export default class QuotationRepository {
 
         const {
             customerId,
-            refNo,
+            // refNo,
             date,
             discount,
             otherCharge,
@@ -219,7 +219,7 @@ export default class QuotationRepository {
             where: { id: doc.id },
             data: {
                 customerId,
-                refNo,
+                // refNo,
                 date,
                 discount,
                 otherCharge,
