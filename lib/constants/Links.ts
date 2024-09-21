@@ -24,7 +24,7 @@ export const StoreLinks = [
         link: "#",
         icon: "mdi:point-of-sale",
         links: [
-            { name: "POS Screen", link: "/stores/create" },
+            { name: "POS Screen", link: "/sales/create" },
             { name: "List Sale", link: "/sales" },
             { name: "Return Sale", link: "/sales/returns" },
         ],
