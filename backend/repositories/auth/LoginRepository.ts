@@ -122,7 +122,7 @@ export default class LoginRepository {
         const token = jwt.sign(
             { ...authUser, selectedStoreId: body.storeId },
             process.env.NEXT_PUBLIC_JWT_SECRET!,
-            { expiresIn: "1h" }
+            { expiresIn: "5h" }
         );
 
         cookies().set({
@@ -130,8 +130,8 @@ export default class LoginRepository {
             value: token,
             httpOnly: true,
             path: "/",
-            maxAge: 3600,
-            expires: new Date(Date.now() + 3600),
+            maxAge: 3600 * 5,
+            expires: new Date(Date.now() + 3600 * 5),
         });
 
         return this.helper.entityResponse({

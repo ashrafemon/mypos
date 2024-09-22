@@ -32,8 +32,12 @@ export default function RootLayout({
         <html lang="en">
             <body className={outfit.className}>
                 <NextTopLoader />
-                <Analytics />
-                <SpeedInsights />
+                {process.env.NODE_ENV !== "development" && (
+                    <>
+                        <Analytics />
+                        <SpeedInsights />
+                    </>
+                )}
                 <ReduxProvider>
                     <ToastContainer />
                     <MantineProvider theme={theme} withCssVariables>

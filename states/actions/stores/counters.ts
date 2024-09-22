@@ -25,8 +25,9 @@ const counters = createApi({
     endpoints: (builder) => ({
         fetchCounters: builder.query({
             query: (params) => `counters?${params}`,
-            transformResponse: (response: { data: PaginateResponseType }) =>
-                response.data,
+            transformResponse: (response: {
+                data: PaginateResponseType | CounterType[] | any;
+            }) => response.data,
             providesTags: ["StoreCounters"],
         }),
         createCounter: builder.mutation({
