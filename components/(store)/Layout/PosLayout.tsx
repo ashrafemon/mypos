@@ -1,6 +1,6 @@
 "use client";
 
-import { LayoutProps } from "@/.next/types/app/layout";
+import { LayoutType } from "@/lib/types/types";
 import { message } from "@/lib/utils/helper";
 import { useCreateLogoutMutation } from "@/states/actions/auth";
 import { Icon } from "@iconify/react";
@@ -14,10 +14,9 @@ import {
     Stack,
     Tooltip,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
 import { useRouter } from "next/navigation";
 
-const PosLayout: React.FC<LayoutProps> = ({ children }) => {
+const PosLayout: React.FC<LayoutType> = ({ children }) => {
     const router = useRouter();
 
     const [createLogout, resultLogout] = useCreateLogoutMutation();
