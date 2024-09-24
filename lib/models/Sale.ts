@@ -1,9 +1,23 @@
 export type SaleType = {
     id?: string;
-    name?: string;
+    customerId?: string;
+    counterId?: string;
+    invoiceNo?: string;
+    date?: string;
+    discount?: number;
+    otherCharge?: number;
+    shippingCharge?: number;
+    orderTax?: number;
+    subtotal?: number;
+    total?: number;
+    // purchaseProducts?: PurchaseProductType[];
+    // purchasePayments?: PurchasePaymentType[];
     description?: string;
-    order?: string;
+    attachment?: string;
     status?: string;
+    customer?: {
+        name: string;
+    } | null;
 };
 
 export type SaleReturnType = {

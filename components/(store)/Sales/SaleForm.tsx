@@ -1,14 +1,18 @@
 "use client";
 
-import { Button, Card } from "@mantine/core";
+import { ProductType } from "@/lib/models/Product";
+import { Card } from "@mantine/core";
+import { useMemo, useRef, useState } from "react";
 import PosLayout from "../Layout/PosLayout";
 import CartSection from "./Form/CartSection";
 import ProductSection from "./Form/ProductSection";
-import { useRef, useState } from "react";
-import { ProductType } from "@/lib/models/Product";
+import { useCreateSaleMutation } from "@/states/actions/stores/sales";
+import moment from "moment";
 
 const SaleForm = () => {
     const cartRef = useRef<any>(null);
+
+    const [create, result] = useCreateSaleMutation();
 
     const [products, setProducts] = useState<
         {
@@ -49,7 +53,7 @@ const SaleForm = () => {
                 price: p.price,
                 discount: p.discount,
                 taxMethod: p.taxMethod,
-                taxRate: p.taxRate,
+                taxRate: p.taxRate?.rate ?? 0,
                 quantity: quantity,
                 total: priceWithTax,
             });
@@ -59,11 +63,14 @@ const SaleForm = () => {
                 quantityType === "add"
                     ? Number(exists.quantity) + quantity
                     : Number(exists.quantity) - quantity;
+
+            if (qty < 1) return;
+
             const priceAfterDiscount =
                 (Number(exists.price!) - Number(exists.discount!)) * qty;
             const taxAmount =
                 exists.taxMethod === "exclusive"
-                    ? priceAfterDiscount * (Number(exists.taxRate?.rate!) / 100)
+                    ? priceAfterDiscount * (Number(exists.taxRate) / 100)
                     : 0;
             const priceWithTax = priceAfterDiscount + taxAmount;
             exists.quantity = qty;
@@ -73,7 +80,14 @@ const SaleForm = () => {
         setProducts(prevProducts);
     };
 
-    const submitHandler = () => {
+    const deleteProduct = (index: number) => {
+        const prevProducts = [...products.filter((_, i) => i !== index)];
+        setProducts(prevProducts);
+    };
+
+    const submitHandler = async (e: React.SyntheticEvent) => {
+        e.preventDefault();
+
         const {
             customer,
             counter,
@@ -81,27 +95,50 @@ const SaleForm = () => {
             otherCharge,
             discount,
             orderTax,
+            total,
         } = cartRef.current;
+
+        const form = {
+            type: "sale",
+            date: moment().toString(),
+            customerId: customer.selectedId ?? null,
+            counterId: counter.selectedId ?? null,
+            shippingCharge: shippingCharge.value ?? 0,
+            otherCharge: otherCharge.value ?? 0,
+            discount: discount.value ?? 0,
+            orderTax: orderTax.value?.rate ?? 0,
+            total: total.netAmount ?? 0,
+            products: products,
+            payments: [],
+        };
+
+        await create(form)
+            .unwrap()
+            .then((res) => console.log(res))
+            .catch((err) => console.log(err));
     };
 
     return (
         <PosLayout>
-            <div className="grid grid-cols-12 gap-4 px-2 items-stretch">
-                <div className="col-span-full lg:col-span-7 2xl:col-span-8">
-                    <Card radius="md" shadow="sm" h="100%">
-                        <ProductSection addProduct={addProduct} />
-                    </Card>
+            <form onSubmit={submitHandler}>
+                <div className="grid grid-cols-12 gap-4 px-2 items-stretch">
+                    <div className="col-span-full lg:col-span-7 2xl:col-span-8">
+                        <Card radius="md" shadow="sm" h="100%">
+                            <ProductSection addProduct={addProduct} />
+                        </Card>
+                    </div>
+                    <div className="col-span-full lg:col-span-5 2xl:col-span-4">
+                        <Card radius="md" shadow="sm" h="100%">
+                            <CartSection
+                                ref={cartRef}
+                                selectedProducts={products}
+                                addProduct={addProduct}
+                                deleteProduct={deleteProduct}
+                            />
+                        </Card>
+                    </div>
                 </div>
-                <div className="col-span-full lg:col-span-5 2xl:col-span-4">
-                    <Card radius="md" shadow="sm" h="100%">
-                        <CartSection
-                            ref={cartRef}
-                            selectedProducts={products}
-                            addProduct={addProduct}
-                        />
-                    </Card>
-                </div>
-            </div>
+            </form>
         </PosLayout>
     );
 };

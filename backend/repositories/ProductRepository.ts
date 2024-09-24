@@ -46,6 +46,22 @@ export default class ProductRepository {
         if (queries.storeId) {
             condition["storeId"] = queries.storeId;
         }
+        if (queries.categoryId) {
+            condition["categoryId"] = queries.categoryId;
+        }
+        if (queries.brandId) {
+            condition["brandId"] = queries.brandId;
+        }
+        if (queries.search) {
+            condition["OR"] = [
+                {
+                    name: { contains: queries.search },
+                },
+                {
+                    code: { contains: queries.search },
+                },
+            ];
+        }
 
         if (queries.get_all && Number(queries.get_all) === 1) {
             const docs = await this.db.product.findMany({

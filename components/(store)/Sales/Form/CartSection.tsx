@@ -26,6 +26,7 @@ import {
     useCallback,
     useEffect,
     useImperativeHandle,
+    useMemo,
     useState,
 } from "react";
 
@@ -33,6 +34,7 @@ const CartSection = (
     {
         selectedProducts,
         addProduct,
+        deleteProduct,
     }: {
         selectedProducts: {
             productId?: string;
@@ -47,9 +49,10 @@ const CartSection = (
         }[];
         addProduct: (
             product: ProductType,
-            quantity: number,
-            quantityType: string
+            quantity?: number,
+            quantityType?: string
         ) => void;
+        deleteProduct: (index: number) => void;
     },
     ref: Ref<unknown> | undefined
 ) => {
@@ -127,6 +130,32 @@ const CartSection = (
         value: 0,
     });
 
+    const total = useMemo(() => {
+        const productDiscount = selectedProducts.reduce(
+            (acc, cur) => acc + Number(cur.discount),
+            0
+        );
+        const productTotal = selectedProducts.reduce(
+            (acc, cur) => acc + Number(cur.total),
+            0
+        );
+
+        const taxAmount =
+            productTotal * (Number(orderTax.value?.rate ?? 0) / 100);
+        const extraCharge =
+            Number(otherCharge.value) + Number(shippingCharge.value);
+        const netAmount =
+            productTotal + extraCharge + taxAmount - Number(discount.value);
+
+        return { productDiscount, netAmount };
+    }, [
+        discount.value,
+        orderTax.value?.rate,
+        otherCharge.value,
+        selectedProducts,
+        shippingCharge.value,
+    ]);
+
     useEffect(() => {
         walkingCustomer();
     }, [walkingCustomer]);
@@ -141,9 +170,18 @@ const CartSection = (
                 otherCharge,
                 discount,
                 orderTax,
+                total,
             };
         },
-        [customer, counter, shippingCharge, otherCharge, discount, orderTax]
+        [
+            customer,
+            counter,
+            shippingCharge,
+            otherCharge,
+            discount,
+            orderTax,
+            total,
+        ]
     );
 
     return (
@@ -292,10 +330,21 @@ const CartSection = (
                                     </Table.Td>
                                     <Table.Td>
                                         <TextField
+                                            pattern="[0-9]*"
                                             leftSection={
                                                 <ActionIcon
                                                     size="sm"
                                                     variant="light"
+                                                    onClick={() =>
+                                                        addProduct(
+                                                            {
+                                                                id: item.productId,
+                                                                name: item.name,
+                                                            },
+                                                            1,
+                                                            "sub"
+                                                        )
+                                                    }
                                                 >
                                                     <Icon
                                                         icon="ri:subtract-line"
@@ -307,6 +356,12 @@ const CartSection = (
                                                 <ActionIcon
                                                     size="sm"
                                                     variant="light"
+                                                    onClick={() =>
+                                                        addProduct({
+                                                            id: item.productId,
+                                                            name: item.name,
+                                                        })
+                                                    }
                                                 >
                                                     <Icon
                                                         icon="ri:add-fill"
@@ -318,6 +373,7 @@ const CartSection = (
                                             classNames={{
                                                 input: "text-center",
                                             }}
+                                            readOnly
                                         />
                                     </Table.Td>
                                     <Table.Td className="text-center">
@@ -335,6 +391,7 @@ const CartSection = (
                                                 variant="light"
                                                 color="red"
                                                 size="sm"
+                                                onClick={() => deleteProduct(i)}
                                             >
                                                 <Icon
                                                     icon="icon-park-outline:delete"
@@ -366,7 +423,7 @@ const CartSection = (
                     </Text>
                     <Group gap="xs" align="center">
                         <Text size="xl" fw={600}>
-                            $0
+                            ${total.productDiscount}
                         </Text>
                     </Group>
                 </Grid.Col>
@@ -552,7 +609,7 @@ const CartSection = (
                 <Grid.Col span={12}>
                     <Button size="xl" variant="light" fullWidth>
                         <Text className="text-2xl" fw={600}>
-                            Net Amount: $100
+                            Net Amount: ${total.netAmount}
                         </Text>
                     </Button>
                 </Grid.Col>
@@ -576,6 +633,7 @@ const CartSection = (
                         leftSection={
                             <Icon icon="ic:twotone-payments" width={28} />
                         }
+                        type="submit"
                     >
                         Pay Now
                     </Button>

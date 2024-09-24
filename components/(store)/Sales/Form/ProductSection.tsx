@@ -18,16 +18,20 @@ import {
     ScrollArea,
     Text,
 } from "@mantine/core";
+import { useDebouncedValue } from "@mantine/hooks";
 import Image from "next/image";
 import React, { useState } from "react";
 
 const ProductSection: React.FC<{
     addProduct: (value: any) => void;
 }> = ({ addProduct }) => {
+    const [search, setSearch] = useState("");
+    const [debounced] = useDebouncedValue(search, 1500);
+
     const [productQueries, setProductQueries] = useState({
         categoryId: null,
         brandId: null,
-        search: "",
+        // search: debounced,
         fields: "type,id,name,price,code,discount,taxMethod",
     });
 
@@ -51,7 +55,7 @@ const ProductSection: React.FC<{
                 productQueries.brandId
                     ? `&brandId=${productQueries.brandId}`
                     : ""
-            }${productQueries.search ? `&search=${productQueries.search}` : ""}`
+            }${debounced ? `&search=${debounced}` : ""}`
         );
 
     return (
@@ -69,6 +73,8 @@ const ProductSection: React.FC<{
                                 <Icon icon="hugeicons:hold-01" width={28} />
                             </ActionIcon>
                         }
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
                     />
                 </Grid.Col>
                 <Grid.Col span={{ base: 12, lg: 3 }}>

@@ -6,7 +6,13 @@ import AppTable, {
     AppTableRow,
 } from "@/components/UI/Table/AppTable";
 import TextField from "@/components/UI/TextField";
+import { SaleType } from "@/lib/models/Sale";
 import { AppTableHeaderOptionsType, IValueType } from "@/lib/types/types";
+import { message, promptMessage } from "@/lib/utils/helper";
+import {
+    useDeleteSaleMutation,
+    useFetchSalesQuery,
+} from "@/states/actions/stores/sales";
 import { Icon } from "@iconify/react";
 import {
     ActionIcon,
@@ -16,6 +22,7 @@ import {
     Flex,
     Title,
 } from "@mantine/core";
+import moment from "moment";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
@@ -44,10 +51,38 @@ const SaleList = () => {
         setQueries((prevState) => ({ ...prevState, [field]: value }));
     };
 
+    const { data, isFetching, isError, error } = useFetchSalesQuery(
+        `offset=${queries.page}&limit=${queries.offset}${
+            queries.search ? `&search=${queries.search}` : ""
+        }`
+    );
+
+    const [deletePurchase, result] = useDeleteSaleMutation();
+    const deleteHandler = (id: string | any) => {
+        promptMessage(async () => {
+            try {
+                const payload = await deletePurchase(id).unwrap();
+                message({
+                    title: payload.message,
+                    icon: "success",
+                    timer: 3000,
+                });
+            } catch (err: { message: string; status: string } | any) {
+                message({
+                    title: err.message,
+                    icon: "error",
+                    timer: 3000,
+                });
+            }
+        });
+    };
+
     return (
         <AppTable
-            isFound={Array(10).fill(5).length > 0}
-            isLoading={false}
+            isFound={data?.data?.length > 0}
+            isLoading={isFetching}
+            isError={isError}
+            error={error}
             topContent={
                 <Flex justify="space-between" gap="xs">
                     <Title component="h5" order={3}>
@@ -91,53 +126,43 @@ const SaleList = () => {
                 />
             }
             headers={headers}
-            data={Array(10)
-                .fill(1)
-                .map((_, i) => (
-                    <AppTableRow key={i}>
-                        <AppTableCell>
-                            <Checkbox />
-                        </AppTableCell>
-                        <AppTableCell>INV000162</AppTableCell>
-                        <AppTableCell>25/03/1990</AppTableCell>
-                        <AppTableCell>Walking Customer</AppTableCell>
-                        <AppTableCell>15000</AppTableCell>
-                        <AppTableCell>15000</AppTableCell>
-                        <AppTableCell>
-                            <Badge color="green">Paid</Badge>
-                        </AppTableCell>
-                        <AppTableCell>
-                            <Flex gap="xs">
-                                <ActionIcon size="lg" variant="light">
-                                    <Icon
-                                        icon="carbon:view-filled"
-                                        width={18}
-                                    />
-                                </ActionIcon>
-                                <ActionIcon
-                                    size="lg"
-                                    variant="light"
-                                    color="orange"
-                                >
-                                    <Icon
-                                        icon="weui:pencil-filled"
-                                        width={18}
-                                    />
-                                </ActionIcon>
-                                <ActionIcon
-                                    size="lg"
-                                    variant="light"
-                                    color="red"
-                                >
-                                    <Icon
-                                        icon="icon-park-outline:delete"
-                                        width={18}
-                                    />
-                                </ActionIcon>
-                            </Flex>
-                        </AppTableCell>
-                    </AppTableRow>
-                ))}
+            data={data?.data?.map((item: SaleType, i: number) => (
+                <AppTableRow key={i}>
+                    <AppTableCell>
+                        <Checkbox />
+                    </AppTableCell>
+                    <AppTableCell>{item.invoiceNo}</AppTableCell>
+                    <AppTableCell>
+                        {moment(item.date).format("DD/MM/YYYY")}
+                    </AppTableCell>
+                    <AppTableCell>{item.customer?.name}</AppTableCell>
+                    <AppTableCell>{item.total}</AppTableCell>
+                    <AppTableCell>0</AppTableCell>
+                    <AppTableCell>
+                        <Badge color="green">{item.status}</Badge>
+                    </AppTableCell>
+                    <AppTableCell>
+                        <Flex gap="xs" justify="center">
+                            <ActionIcon size="lg" variant="light">
+                                <Icon icon="carbon:view-filled" width={18} />
+                            </ActionIcon>
+                            <ActionIcon
+                                size="lg"
+                                variant="light"
+                                color="orange"
+                            >
+                                <Icon icon="weui:pencil-filled" width={18} />
+                            </ActionIcon>
+                            <ActionIcon size="lg" variant="light" color="red">
+                                <Icon
+                                    icon="icon-park-outline:delete"
+                                    width={18}
+                                />
+                            </ActionIcon>
+                        </Flex>
+                    </AppTableCell>
+                </AppTableRow>
+            ))}
         />
     );
 };

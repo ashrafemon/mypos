@@ -220,6 +220,7 @@ model PaymentMethod {
 
     // store Store? @relation(fields: [storeId], references: [id])
     purchasePayments PurchasePayment[]
+    SalePayment      SalePayment[]
 
     @@map("payment_methods")
 }
@@ -263,6 +264,7 @@ model Customer {
 
     // store Store? @relation(fields: [storeId], references: [id])
     group CustomerGroup? @relation(fields: [groupId], references: [id])
+    sales Sale[]
 
     @@map("customers")
 }
@@ -441,6 +443,7 @@ model Product {
     damageProducts    DamageProduct[]
     quotationProducts QuotationProduct[]
     purchaseProducts  PurchaseProduct[]
+    SaleProduct       SaleProduct[]
 
     @@map("products")
 }
@@ -755,4 +758,80 @@ model PurchasePayment {
     method   PaymentMethod? @relation(fields: [methodId], references: [id])
 
     @@map("purchase_payments")
+}
+
+// Sales Tables
+model Sale {
+    id             String    @id @default(uuid()) @map("_id")
+    storeId        String?
+    counterId      String?
+    customerId     String?
+    type           String?
+    invoiceNo      String?
+    date           DateTime?
+    discount       Float?    @default(0)
+    otherCharge    Float?    @default(0)
+    shippingCharge Float?    @default(0)
+    orderTax       Float?    @default(0)
+    subtotal       Float?    @default(0)
+    total          Float?    @default(0)
+    description    String?
+    attachment     String?
+    status         String?
+
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    deletedAt DateTime?
+
+    customer     Customer?     @relation(fields: [customerId], references: [id])
+    saleProducts SaleProduct[]
+    salePayments SalePayment[]
+
+    @@map("sales")
+}
+
+model SaleProduct {
+    id        String  @id @default(uuid()) @map("_id")
+    storeId   String?
+    saleId    String
+    productId String
+    name      String?
+    code      String?
+    price     Float?  @default(0)
+    discount  Float?  @default(0)
+    taxMethod String?
+    taxRate   Float?
+    quantity  Float?
+    total     Float?  @default(0)
+
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    deletedAt DateTime?
+
+    // store     Store?     @relation(fields: [storeId], references: [id])
+    sale    Sale?    @relation(fields: [saleId], references: [id])
+    product Product? @relation(fields: [productId], references: [id])
+
+    @@map("sale_products")
+}
+
+model SalePayment {
+    id            String  @id @default(uuid()) @map("_id")
+    storeId       String?
+    saleId        String
+    methodId      String
+    name          String?
+    transactionNo String?
+    amount        Float?  @default(0)
+    note          String?
+
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    deletedAt DateTime?
+
+    // store     Store?     @relation(fields: [storeId], references: [id])
+    sale   Sale?          @relation(fields: [saleId], references: [id])
+    method PaymentMethod? @relation(fields: [methodId], references: [id])
+
+    @@map("sale_payments")
 }
