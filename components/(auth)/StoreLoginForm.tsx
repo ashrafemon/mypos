@@ -74,7 +74,7 @@ const StoreLoginForm = () => {
         <Stack gap="sm">
             {data.map((item: OutletType, i: number) => (
                 <Button
-                    variant="outline"
+                    variant="light"
                     size="lg"
                     key={i}
                     color="black"

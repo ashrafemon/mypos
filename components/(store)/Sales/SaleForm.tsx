@@ -1,16 +1,21 @@
 "use client";
 
 import { ProductType } from "@/lib/models/Product";
-import { Card } from "@mantine/core";
+import { Button, Card, Dialog, Modal, Stack, Text } from "@mantine/core";
 import { useMemo, useRef, useState } from "react";
 import PosLayout from "../Layout/PosLayout";
 import CartSection from "./Form/CartSection";
 import ProductSection from "./Form/ProductSection";
 import { useCreateSaleMutation } from "@/states/actions/stores/sales";
 import moment from "moment";
+import { useDisclosure } from "@mantine/hooks";
+import SelectBox from "@/components/UI/SelectBox";
+import NumberField from "@/components/UI/NumberField";
+import TextField from "@/components/UI/TextField";
 
 const SaleForm = () => {
     const cartRef = useRef<any>(null);
+    const [opened, { open, close }] = useDisclosure(false);
 
     const [create, result] = useCreateSaleMutation();
 
@@ -25,6 +30,15 @@ const SaleForm = () => {
             taxRate?: any;
             quantity: number;
             total: number;
+        }[]
+    >([]);
+    const [payments, setPayments] = useState<
+        {
+            methodId?: string;
+            name: string;
+            amount: number;
+            transactionNo?: string;
+            note?: string;
         }[]
     >([]);
 
@@ -87,39 +101,64 @@ const SaleForm = () => {
 
     const submitHandler = async (e: React.SyntheticEvent) => {
         e.preventDefault();
+        open();
 
-        const {
-            customer,
-            counter,
-            shippingCharge,
-            otherCharge,
-            discount,
-            orderTax,
-            total,
-        } = cartRef.current;
+        // const {
+        //     customer,
+        //     counter,
+        //     shippingCharge,
+        //     otherCharge,
+        //     discount,
+        //     orderTax,
+        //     total,
+        // } = cartRef.current;
 
-        const form = {
-            type: "sale",
-            date: moment().toString(),
-            customerId: customer.selectedId ?? null,
-            counterId: counter.selectedId ?? null,
-            shippingCharge: shippingCharge.value ?? 0,
-            otherCharge: otherCharge.value ?? 0,
-            discount: discount.value ?? 0,
-            orderTax: orderTax.value?.rate ?? 0,
-            total: total.netAmount ?? 0,
-            products: products,
-            payments: [],
-        };
+        // const form = {
+        //     type: "sale",
+        //     date: moment().toString(),
+        //     customerId: customer.selectedId ?? null,
+        //     counterId: counter.selectedId ?? null,
+        //     shippingCharge: shippingCharge.value ?? 0,
+        //     otherCharge: otherCharge.value ?? 0,
+        //     discount: discount.value ?? 0,
+        //     orderTax: orderTax.value?.rate ?? 0,
+        //     total: total.netAmount ?? 0,
+        //     products: products,
+        //     payments: [],
+        // };
 
-        await create(form)
-            .unwrap()
-            .then((res) => console.log(res))
-            .catch((err) => console.log(err));
+        // await create(form)
+        //     .unwrap()
+        //     .then((res) => console.log(res))
+        //     .catch((err) => console.log(err));
     };
 
     return (
         <PosLayout>
+            <Modal
+                opened={opened}
+                onClose={close}
+                title="Add Payment"
+                centered
+                classNames={{ title: "font-semibold" }}
+            >
+                <form>
+                    <Stack gap="xs">
+                        <SelectBox
+                            label="Select Payment Method"
+                            placeholder="Payment Method"
+                        />
+                        <NumberField label="Amount" placeholder="Amount" />
+                        <TextField
+                            label="Transaction No"
+                            placeholder="Transaction No"
+                        />
+                        <TextField label="Note" placeholder="Note" />
+                        <Button type="submit">Add Payment</Button>
+                    </Stack>
+                </form>
+            </Modal>
+
             <form onSubmit={submitHandler}>
                 <div className="grid grid-cols-12 gap-4 px-2 items-stretch">
                     <div className="col-span-full lg:col-span-7 2xl:col-span-8">
