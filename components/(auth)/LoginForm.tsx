@@ -2,7 +2,7 @@
 
 import { message, validateError } from "@/lib/utils/helper";
 import { useCreateLoginMutation } from "@/states/actions/auth";
-import { Box, Button, Stack } from "@mantine/core";
+import { Box, Button, Stack, Text } from "@mantine/core";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -97,6 +97,15 @@ const LoginForm = () => {
                     <Link href="/" className="text-sm font-semibold underline">
                         Forget Password
                     </Link>
+                </Box>
+
+                <Box>
+                    <Text size="sm" fw={600}>
+                        Phone: 01982411208
+                    </Text>
+                    <Text size="sm" fw={600}>
+                        Password: 123456
+                    </Text>
                 </Box>
 
                 <Button type="submit" loading={result.isLoading}>
